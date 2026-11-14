@@ -8,7 +8,7 @@ def percentile(values, fraction):
     return sorted(values)[max(0, math.ceil(len(values)*fraction)-1)] if values else None
 
 def mean(values):
-    return sum(values)/len(values) if values else None
+    return math.fsum(values)/len(values) if values else None
 
 def ratio(a, b):
     return a/b if a is not None and b is not None and b > 0 else None
@@ -74,7 +74,7 @@ def score_row(plan, task, trace, assessment):
             ctx.prec=80
             exact_cost=sum(Decimal(str(quantities[k]))*Decimal(str(v['usd_per_unit'])) for k,v in plan['rate_card'].items())
             cost=float(exact_cost)
-        vlm_cost = sum(quantities[k]*v['usd_per_unit'] for k,v in plan['rate_card'].items() if v['category'] == 'vlm')
+        vlm_cost = math.fsum(quantities[k]*v['usd_per_unit'] for k,v in plan['rate_card'].items() if v['category'] == 'vlm')
     for item in trace.get('resources', []):
         for field in ('at_ms','rss_mb','queue_depth','dropped','age_ms'):
             if item.get(field) is not None: number(item[field], field)
@@ -91,8 +91,8 @@ def score_row(plan, task, trace, assessment):
         trace_sha256=trace['trace_sha256'])
 
 def summarize(rows):
-    hours = sum(r['duration_ms'] for r in rows)/3600000
-    cost = sum(r['cost_usd'] for r in rows) if rows and all(r['cost_usd'] is not None for r in rows) else None
+    hours = math.fsum(r['duration_ms'] for r in rows)/3600000
+    cost = math.fsum(r['cost_usd'] for r in rows) if rows and all(r['cost_usd'] is not None for r in rows) else None
     facts = sum(r['critical_facts'] for r in rows)
     claims = sum(r['claim_count'] for r in rows)
     resources = [p for r in rows for p in r['resources']]

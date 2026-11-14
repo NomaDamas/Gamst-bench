@@ -110,8 +110,12 @@ async def run_task(plan, system, task, command):
     finally:
         stop.set()
         # Only the process group created for this invocation is terminated.
-        try:os.killpg(proc.pid,signal.SIGKILL)
-        except ProcessLookupError:pass
+        try:
+            if proc.returncode is None:os.killpg(proc.pid,signal.SIGKILL)
+        except (ProcessLookupError,PermissionError):
+            if proc.returncode is None:
+                try:proc.kill()
+                except ProcessLookupError:pass
         for job in (writer,schedule_task,reader,err,profiler):job.cancel()
         await asyncio.gather(writer,schedule_task,reader,err,profiler,return_exceptions=True)
         await proc.wait()

@@ -53,8 +53,12 @@ async def soak(plan,commands,system_id,seconds,output):
         if proc.returncode!=0 or errors:status='adapter_error'
     except Exception as exc:status=type(exc).__name__
     finally:
-        try:os.killpg(proc.pid,signal.SIGKILL)
-        except ProcessLookupError:pass
+        try:
+            if proc.returncode is None:os.killpg(proc.pid,signal.SIGKILL)
+        except (ProcessLookupError,PermissionError):
+            if proc.returncode is None:
+                try:proc.kill()
+                except ProcessLookupError:pass
         reader.cancel();sampler.cancel();feeder.cancel();await asyncio.gather(reader,sampler,feeder,return_exceptions=True);await proc.wait()
     report={'status':status,'evidence':plan['evidence'],'requested_seconds':seconds,'elapsed_seconds':time.monotonic()-start,'outputs':count,'errors':errors,'resources':profile,'last_trace_sha256':previous,'quality_acceptance':False,'scope':'Adapter process-tree RSS only; external model servers/device resources are not included.'}
     write_new(out/'soak.json',report)

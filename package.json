@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
-    "results": "node scripts/results.mjs",
-    "results:check": "node scripts/results.mjs --check",
+    "results": "node scripts/results.mjs && node scripts/catalog.mjs",
+    "results:check": "node scripts/results.mjs --check && node scripts/catalog.mjs --check",
     "deploy": "npm run build && wrangler deploy",
     "test:python": "python3 -m unittest discover -s tests -v",
     "benchmark:demo": "python3 -m gamst_bench demo"

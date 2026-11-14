@@ -82,7 +82,7 @@ class ProtocolTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'sensor tracks'):freeze(self.plan)
  def test_official_score_cannot_attach_to_synthetic(self):
   from gamst_bench.external import attach_official
-  score=dict(benchmark='FastBench',protocol_revision='1',dataset_revision='1',scorer_revision='1',system_id='A',score=50,scale=100,artifact_sha256='a'*64,source_url='https://example.com/result',configuration_sha256=digest(self.report['systems'][0]),protocol_modified=False)
+  score=dict(metric='timed QA',split='test',evaluation_mode='online',benchmark='FastBench',protocol_revision='1',dataset_revision='1',scorer_revision='1',system_id='A',score=50,scale=100,artifact_sha256='a'*64,source_url='https://example.com/result',configuration_sha256=digest(self.report['systems'][0]),protocol_modified=False)
   with self.assertRaisesRegex(ValueError,'synthetic'):attach_official(self.report,score)
  def test_local_chat_contract(self):
   import threading

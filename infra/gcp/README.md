@@ -14,3 +14,19 @@ Status: **not provisioned**. Aside access was rejected by the session's computer
 The account, actual project ID, zone, image, quota, cost estimate and VM ID remain **unverified**. This plan intentionally contains no fabricated cloud identifiers.
 
 Official references: [GPU VM documentation](https://cloud.google.com/compute/docs/gpus/about-gpus), [VM creation flags](https://cloud.google.com/sdk/gcloud/reference/compute/instances/create).
+
+## Native FastBench launcher
+
+`fastbench-job.template.json` pins the inspected upstream runner commit. Resolve project/model/dataset revisions and confirm data access before validation. The template is deliberately not executable as-is.
+
+```bash
+python3 -m gamst_bench.cloud --job /srv/bench/job.json --out /srv/bench/runs/baseline-001
+# Only on the verified GCE VM, with model servers already running:
+python3 -m gamst_bench.cloud --job /srv/bench/job.json --out /srv/bench/runs/baseline-001 --execute
+```
+
+Default mode only prints the native command. Execution first verifies the GCE metadata project, pinned clean FastBench checkout, GPU and dataset hashes. It will not download weights/data, provision a VM or start a server. The dataset manifest is a JSON list of `{ "path": "dataset/qa_video/...mp4", "sha256": "..." }`; include the annotation JSON and every referenced video. Hashes establish integrity, not dataset completeness or licensing. Record download revisions independently.
+
+Use `method: baseline` and `method: proactive` with distinct run IDs/output directories and the same frozen model/environment. `mode: smoke` processes one sample without a judge. `mode: full` additionally requires `judge_model`, its 40-character `judge_revision`, and `judge_port` for an existing **local VM** OpenAI-compatible judge. A changed judge must be disclosed; this is not automatically a reproduction of the manuscript judge. The launcher blocks inherited config/extra-argument overrides and implicit Hugging Face downloads.
+
+The timeout terminates only the launched runner process group. It does not stop existing model servers or the VM; configure the VM stop policy separately. Private launch/completion manifests and logs remain in the output directory. A zero exit code means execution finished, not that scoring, checkpoint identity, completeness or acceptance passed. Model identities are declarations requiring review against the serving process. No full run or Gamst hybrid execution has been performed yet.

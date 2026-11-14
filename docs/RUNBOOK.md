@@ -60,7 +60,7 @@ Use `7200` and `28800` for 2 h / 8 h. The process remains alive throughout each 
 
 ## 4. External protocol results
 
-Run official tools separately and create a score JSON with `benchmark`, `protocol_revision`, `dataset_revision`, `scorer_revision`, `system_id`, numeric `score`/`scale`, `artifact_sha256`, `source_url`, `configuration_sha256` and `protocol_modified:false`. Configuration SHA256 must equal `digest(system)` for the full configuration in the report. The source URL must point to accessible HTTPS evidence, and artifact SHA256 must identify the actual output. Reviewers verify content; the importer only checks the metadata contract.
+Run official tools separately and create a score JSON with `benchmark`, `protocol_revision`, `dataset_revision`, `scorer_revision`, `system_id`, `metric`, `split`, `evaluation_mode`, numeric `score`/`scale`, `artifact_sha256`, `source_url`, `configuration_sha256` and `protocol_modified:false`. Configuration SHA256 must equal `digest(system)` for the full configuration in the report. The source URL must point to accessible HTTPS evidence, and artifact SHA256 must identify the actual output. Reviewers verify content; the importer only checks the metadata contract.
 
 ```bash
 python3 -m gamst_bench import-official --report runs/experiment-001/report.json --score runs/experiment-001/fastbench-score.json --out runs/experiment-001/report-with-fastbench.json
@@ -82,3 +82,7 @@ npm run deploy
 ```
 
 README and dashboard JSON derive from the same traces/assessments. A UI filter or exploratory deadline never changes frozen acceptance. GitHub CI checks source synchronization, Python behavior, React interactions and the build; deployment is an explicit release command. Real-model quality, independent review and long-duration stability cannot be replaced by passing software tests.
+
+## GCP native FastBench entry point
+
+Use `python3 -m gamst_bench.cloud --job <resolved-job.json> --out <new-private-run-directory>` to validate/print a command. Add `--execute` **on the verified GCE VM only** to run it. See [cloud launcher requirements](../infra/gcp/README.md#native-fastbench-launcher). This launches baseline or ProactiveFrame; it is not a Gamst hybrid adapter.

@@ -109,6 +109,12 @@ GitHub Actions는 Python 평가 테스트, 웹 상호작용 테스트, 소스 �
 
 [Gamst](https://github.com/NomaDamas/Gamst)의 [확장 계획](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-expansion-plan.md), [평가 계약](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-evaluation.md), [실시간 계약](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/realtime.md)을 토대로 설계했습니다. 외부 기준은 [FastBench](https://github.com/Ashone3/FastBench), [SPOT-Bench](https://dibschat.github.io/SPOT-Bench/), [Inf-Streams-Eval](https://research.nvidia.com/labs/eai/publication/streamingvlm/). 대시보드 디자인은 [LiveBench](https://livebench.ai/)에서 영감을 받았습니다. 각 프로젝트와 별개이며 공식 제휴나 재현 성공을 주장하지 않습니다.
 
+## Cloud execution status
+
+The [GCE-only FastBench launcher](infra/gcp/README.md#native-fastbench-launcher) validates project identity, pinned source and dataset hashes before starting an official baseline or ProactiveFrame runner. Its default mode prints a command without inference. Local execution refusal and metric-scoped result import are covered by tests; GPU execution is **not yet validated**.
+
+VM provisioning, real model runs, Gamst hybrid/native benchmark adapters and independent scoring are still pending. The comparison tabs can display imported measured results by benchmark, metric, split and mode; they currently contain no Gamst measurements.
+
 <!-- BENCHMARKS:START -->
 ## Benchmark atlas
 

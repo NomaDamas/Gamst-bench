@@ -1,10 +1,12 @@
 """Attach separately reported official-protocol results with configuration provenance."""
-from .contracts import require,number,digest
+from .contracts import require,number,digest,text
 
 def attach_official(report,score):
-    required=('benchmark','protocol_revision','dataset_revision','scorer_revision','system_id','score','scale','artifact_sha256','source_url','configuration_sha256')
+    required=('benchmark','protocol_revision','dataset_revision','scorer_revision','system_id','score','scale','artifact_sha256','source_url','configuration_sha256','metric','split','evaluation_mode')
     require(all(k in score for k in required),'official score provenance missing')
-    require(score['benchmark'] in ('FastBench','SPOT-Bench','Inf-Streams-Eval','OVO-Bench','OVBench'),'unsupported external benchmark')
+    require(score['benchmark'] in ('FastBench','SPOT-Bench','Inf-Streams-Eval','OVO-Bench','OVBench','StreamingBench','OmniPro','StreamArena','OmniVideoBench','VSAS'),'unsupported external benchmark')
+    for field in ('metric','split','evaluation_mode','protocol_revision','dataset_revision','scorer_revision'):
+        text(score[field], field)
     system=next((s for s in report['systems'] if s['id']==score['system_id']),None)
     require(system is not None,'unknown configuration')
     require(score['configuration_sha256']==digest(system),'official score configuration differs')
@@ -14,6 +16,6 @@ def attach_official(report,score):
     number(score['scale'],'score scale',1,100);number(score['score'],'official score',0,score['scale'])
     require(score.get('protocol_modified') is False,'modified protocol is not an official-protocol score')
     require(report['evidence']=='measured','cannot attach measured official scores to synthetic demo')
-    require(not any(s['benchmark']==score['benchmark'] and s['system_id']==score['system_id'] for s in report['official_scores']),'duplicate official result')
+    require(not any(all(s.get(k)==score[k] for k in ('benchmark','system_id','metric','split','evaluation_mode','protocol_revision','dataset_revision','scorer_revision')) for s in report['official_scores']),'duplicate official result')
     report['official_scores'].append(score)
     return report

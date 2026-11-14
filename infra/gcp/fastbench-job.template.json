@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "benchmark": "FastBench",
+  "method": "baseline",
+  "mode": "smoke",
+  "project_id": "REPLACE_WITH_VERIFIED_PROJECT_ID",
+  "checkout": "/srv/bench/FastBench",
+  "runner_revision": "1951dd11b7423cd76998c9f2fb04e71e95a232b1",
+  "model_path": "/srv/models/Qwen3-VL-8B-Instruct",
+  "model_revision": "REPLACE_WITH_40_CHARACTER_COMMIT",
+  "dataset_revision": "REPLACE_WITH_40_CHARACTER_COMMIT",
+  "dataset_manifest": "/srv/bench/fastbench-files.json",
+  "data_access_reviewed": false,
+  "run_id": "qwen3-baseline-smoke-001",
+  "base_port": 8000,
+  "timeout_seconds": 3600
+}

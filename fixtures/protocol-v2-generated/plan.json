@@ -1,0 +1,1616 @@
+{
+  "baseline": "A",
+  "bootstrap_repetitions": 500,
+  "bootstrap_seed": 2026,
+  "candidate": "C",
+  "consumer_model": "fixture-consumer",
+  "consumer_prompt_sha256": "b086de7b32510701e873f3d4ae742917ca1cc1141ffe4a8387d604ef474ef9e4",
+  "consumer_revision": "fixture-v2",
+  "cost_scope": "full_pipeline",
+  "evidence": "synthetic",
+  "failure_latency": "timeout",
+  "hardware": "Synthetic protocol fixture",
+  "held_out": false,
+  "id": "gamst-protocol-fixtures-v2",
+  "min_sessions": 30,
+  "protocol": "gamst-context-v0.2",
+  "rate_card": {
+    "consumer": {
+      "category": "consumer",
+      "provider": "synthetic",
+      "revision": "v2",
+      "unit": "call",
+      "usd_per_unit": 0.001
+    },
+    "local": {
+      "category": "local_compute",
+      "provider": "synthetic",
+      "revision": "v2",
+      "unit": "session",
+      "usd_per_unit": 0.001
+    },
+    "vlm": {
+      "category": "vlm",
+      "provider": "synthetic",
+      "revision": "v2",
+      "unit": "call",
+      "usd_per_unit": 0.002
+    }
+  },
+  "release": "2026-11-14",
+  "schema_version": 2,
+  "split_unit": "session",
+  "systems": [
+    {
+      "budget": "illustrative 0.10 USD/session",
+      "hardware": "Synthetic protocol fixture",
+      "id": "A",
+      "model": "fixture-perception",
+      "name": "VLM-centered",
+      "policy": "vlm",
+      "precision": "not-applicable",
+      "revision": "fixture-v2",
+      "sampling": "causal-fixture-events",
+      "sensor_track": "audio+video+text",
+      "warm_state": "not-applicable",
+      "window": "past-only, 8 observations"
+    },
+    {
+      "budget": "illustrative 0.10 USD/session",
+      "hardware": "Synthetic protocol fixture",
+      "id": "B",
+      "model": "fixture-perception",
+      "name": "Thin models only",
+      "policy": "thin",
+      "precision": "not-applicable",
+      "revision": "fixture-v2",
+      "sampling": "causal-fixture-events",
+      "sensor_track": "audio+video+text",
+      "warm_state": "not-applicable",
+      "window": "past-only, 8 observations"
+    },
+    {
+      "budget": "illustrative 0.10 USD/session",
+      "hardware": "Synthetic protocol fixture",
+      "id": "C",
+      "model": "fixture-perception",
+      "name": "GAMST hybrid",
+      "policy": "hybrid",
+      "precision": "not-applicable",
+      "revision": "fixture-v2",
+      "sampling": "causal-fixture-events",
+      "sensor_track": "audio+video+text",
+      "warm_state": "not-applicable",
+      "window": "past-only, 8 observations"
+    },
+    {
+      "budget": "illustrative 0.10 USD/session",
+      "hardware": "Synthetic protocol fixture",
+      "id": "D",
+      "model": "fixture-perception",
+      "name": "Periodic hybrid",
+      "policy": "periodic",
+      "precision": "not-applicable",
+      "revision": "fixture-v2",
+      "sampling": "causal-fixture-events",
+      "sensor_track": "audio+video+text",
+      "warm_state": "not-applicable",
+      "window": "past-only, 8 observations"
+    }
+  ],
+  "tasks": [
+    {
+      "answerable": true,
+      "available_ms": 8000,
+      "critical_facts": [
+        "transient-01-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 120,
+      "id": "transient-01",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "transient-01-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8000,
+          "id": "transient-01-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Brief object appearance",
+            "value": "1",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-transient-01",
+      "query": "Report the observable state and cite its evidence: Brief object appearance",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "transient-01",
+      "source_id": "fixture-source-transient-01",
+      "split": "test",
+      "suite": "transient",
+      "input_sha256": "d3e7370b425098654076c93f1eea570da0d77192eedb7d0c8c743ea856aa573d"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8500,
+      "critical_facts": [
+        "transient-02-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 400,
+      "id": "transient-02",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "transient-02-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8500,
+          "id": "transient-02-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Brief object appearance",
+            "value": "2",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-transient-02",
+      "query": "Report the observable state and cite its evidence: Brief object appearance",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "transient-02",
+      "source_id": "fixture-source-transient-02",
+      "split": "test",
+      "suite": "transient",
+      "input_sha256": "fecc4ba9f1f7dd30980fa7a3951bcc86c41b970cf2c2bce5df1d40d56d21be88"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9000,
+      "critical_facts": [
+        "transient-03-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 1000,
+      "id": "transient-03",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "transient-03-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9000,
+          "id": "transient-03-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Brief object appearance",
+            "value": "3",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-transient-03",
+      "query": "Report the observable state and cite its evidence: Brief object appearance",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "transient-03",
+      "source_id": "fixture-source-transient-03",
+      "split": "test",
+      "suite": "transient",
+      "input_sha256": "aae9952242a4d99c70f9268687484554d19159527523a827cfd70f05dd1a7467"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9500,
+      "critical_facts": [
+        "transient-04-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 2000,
+      "id": "transient-04",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "transient-04-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9500,
+          "id": "transient-04-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Brief object appearance",
+            "value": "4",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-transient-04",
+      "query": "Report the observable state and cite its evidence: Brief object appearance",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "transient-04",
+      "source_id": "fixture-source-transient-04",
+      "split": "test",
+      "suite": "transient",
+      "input_sha256": "46504237bc206f4574bb942f585d7c46264f6d6c8322752606e4857a6e829cd9"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10000,
+      "critical_facts": [
+        "transient-05-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 5000,
+      "id": "transient-05",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "transient-05-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10000,
+          "id": "transient-05-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Brief object appearance",
+            "value": "5",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-transient-05",
+      "query": "Report the observable state and cite its evidence: Brief object appearance",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "transient-05",
+      "source_id": "fixture-source-transient-05",
+      "split": "test",
+      "suite": "transient",
+      "input_sha256": "03ec7ec0c6d45df7ea8957bb1d0e2e35bddc62db65c3550c1c691920023f23d5"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10500,
+      "critical_facts": [
+        "transient-06-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 10000,
+      "id": "transient-06",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "transient-06-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10500,
+          "id": "transient-06-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Brief object appearance",
+            "value": "6",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-transient-06",
+      "query": "Report the observable state and cite its evidence: Brief object appearance",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "transient-06",
+      "source_id": "fixture-source-transient-06",
+      "split": "test",
+      "suite": "transient",
+      "input_sha256": "1a0cbdd00d865363d3633f9339f79ee5f31a010f8c03567beeb8b8f8a439a59e"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8000,
+      "critical_facts": [
+        "semantic-01-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 120,
+      "id": "semantic-01",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "semantic-01-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8000,
+          "id": "semantic-01-event",
+          "modality": "text",
+          "payload": {
+            "description": "Small OCR change",
+            "value": "1",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-semantic-01",
+      "query": "Report the observable state and cite its evidence: Small OCR change",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "semantic-01",
+      "source_id": "fixture-source-semantic-01",
+      "split": "test",
+      "suite": "semantic",
+      "input_sha256": "6c151f4600e5ae6b4457bbfe2bd516327ec26903f05edf3ca644a0de8839dd17"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8500,
+      "critical_facts": [
+        "semantic-02-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 400,
+      "id": "semantic-02",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "semantic-02-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8500,
+          "id": "semantic-02-event",
+          "modality": "text",
+          "payload": {
+            "description": "Small OCR change",
+            "value": "2",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-semantic-02",
+      "query": "Report the observable state and cite its evidence: Small OCR change",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "semantic-02",
+      "source_id": "fixture-source-semantic-02",
+      "split": "test",
+      "suite": "semantic",
+      "input_sha256": "34bf66300f91dff5f19c022143a9e0e863039a7749b8399df70abc089d4571b2"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9000,
+      "critical_facts": [
+        "semantic-03-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 1000,
+      "id": "semantic-03",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "semantic-03-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9000,
+          "id": "semantic-03-event",
+          "modality": "text",
+          "payload": {
+            "description": "Small OCR change",
+            "value": "3",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-semantic-03",
+      "query": "Report the observable state and cite its evidence: Small OCR change",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "semantic-03",
+      "source_id": "fixture-source-semantic-03",
+      "split": "test",
+      "suite": "semantic",
+      "input_sha256": "6585757d5fa880a51ecd76955844ef7c20c1fff01140f1a551083f7ed433aa10"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9500,
+      "critical_facts": [
+        "semantic-04-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 2000,
+      "id": "semantic-04",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "semantic-04-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9500,
+          "id": "semantic-04-event",
+          "modality": "text",
+          "payload": {
+            "description": "Small OCR change",
+            "value": "4",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-semantic-04",
+      "query": "Report the observable state and cite its evidence: Small OCR change",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "semantic-04",
+      "source_id": "fixture-source-semantic-04",
+      "split": "test",
+      "suite": "semantic",
+      "input_sha256": "fa20518dbe517db48f165beed5b6afd760a7fc5cb468a8906f85c15e8ab7f816"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10000,
+      "critical_facts": [
+        "semantic-05-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 5000,
+      "id": "semantic-05",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "semantic-05-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10000,
+          "id": "semantic-05-event",
+          "modality": "text",
+          "payload": {
+            "description": "Small OCR change",
+            "value": "5",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-semantic-05",
+      "query": "Report the observable state and cite its evidence: Small OCR change",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "semantic-05",
+      "source_id": "fixture-source-semantic-05",
+      "split": "test",
+      "suite": "semantic",
+      "input_sha256": "90dc81d25569b1b05e4b2f853d7a5e06c80267e89e3ac4431e9f38d9f25ddf8e"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10500,
+      "critical_facts": [
+        "semantic-06-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 10000,
+      "id": "semantic-06",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "semantic-06-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10500,
+          "id": "semantic-06-event",
+          "modality": "text",
+          "payload": {
+            "description": "Small OCR change",
+            "value": "6",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-semantic-06",
+      "query": "Report the observable state and cite its evidence: Small OCR change",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "semantic-06",
+      "source_id": "fixture-source-semantic-06",
+      "split": "test",
+      "suite": "semantic",
+      "input_sha256": "42b60ec64464419cc9f3f0399e61e3be02be022259b5314ce5d3700fa49c5a0f"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8000,
+      "critical_facts": [
+        "memory-01-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 120,
+      "id": "memory-01",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "memory-01-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8000,
+          "id": "memory-01-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Last seen is not current",
+            "value": "1",
+            "visible": false
+          }
+        }
+      ],
+      "participant_id": "fixture-person-memory-01",
+      "query": "Report the observable state and cite its evidence: Last seen is not current",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "memory-01",
+      "source_id": "fixture-source-memory-01",
+      "split": "test",
+      "suite": "memory",
+      "input_sha256": "b5c0748b36e325cf1ba172ef011c742a302b6ef9293f6d8f55d486bcf3994db1"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8500,
+      "critical_facts": [
+        "memory-02-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 400,
+      "id": "memory-02",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "memory-02-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8500,
+          "id": "memory-02-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Last seen is not current",
+            "value": "2",
+            "visible": false
+          }
+        }
+      ],
+      "participant_id": "fixture-person-memory-02",
+      "query": "Report the observable state and cite its evidence: Last seen is not current",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "memory-02",
+      "source_id": "fixture-source-memory-02",
+      "split": "test",
+      "suite": "memory",
+      "input_sha256": "58fcd485dd1387129308a71db75a63740aae6ac823454ef6a038b8d03a25241d"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9000,
+      "critical_facts": [
+        "memory-03-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 1000,
+      "id": "memory-03",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "memory-03-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9000,
+          "id": "memory-03-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Last seen is not current",
+            "value": "3",
+            "visible": false
+          }
+        }
+      ],
+      "participant_id": "fixture-person-memory-03",
+      "query": "Report the observable state and cite its evidence: Last seen is not current",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "memory-03",
+      "source_id": "fixture-source-memory-03",
+      "split": "test",
+      "suite": "memory",
+      "input_sha256": "894d4271a39116ad98b15704976ccb6ecfc6cb2cd0ba2a3fd89d2d52fc338f36"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9500,
+      "critical_facts": [
+        "memory-04-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 2000,
+      "id": "memory-04",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "memory-04-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9500,
+          "id": "memory-04-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Last seen is not current",
+            "value": "4",
+            "visible": false
+          }
+        }
+      ],
+      "participant_id": "fixture-person-memory-04",
+      "query": "Report the observable state and cite its evidence: Last seen is not current",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "memory-04",
+      "source_id": "fixture-source-memory-04",
+      "split": "test",
+      "suite": "memory",
+      "input_sha256": "0d31e3cde6c24a841ee91937873eab0e705a9a0c0878757c3a189842501e7a2b"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10000,
+      "critical_facts": [
+        "memory-05-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 5000,
+      "id": "memory-05",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "memory-05-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10000,
+          "id": "memory-05-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Last seen is not current",
+            "value": "5",
+            "visible": false
+          }
+        }
+      ],
+      "participant_id": "fixture-person-memory-05",
+      "query": "Report the observable state and cite its evidence: Last seen is not current",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "memory-05",
+      "source_id": "fixture-source-memory-05",
+      "split": "test",
+      "suite": "memory",
+      "input_sha256": "9f6509a71cb092296d1f8252cfc631800c1a895ab3266c041447a06b59df4f20"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10500,
+      "critical_facts": [
+        "memory-06-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 10000,
+      "id": "memory-06",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "memory-06-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10500,
+          "id": "memory-06-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Last seen is not current",
+            "value": "6",
+            "visible": false
+          }
+        }
+      ],
+      "participant_id": "fixture-person-memory-06",
+      "query": "Report the observable state and cite its evidence: Last seen is not current",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "memory-06",
+      "source_id": "fixture-source-memory-06",
+      "split": "test",
+      "suite": "memory",
+      "input_sha256": "e749ed470631311ab78ae656b50b60bd630417bd20e64dc9420a40aea5294c69"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8000,
+      "critical_facts": [
+        "revision-01-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 120,
+      "id": "revision-01",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "revision-01-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8000,
+          "id": "revision-01-event",
+          "modality": "text",
+          "payload": {
+            "final": "two",
+            "partial": "three",
+            "revision_of": "partial-1"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-revision-01",
+      "query": "Report the observable state and cite its evidence: Corrected spoken quantity",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "revision-01",
+      "source_id": "fixture-source-revision-01",
+      "split": "test",
+      "suite": "revision",
+      "input_sha256": "3a83c790f3f1e50f3c122d3ed907ec571d36d1d77fbc25d33f4dea256543b4fe"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8500,
+      "critical_facts": [
+        "revision-02-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 400,
+      "id": "revision-02",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "revision-02-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8500,
+          "id": "revision-02-event",
+          "modality": "text",
+          "payload": {
+            "final": "two",
+            "partial": "three",
+            "revision_of": "partial-1"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-revision-02",
+      "query": "Report the observable state and cite its evidence: Corrected spoken quantity",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "revision-02",
+      "source_id": "fixture-source-revision-02",
+      "split": "test",
+      "suite": "revision",
+      "input_sha256": "4e0e8154714304290a750ace8a6d0c8e40099696aa2c0a6f66f0ee26c0177933"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9000,
+      "critical_facts": [
+        "revision-03-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 1000,
+      "id": "revision-03",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "revision-03-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9000,
+          "id": "revision-03-event",
+          "modality": "text",
+          "payload": {
+            "final": "two",
+            "partial": "three",
+            "revision_of": "partial-1"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-revision-03",
+      "query": "Report the observable state and cite its evidence: Corrected spoken quantity",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "revision-03",
+      "source_id": "fixture-source-revision-03",
+      "split": "test",
+      "suite": "revision",
+      "input_sha256": "00aeefa9b01419dd93e79aaf96d2e08543f80ed399769d65f6159a28cfb273ac"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9500,
+      "critical_facts": [
+        "revision-04-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 2000,
+      "id": "revision-04",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "revision-04-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9500,
+          "id": "revision-04-event",
+          "modality": "text",
+          "payload": {
+            "final": "two",
+            "partial": "three",
+            "revision_of": "partial-1"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-revision-04",
+      "query": "Report the observable state and cite its evidence: Corrected spoken quantity",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "revision-04",
+      "source_id": "fixture-source-revision-04",
+      "split": "test",
+      "suite": "revision",
+      "input_sha256": "a985f84f3d9a1a937386871a60f9e7e7c572bd4a3c8fe28f3a6868310f453da9"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10000,
+      "critical_facts": [
+        "revision-05-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 5000,
+      "id": "revision-05",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "revision-05-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10000,
+          "id": "revision-05-event",
+          "modality": "text",
+          "payload": {
+            "final": "two",
+            "partial": "three",
+            "revision_of": "partial-1"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-revision-05",
+      "query": "Report the observable state and cite its evidence: Corrected spoken quantity",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "revision-05",
+      "source_id": "fixture-source-revision-05",
+      "split": "test",
+      "suite": "revision",
+      "input_sha256": "c15afc34c9cd0c6f229af97ff20677fdc0ee2df2d3e7584fbd0a456188657167"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10500,
+      "critical_facts": [
+        "revision-06-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 10000,
+      "id": "revision-06",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "revision-06-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10500,
+          "id": "revision-06-event",
+          "modality": "text",
+          "payload": {
+            "final": "two",
+            "partial": "three",
+            "revision_of": "partial-1"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-revision-06",
+      "query": "Report the observable state and cite its evidence: Corrected spoken quantity",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "revision-06",
+      "source_id": "fixture-source-revision-06",
+      "split": "test",
+      "suite": "revision",
+      "input_sha256": "329567eb5f1c88a6296f634738162e0bb7c38d158ceff79836a1a978eacd7c86"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8000,
+      "critical_facts": [
+        "retention-01-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 120,
+      "id": "retention-01",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "retention-01-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8000,
+          "id": "retention-01-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Unannounced retrospective question",
+            "value": "1",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-retention-01",
+      "query": "Report the observable state and cite its evidence: Unannounced retrospective question",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "retention-01",
+      "source_id": "fixture-source-retention-01",
+      "split": "test",
+      "suite": "retention",
+      "input_sha256": "1fe7a2b474ffe9057ec7a8c29d7a0cf322a9b421fd93648e138be9a8f6f5a1ef"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8500,
+      "critical_facts": [
+        "retention-02-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 400,
+      "id": "retention-02",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "retention-02-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8500,
+          "id": "retention-02-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Unannounced retrospective question",
+            "value": "2",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-retention-02",
+      "query": "Report the observable state and cite its evidence: Unannounced retrospective question",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "retention-02",
+      "source_id": "fixture-source-retention-02",
+      "split": "test",
+      "suite": "retention",
+      "input_sha256": "d6dc0547267167db5b9784aa87bffecf4e185ab4e6d79c2a5ea2adcdb8428647"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9000,
+      "critical_facts": [
+        "retention-03-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 1000,
+      "id": "retention-03",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "retention-03-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9000,
+          "id": "retention-03-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Unannounced retrospective question",
+            "value": "3",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-retention-03",
+      "query": "Report the observable state and cite its evidence: Unannounced retrospective question",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "retention-03",
+      "source_id": "fixture-source-retention-03",
+      "split": "test",
+      "suite": "retention",
+      "input_sha256": "596be24b94997bcf54dd4d0e01c2d46d62d636b9e92afce098b9fb80edf1ab8a"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9500,
+      "critical_facts": [
+        "retention-04-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 2000,
+      "id": "retention-04",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "retention-04-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9500,
+          "id": "retention-04-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Unannounced retrospective question",
+            "value": "4",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-retention-04",
+      "query": "Report the observable state and cite its evidence: Unannounced retrospective question",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "retention-04",
+      "source_id": "fixture-source-retention-04",
+      "split": "test",
+      "suite": "retention",
+      "input_sha256": "64e2245f465598118e13a49ebc5b4575f346bc46bbf5c77c7fee6be0637ef951"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10000,
+      "critical_facts": [
+        "retention-05-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 5000,
+      "id": "retention-05",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "retention-05-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10000,
+          "id": "retention-05-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Unannounced retrospective question",
+            "value": "5",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-retention-05",
+      "query": "Report the observable state and cite its evidence: Unannounced retrospective question",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "retention-05",
+      "source_id": "fixture-source-retention-05",
+      "split": "test",
+      "suite": "retention",
+      "input_sha256": "56adcfd0d3151ff14c760b0c217113d8624387715c0d6d8f4fbacc0fc9a2665c"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10500,
+      "critical_facts": [
+        "retention-06-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 10000,
+      "id": "retention-06",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "retention-06-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10500,
+          "id": "retention-06-event",
+          "modality": "signal",
+          "payload": {
+            "description": "Unannounced retrospective question",
+            "value": "6",
+            "visible": true
+          }
+        }
+      ],
+      "participant_id": "fixture-person-retention-06",
+      "query": "Report the observable state and cite its evidence: Unannounced retrospective question",
+      "query_ms": 12000,
+      "sensor_track": "audio+video+text",
+      "session_id": "retention-06",
+      "source_id": "fixture-source-retention-06",
+      "split": "test",
+      "suite": "retention",
+      "input_sha256": "84a30618e925839720b14fac6e5911fd1828dfb9d7476605cd82cf07bff7be05"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8000,
+      "critical_facts": [
+        "resilience-01-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 120,
+      "id": "resilience-01",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "resilience-01-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8000,
+          "id": "resilience-01-event",
+          "modality": "control",
+          "payload": {
+            "generation": 2,
+            "status": "unavailable"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-resilience-01",
+      "query": "Report the observable state and cite its evidence: Disconnect and stale completion",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "resilience-01",
+      "source_id": "fixture-source-resilience-01",
+      "split": "test",
+      "suite": "resilience",
+      "input_sha256": "3723b2970ecdf3add4e9af67fbd27091f5b2786ce3d0f402a4faad784b32241b"
+    },
+    {
+      "answerable": true,
+      "available_ms": 8500,
+      "critical_facts": [
+        "resilience-02-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 400,
+      "id": "resilience-02",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "resilience-02-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 8500,
+          "id": "resilience-02-event",
+          "modality": "control",
+          "payload": {
+            "generation": 2,
+            "status": "unavailable"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-resilience-02",
+      "query": "Report the observable state and cite its evidence: Disconnect and stale completion",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "resilience-02",
+      "source_id": "fixture-source-resilience-02",
+      "split": "test",
+      "suite": "resilience",
+      "input_sha256": "bc4ac2b7d51f082b82bbb3ff97a0acaebbdfff7d156655b95bedc9c2b65a5893"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9000,
+      "critical_facts": [
+        "resilience-03-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 1000,
+      "id": "resilience-03",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "resilience-03-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9000,
+          "id": "resilience-03-event",
+          "modality": "control",
+          "payload": {
+            "generation": 2,
+            "status": "unavailable"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-resilience-03",
+      "query": "Report the observable state and cite its evidence: Disconnect and stale completion",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "resilience-03",
+      "source_id": "fixture-source-resilience-03",
+      "split": "test",
+      "suite": "resilience",
+      "input_sha256": "94b95a4cd468902127ba731efc7a06a06ed45ee55768a063bf80879f301df65e"
+    },
+    {
+      "answerable": true,
+      "available_ms": 9500,
+      "critical_facts": [
+        "resilience-04-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 2000,
+      "id": "resilience-04",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "resilience-04-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 9500,
+          "id": "resilience-04-event",
+          "modality": "control",
+          "payload": {
+            "generation": 2,
+            "status": "unavailable"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-resilience-04",
+      "query": "Report the observable state and cite its evidence: Disconnect and stale completion",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "resilience-04",
+      "source_id": "fixture-source-resilience-04",
+      "split": "test",
+      "suite": "resilience",
+      "input_sha256": "7966c69687b9ec40b1a59f1c4036334cdad7f94e07e5aa3d83a6ac47989fa608"
+    },
+    {
+      "answerable": true,
+      "available_ms": 10000,
+      "critical_facts": [
+        "resilience-05-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 5000,
+      "id": "resilience-05",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "resilience-05-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10000,
+          "id": "resilience-05-event",
+          "modality": "control",
+          "payload": {
+            "generation": 2,
+            "status": "unavailable"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-resilience-05",
+      "query": "Report the observable state and cite its evidence: Disconnect and stale completion",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "resilience-05",
+      "source_id": "fixture-source-resilience-05",
+      "split": "test",
+      "suite": "resilience",
+      "input_sha256": "22bab9a222f584eec55fed7b22f74d0053c3e6660c6368c6778fe9f40bdb29df"
+    },
+    {
+      "answerable": false,
+      "available_ms": 10500,
+      "critical_facts": [
+        "resilience-06-fact"
+      ],
+      "dataset": "GAMST Protocol Fixtures",
+      "deadline_ms": 2000,
+      "duration_ms": 30000,
+      "event_duration_ms": 10000,
+      "id": "resilience-06",
+      "inputs": [
+        {
+          "at_ms": 0,
+          "id": "resilience-06-start",
+          "modality": "signal",
+          "payload": {
+            "source": "fixture",
+            "state": "observing"
+          }
+        },
+        {
+          "at_ms": 10500,
+          "id": "resilience-06-event",
+          "modality": "control",
+          "payload": {
+            "generation": 2,
+            "status": "unavailable"
+          }
+        }
+      ],
+      "participant_id": "fixture-person-resilience-06",
+      "query": "Report the observable state and cite its evidence: Disconnect and stale completion",
+      "query_ms": 1000,
+      "sensor_track": "audio+video+text",
+      "session_id": "resilience-06",
+      "source_id": "fixture-source-resilience-06",
+      "split": "test",
+      "suite": "resilience",
+      "input_sha256": "3f8a36286bde8f62c9a6ac046f11acec576bd64a262f8bb745304801cee7a461"
+    }
+  ],
+  "thresholds": {
+    "cost_ratio": 0.8,
+    "latency_ratio": 0.9,
+    "quality_delta": 0
+  },
+  "timeout_ms": 10000,
+  "plan_sha256": "07b58ddb85ad77dd2b7cc2260a2f96023b1dd50b2b59306ed513cb4bf4852a1a"
+}

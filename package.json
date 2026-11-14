@@ -1,7 +1,7 @@
 {
   "name": "gamst-bench",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -10,7 +10,9 @@
     "test": "vitest run",
     "results": "node scripts/results.mjs",
     "results:check": "node scripts/results.mjs --check",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "test:python": "python3 -m unittest discover -s tests -v",
+    "benchmark:demo": "python3 -m gamst_bench demo"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

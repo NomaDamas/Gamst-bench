@@ -1,0 +1,5 @@
+{
+  "plan": "fixtures/protocol-v2-generated/plan.json",
+  "traces": "fixtures/protocol-v2-generated/traces.json",
+  "assessments": "fixtures/protocol-v2-generated/assessments.json"
+}

@@ -1,100 +1,110 @@
 # GAMST Bench
 
-**Small models. Bigger context.** 저비용 멀티모달 컨텍스트 생성을 위한 인터랙티브 벤치마크 대시보드 템플릿.
+**Less compute. Keep what matters.**
 
-- Website: https://gamst-bench.jinminseong.com
-- Repository: https://github.com/NomaDamas/Gamst-bench
-- Reference: [LiveBench](https://livebench.ai/)의 카테고리별 리더보드와 비용 비교 구성에서 영감을 받았습니다. 별개의 프로젝트이며 LiveBench 데이터나 평가 결과를 사용하지 않습니다.
+기존 에이전트에 중요한 정보를 적은 자원으로 제때 전달하는지 평가하는 **컨텍스트 파이프라인 벤치마크**.
 
-> **현재 모든 모델 이름과 수치는 가상의 예시입니다. 실제 평가를 실행한 결과가 아닙니다.** 이 저장소는 결과 탐색·공유 템플릿이며 모델 추론 또는 채점 실행기는 포함하지 않습니다.
+**[대시보드](https://gamst-bench.jinminseong.com)** · [평가 프로토콜](docs/PROTOCOL.md) · [실행 가이드](docs/RUNBOOK.md) · [주석 규칙](docs/ANNOTATION.md) · [어댑터 계약](docs/ADAPTERS.md)
 
-## Dashboard
+> 공개 데이터는 36개 합성 시나리오 × A/B/C/D, 총 144개 프로토콜 검증 결과입니다. 실제 모델 추론·물리 센서 실험·8시간 soak를 실행한 결과가 아닙니다. 샘플 성능으로 품질 보존이나 비용 절감을 주장하지 않습니다.
 
-- 산점도 점, 성능 막대, 모델 체크박스 선택 → 다른 차트·평균 지표·리더보드 동시 필터링.
-- 차원 카드 / 카테고리 선택 → 모든 차트와 순위표의 활성 품질 점수 변경.
-- 모델 검색, 모델 계열, 7B 이하 필터, 다중 모델 비교, 필터 초기화.
-- 비용 ↔ 지연시간 산점도 축 전환, 표 정렬, 필터 URL 공유, 현재 결과 CSV 다운로드.
-- 모바일 레이아웃, 키보드로 조작 가능한 그래프, 스크린리더 레이블, 감소된 모션 설정 지원.
+## What is evaluated
+
+- **A:** VLM 중심 처리. **B:** 경량 인식만. **C:** 선택적 호출을 포함한 Gamst 혼합. **D:** 동일 모델의 주기적 혼합.
+- 평가 단위: 센서 + 인식 모델 + VLM + 정책 + 메모리 + 소비자 LLM + 하드웨어.
+- 핵심 지표: **기한 내 근거 있는 성공률**. 정답, 의미적으로 유효한 근거, 시간 조건을 모두 충족해야 성공합니다.
+- 6개 suite: 짧은 사건 / 작은 의미 변화 / 객체·상태 메모리 / 음성·영상 수정 / 질문 이전 문맥 보존 / 단절·과부하 복구.
+- 전체 파이프라인 비용, p95 답변 지연, 중요 사실 재현율, 근거 없는 주장, 오래된 상태 오류, 기권, 시간당 오탐, 메모리와 드롭을 함께 공개합니다.
+- 기존 FastBench 등의 공식 프로토콜 점수는 별도 결과이며 Gamst 종합 점수에 섞지 않습니다.
 
 ## Benchmark results
 
 <!-- RESULTS:START -->
 
-> **SYNTHETIC DEMO — 실제 벤치마크 결과 아님. 모델과 수치는 모두 가상입니다.**
+> **SYNTHETIC — 합성 프로토콜 검증. 실제 모델 성능·절감 효과를 증명하지 않습니다.**
 
-Release: **2026-11-14** · 8 models · 6 dimensions
+Release 2026-11-14 · gamst-context-v0.2 · 144 configuration-task runs
 
-| Rank | Model | Family | Params (B) | Overall | Visual | OCR | Temporal | Audio | Context | Factuality | Cost / 1k clips (USD) | p50 latency (s) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Reference 32B | Reference | 32 | 91.3 | 92.1 | 91.3 | 89.8 | 87.4 | 94.6 | 92.5 | 1.82 | 3.42 |
-| 2 | GAMST 7B | GAMST | 7 | 88.9 | 90.4 | 88.2 | 87.6 | 84.1 | 93.2 | 90.1 | 0.48 | 1.24 |
-| 3 | Reference 14B | Reference | 14 | 86.4 | 88.2 | 86.4 | 84.5 | 81.6 | 90.1 | 87.8 | 1.06 | 2.28 |
-| 4 | GAMST 3B | GAMST | 3 | 84.1 | 86.2 | 83.4 | 81.8 | 78.2 | 89.4 | 85.8 | 0.24 | 0.82 |
-| 5 | Context Base 7B | Baseline | 7 | 81.7 | 84.8 | 79.6 | 80.1 | 76.3 | 86.7 | 82.5 | 0.64 | 1.86 |
-| 6 | Fusion Mini 4B | Baseline | 4 | 79.6 | 80.3 | 78.1 | 76.8 | 82.4 | 81.2 | 78.6 | 0.36 | 0.95 |
-| 7 | Vision Lite 3B | Baseline | 3 | 76.4 | 82.1 | 85.2 | 71.3 | 62.4 | 76.8 | 80.6 | 0.31 | 1.12 |
-| 8 | GAMST 1B | GAMST | 1 | 73.0 | 76.5 | 73.8 | 68.9 | 65.2 | 79.6 | 74.2 | 0.09 | 0.38 |
+| Configuration | Policy | Runs | Grounded & on time | Critical recall | Answer p95 (ms) | Full pipeline USD/h | Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A · VLM-centered | vlm | 36 | 0.0% | 83.3% | 3100 | 3.12 | synthetic |
+| B · Thin models only | thin | 36 | 66.7% | 66.7% | 780 | 0.24 | synthetic |
+| C · GAMST hybrid | hybrid | 36 | 97.2% | 97.2% | 1250 | 0.96 | synthetic |
+| D · Periodic hybrid | periodic | 36 | 88.9% | 88.9% | 1950 | 1.68 | synthetic |
 
-Generated from [data/benchmark.json](data/benchmark.json) using `npm run results`.
+- **C vs A: not_passed** — cost ratio 0.31, p95 ratio 0.40, quality difference 0.14; 36 session clusters.
+- **C vs D: not_passed** — cost ratio 0.57, p95 ratio 0.64, quality difference 0.08; 36 session clusters.
+
+Official FastBench / SPOT-Bench / Inf-Streams-Eval: **not measured**.
+
+Frozen plan SHA256: `07b58ddb85ad77dd2b7cc2260a2f96023b1dd50b2b59306ed513cb4bf4852a1a`
+
+Source manifest: [data/release.json](data/release.json). Generated with `npm run results`.
 
 <!-- RESULTS:END -->
 
-## Scoring and units
+## Local development
 
-- **Overall** = (Visual + OCR + Temporal + Audio + Context + Factuality) / 6. 내부 계산은 반올림하지 않으며 화면과 README에 소수점 한 자리로 표시합니다.
-- 모든 품질 점수는 0–100이며 높을수록 좋습니다. 개별 차원의 채점 프로토콜은 실제 평가 시 정의해야 합니다.
-- **Cost**: 클립 1,000개당 추론 비용(USD). 입력·출력 토큰 또는 GPU 시간, 하드웨어 비용 산식, 클립 길이를 실제 실행에 맞게 기록해야 합니다.
-- **Latency**: 모델별 p50(초). 대시보드 평균은 선택된 모델의 p50 값의 산술평균이며, 전체 요청을 합친 p50이 아닙니다.
-- **Small model**: 파라미터 수 ≤ 7B.
-- 모든 필터는 AND로 결합됩니다. 모델 다중 선택 내부는 OR입니다. 검색/계열 변경으로 선택 모델이 숨겨진 경우 칩을 제거하거나 Reset으로 복구할 수 있습니다.
-- 카테고리 점수는 현재 선택 모델들의 평균입니다. 품질 산점도와 순위표는 활성 카테고리 점수를 사용합니다. 축 범위는 선택에 따라 움직이지 않습니다.
-
-## Run locally
-
-Node.js 22.22+ 권장.
+Node.js 22.22+와 Python 3.10+를 사용합니다. 평가 코어는 Python 표준 라이브러리만 사용하며 모델을 자동 설치하지 않습니다.
 
 ```bash
 npm ci
 npm run dev
-```
-
-```bash
 npm test
+npm run test:python
 npm run results:check
 npm run build
-npm run preview
 ```
 
-## Add actual results
+대시보드는 구성/과제/정책/센서/하드웨어/증거 수준/비용 예산/사건 길이로 교차 필터링합니다. URL 공유, CSV 내보내기, 증거 타임라인, 자원 시계열과 세션 단위 95% 신뢰구간을 제공합니다. 화면의 탐색용 응답 기한은 사전 고정한 수용 기준을 바꾸지 않습니다.
 
-1. `data/benchmark.json`의 모델과 차원 데이터를 교체합니다. `id`는 고유하게 유지하고, 각 모델은 모든 차원의 점수를 가져야 합니다. `parameters`는 B 단위, `cost`는 USD/1,000 clips, `latency`는 초입니다.
-2. `release`와 `version`을 갱신합니다. 실제 측정 데이터만 포함됐을 때 `isDemo`를 `false`로 바꿉니다. 아래의 연구 프로토콜과 실행 증빙을 채우고 웹사이트의 샘플 안내 문구도 실제 데이터에 맞게 변경합니다.
-3. `npm run results`로 README 표를 다시 생성합니다. 웹사이트는 같은 JSON을 직접 읽으므로 데이터가 이중 관리되지 않습니다.
-4. `npm test && npm run results:check && npm run build`를 실행하고 변경 사항을 커밋합니다.
-
-### Required evidence for a real release
-
-현재는 모두 미정이며 예시 수치에서 추론할 수 없습니다.
-
-- 데이터셋 이름·버전·라이선스, 샘플 수, split, 클립 길이와 모달리티 구성
-- 모델 체크포인트·revision, 양자화, 컨텍스트 길이, 프롬프트, 생성 설정 및 seed
-- 하드웨어·런타임·배치 크기, warm-up, 반복 횟수, 실패/재시도 처리
-- 차원별 정답·채점 규칙, 평가 모델을 쓰는 경우 모델 버전과 프롬프트
-- 비용 산식 및 가격 기준일, 측정 로그와 원시 결과, 신뢰구간 산출 방법
-
-## Deploy
-
-Cloudflare Workers Static Assets에 정적 파일을 배포합니다. `wrangler.jsonc`의 Custom Domain은 **gamst-bench.jinminseong.com**입니다. 메인 블로그 `jinminseong.com`을 수정하지 않습니다.
+## Reproduce the evaluation pipeline
 
 ```bash
-npx wrangler login
+# 출력 폴더는 존재하지 않는 새 경로를 지정합니다.
+python3 -m gamst_bench demo --out runs/demo-001
+python3 -m gamst_bench validate --plan runs/demo-001/plan.json
+python3 -m gamst_bench evaluate \
+  --plan runs/demo-001/plan.json \
+  --traces runs/demo-001/traces.json \
+  --assessments runs/demo-001/assessments.json \
+  --out runs/demo-001/recomputed.json
+```
+
+`demo`는 합성 프로토콜만 검증합니다. 실제 평가에서는 freeze → collect → 외부 채점 → evaluate 순서로 실행하세요. 계획과 입력 해시, 채점-실행 연결, 누락된 쌍, 실패 페널티, 세션 단위 bootstrap을 검사합니다. 합성 자료는 수용 판정을 통과할 수 없습니다.
+
+실제 모델 어댑터, 외부 벤치마크 결과 import, 장시간 수집 명령은 [RUNBOOK](docs/RUNBOOK.md)에 있습니다. 참조 어댑터의 실제 체크포인트 호환성은 미검증이며, 기존 Gamst 설치와 명시적으로 선택한 모델·플러그인이 필요합니다.
+
+## Publish new evidence
+
+1. 실험 계획·입력·코드·모델 revision을 고정하고 계획 해시를 실행 전 별도 기록합니다.
+2. 동일 입력과 소비자 LLM을 유지하여 A/B/C/D를 수집합니다. 실패·타임아웃을 삭제하지 않습니다.
+3. `assess-template`으로 채점 양식을 만들고 원시 증거를 확인해 사람이 채웁니다. 값의 해시 일치는 정확성이나 독립성을 보증하지 않습니다.
+4. `data/release.json`에서 검토된 plan/traces/assessments를 지정합니다. `npm run results`가 공개 JSON과 README를 같은 소스에서 다시 계산합니다.
+5. 테스트·빌드를 통과한 뒤 `npm run deploy`로 Cloudflare에 배포합니다.
+
+관측 원본에 개인정보가 있다면 공개 저장소에 올리지 않습니다. 공개용 식별자와 허가된 자료만 사용하고 비공개 원본의 해시·평가 절차를 기록합니다. 기본 `.gitignore`는 `runs/`를 제외합니다.
+
+## Acceptance and limitations
+
+엔지니어링 게이트는 비용 비율 ≤0.8, p95 지연 비율 ≤0.9, 평균 품질 차이 ≥0, 선언된 중요 사실 보존입니다. 점추정치와 세션-paired bootstrap 95% 구간 모두 기준을 충족해야 합니다. held-out, 실측, 최소 독립 세션 수도 필요합니다. 현재 공개 결과는 **not passed**입니다.
+
+- `measured` 표기나 `numeric_pass_requires_audit`는 실제 모델 실행·측정·채점의 진위를 인증하지 않습니다.
+- 기본 수집기의 RSS는 어댑터 프로세스 트리만 측정합니다. 별도 모델 서버·GPU 메모리·에너지·하드웨어 비용은 추가 계측이 필요합니다.
+- 근거·정답의 의미 판단은 외부 검수입니다. 모델의 자기보고 confidence를 정답으로 쓰지 않습니다.
+- 타임아웃에는 사전 정의한 지연 페널티를 적용합니다. 잘못된 빠른 답은 품질 0이며, 비용·지연만으로 통과하지 않습니다.
+- 웹 UI 자동화 도구가 연결되지 않은 환경에서는 DOM 기반 상호작용 테스트와 빌드/HTTP 검증을 수행합니다. 실제 브라우저 시각 검증은 별도입니다.
+
+## Deployment
+
+Cloudflare Workers Static Assets · **gamst-bench.jinminseong.com**. 기존 `jinminseong.com` 블로그와 분리된 Worker입니다.
+
+```bash
 npm run deploy
 ```
 
-Cloudflare 계정에 해당 DNS zone과 Worker 배포 권한이 필요합니다. Custom Domain 배포 시 Cloudflare가 서브도메인 DNS·인증서를 관리합니다. 자격 증명은 저장소에 넣지 않습니다.
+GitHub Actions는 Python 평가 테스트, 웹 상호작용 테스트, 소스 결과 동기화와 빌드를 검증합니다. 자동 배포는 설정하지 않았으며 `npm run deploy`로 배포합니다.
 
-`.github/workflows/ci.yml`은 push/PR에서 테스트·README 동기화·빌드를 확인합니다. 수동 배포는 위 명령으로 실행합니다. 자동 배포를 원하면 Cloudflare Workers Builds에서 이 저장소의 `main`을 연결하고 build `npm run build`, deploy `npx wrangler deploy`를 설정하세요.
+## Research foundation
 
-## Stack
-
-React · TypeScript · Vite · native SVG charts · Vitest / Testing Library · Cloudflare Workers Static Assets. 외부 차트 서비스나 API 키 없이 탐색 기능이 동작합니다.
+[Gamst](https://github.com/NomaDamas/Gamst)의 [확장 계획](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-expansion-plan.md), [평가 계약](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-evaluation.md), [실시간 계약](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/realtime.md)을 토대로 설계했습니다. 외부 기준은 [FastBench](https://github.com/Ashone3/FastBench), [SPOT-Bench](https://dibschat.github.io/SPOT-Bench/), [Inf-Streams-Eval](https://research.nvidia.com/labs/eai/publication/streamingvlm/). 대시보드 디자인은 [LiveBench](https://livebench.ai/)에서 영감을 받았습니다. 각 프로젝트와 별개이며 공식 제휴나 재현 성공을 주장하지 않습니다.

@@ -1,26 +1,19 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-const data = JSON.parse(readFileSync(new URL('../data/benchmark.json', import.meta.url), 'utf8'));
-const fail = message => { throw new Error(`Invalid benchmark data: ${message}`); };
-if (typeof data.isDemo !== 'boolean' || !/^\d{4}-\d{2}-\d{2}$/.test(data.release)) fail('release / isDemo');
-if (!data.categories?.length || !data.models?.length) fail('empty categories or models');
-const categories = data.categories.map(c => c.id);
-if (new Set(categories).size !== categories.length) fail('duplicate category IDs');
-if (new Set(data.models.map(m=>m.id)).size !== data.models.length) fail('duplicate model IDs');
-for (const m of data.models) {
-  for (const key of ['cost','latency','parameters']) if (!Number.isFinite(m[key]) || m[key] < 0) fail(`${m.id}: ${key}`);
-  for (const id of categories) if (!Number.isFinite(m.scores[id]) || m.scores[id] < 0 || m.scores[id] > 100) fail(`${m.id}: ${id}`);
-  if (Object.keys(m.scores).length !== categories.length) fail(`${m.id}: unexpected score category`);
-  if (!m.name || !m.id || !['GAMST','Baseline','Reference'].includes(m.family)) fail(`${m.id}: name / id / family`);
-}
-const score = m => categories.reduce((sum,c)=>sum+m.scores[c],0)/categories.length;
-const escape = value => String(value).replaceAll('|','\\|').replaceAll('\n',' ');
-const headers = ['Rank','Model','Family','Params (B)','Overall',...data.categories.map(c=>c.short),'Cost / 1k clips (USD)','p50 latency (s)'];
-const rows = [...data.models].sort((a,b)=>score(b)-score(a)).map((m,i)=>[i+1,m.name,m.family,m.parameters,score(m).toFixed(1),...categories.map(c=>m.scores[c].toFixed(1)),m.cost.toFixed(2),m.latency.toFixed(2)]);
-const line = cells => `| ${cells.map(escape).join(' | ')} |`;
-const block = `<!-- RESULTS:START -->\n\n> ${data.isDemo?'**SYNTHETIC DEMO — 실제 벤치마크 결과 아님. 모델과 수치는 모두 가상입니다.**':'Measured benchmark results — 평가 프로토콜과 실행 증빙을 함께 확인하세요.'}\n\nRelease: **${data.release}** · ${data.models.length} models · ${categories.length} dimensions\n\n${[line(headers),line(headers.map(()=> '---')),...rows.map(line)].join('\n')}\n\nGenerated from [data/benchmark.json](data/benchmark.json) using \`npm run results\`.\n\n<!-- RESULTS:END -->`;
-const path = new URL('../README.md',import.meta.url);
-const previous = readFileSync(path,'utf8');
-if (!previous.includes('<!-- RESULTS:START -->') || !previous.includes('<!-- RESULTS:END -->')) fail('README markers missing');
-const next = previous.replace(/<!-- RESULTS:START -->[\s\S]*?<!-- RESULTS:END -->/,block);
-if (process.argv.includes('--check')) { if (next !== previous) {console.error('README results are stale. Run npm run results.');process.exitCode=1;} else console.log('Dataset valid; README results match.'); }
-else {writeFileSync(path,next);console.log('Dataset valid; README results updated.');}
+import { execFileSync } from 'node:child_process';
+const data=JSON.parse(execFileSync('python3',['scripts/evaluate_release.py'],{encoding:'utf8',maxBuffer:16*1024*1024}));
+const reportPath=new URL('../data/benchmark.json',import.meta.url);
+const previousReport=JSON.parse(readFileSync(reportPath,'utf8'));
+const pct=v=>v==null?'Unknown':(v*100).toFixed(1)+'%';
+const num=v=>v==null?'Unknown':v.toFixed(2);
+const line=cells=>'| '+cells.map(v=>String(v).replaceAll('|','\\|').replaceAll('\n',' ')).join(' | ')+' |';
+const headers=['Configuration','Policy','Runs','Grounded & on time','Critical recall','Answer p95 (ms)','Full pipeline USD/h','Evidence'];
+const rows=data.systems.map(s=>{const m=data.summaries[s.id];return [s.id+' · '+s.name,s.policy,m.tasks,pct(m.success_rate),pct(m.critical_recall),m.p95_ms,num(m.cost_per_hour),data.evidence];});
+const gates=data.comparisons.map(c=>`- **${c.candidate} vs ${c.baseline}: ${c.status}** — cost ratio ${num(c.point.cost_ratio)}, p95 ratio ${num(c.point.latency_ratio)}, quality difference ${num(c.point.quality_delta)}; ${c.clusters} session clusters.`).join('\n');
+const official=data.official_scores.length?data.official_scores.map(s=>`- ${s.benchmark} · ${s.system_id}: ${s.score}/${s.scale} · protocol ${s.protocol_revision}`).join('\n'):'Official FastBench / SPOT-Bench / Inf-Streams-Eval: **not measured**.';
+const block=`<!-- RESULTS:START -->\n\n> **${data.evidence==='synthetic'?'SYNTHETIC — 합성 프로토콜 검증. 실제 모델 성능·절감 효과를 증명하지 않습니다.':'MEASURED — 외부 채점 및 측정 기록. 독립 감사 필요.'}**\n\nRelease ${data.release} · ${data.protocol} · ${data.rows.length} configuration-task runs\n\n${[line(headers),line(headers.map(()=>'---')),...rows.map(line)].join('\n')}\n\n${gates}\n\n${official}\n\nFrozen plan SHA256: \`${data.plan_sha256}\`\n\nSource manifest: [data/release.json](data/release.json). Generated with \`npm run results\`.\n\n<!-- RESULTS:END -->`;
+const readme=new URL('../README.md',import.meta.url);const old=readFileSync(readme,'utf8');
+if(!old.includes('<!-- RESULTS:START -->')||!old.includes('<!-- RESULTS:END -->'))throw Error('Missing README result markers');
+const next=old.replace(/<!-- RESULTS:START -->[\s\S]*?<!-- RESULTS:END -->/,block);
+const normalize=v=>JSON.stringify(v,(_,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.localeCompare(b))):value);
+if(process.argv.includes('--check')){if(next!==old||normalize(data)!==normalize(previousReport)){console.error('Public report or README is stale. Run npm run results.');process.exitCode=1;}else console.log('Frozen sources, public report and README match.');}
+else{writeFileSync(reportPath,JSON.stringify(data,null,2)+'\n');writeFileSync(readme,next);console.log('Recomputed public report and README from source traces.');}

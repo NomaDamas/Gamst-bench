@@ -1,0 +1,22 @@
+{
+  "release": "2026-11-14", "version": "0.1", "isDemo": true,
+  "description": "Synthetic template data. These fictional systems and values are not measured benchmark results.",
+  "categories": [
+    {"id":"visual","name":"Visual understanding","short":"Visual"},
+    {"id":"ocr","name":"Text recognition","short":"OCR"},
+    {"id":"temporal","name":"Temporal reasoning","short":"Temporal"},
+    {"id":"audio","name":"Audio understanding","short":"Audio"},
+    {"id":"context","name":"Context generation","short":"Context"},
+    {"id":"factuality","name":"Factual consistency","short":"Factuality"}
+  ],
+  "models": [
+    {"id":"gamst-3b","name":"GAMST 3B","family":"GAMST","parameters":3,"cost":0.24,"latency":0.82,"scores":{"visual":86.2,"ocr":83.4,"temporal":81.8,"audio":78.2,"context":89.4,"factuality":85.8}},
+    {"id":"gamst-7b","name":"GAMST 7B","family":"GAMST","parameters":7,"cost":0.48,"latency":1.24,"scores":{"visual":90.4,"ocr":88.2,"temporal":87.6,"audio":84.1,"context":93.2,"factuality":90.1}},
+    {"id":"gamst-1b","name":"GAMST 1B","family":"GAMST","parameters":1,"cost":0.09,"latency":0.38,"scores":{"visual":76.5,"ocr":73.8,"temporal":68.9,"audio":65.2,"context":79.6,"factuality":74.2}},
+    {"id":"vision-3b","name":"Vision Lite 3B","family":"Baseline","parameters":3,"cost":0.31,"latency":1.12,"scores":{"visual":82.1,"ocr":85.2,"temporal":71.3,"audio":62.4,"context":76.8,"factuality":80.6}},
+    {"id":"context-7b","name":"Context Base 7B","family":"Baseline","parameters":7,"cost":0.64,"latency":1.86,"scores":{"visual":84.8,"ocr":79.6,"temporal":80.1,"audio":76.3,"context":86.7,"factuality":82.5}},
+    {"id":"fusion-4b","name":"Fusion Mini 4B","family":"Baseline","parameters":4,"cost":0.36,"latency":0.95,"scores":{"visual":80.3,"ocr":78.1,"temporal":76.8,"audio":82.4,"context":81.2,"factuality":78.6}},
+    {"id":"reference-32b","name":"Reference 32B","family":"Reference","parameters":32,"cost":1.82,"latency":3.42,"scores":{"visual":92.1,"ocr":91.3,"temporal":89.8,"audio":87.4,"context":94.6,"factuality":92.5}},
+    {"id":"reference-14b","name":"Reference 14B","family":"Reference","parameters":14,"cost":1.06,"latency":2.28,"scores":{"visual":88.2,"ocr":86.4,"temporal":84.5,"audio":81.6,"context":90.1,"factuality":87.8}}
+  ]
+}

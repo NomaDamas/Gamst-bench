@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gamst-bench",
+  "compatibility_date": "2026-11-14",
+  "assets": { "directory": "./dist" },
+  "routes": [{ "pattern": "gamst-bench.jinminseong.com", "custom_domain": true }],
+  "workers_dev": true
+}

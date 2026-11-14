@@ -18,6 +18,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: npm ci
+      - run: python -m pip install -r requirements-mcp.txt
       - run: npm run test:python
       - run: npm run results:check
       - run: npm test

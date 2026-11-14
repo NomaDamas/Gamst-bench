@@ -1,0 +1,846 @@
+{
+  "schema_version": 1,
+  "project_id": "REPLACE_WITH_VERIFIED_PROJECT_ID",
+  "runs_root": "/srv/gamst-runs",
+  "profiles": {
+    "fastbench-baseline": {
+      "benchmark": "fastbench",
+      "source_url": "https://github.com/Ashone3/FastBench",
+      "runner_revision": "1951dd11b7423cd76998c9f2fb04e71e95a232b1",
+      "notes": "Official script combines inference and scoring. Prestart matching local VLM and judge servers; preserve prompt and preset. Full dataset, not smoke. Data layout must match dataset/qa_video.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "fastbench-baseline",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/fastbench",
+      "dataset_root": "/srv/data/fastbench",
+      "dataset_manifest": "/srv/manifests/fastbench.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/fastbench/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "native-evaluate",
+          "kind": "inference_score",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/fastbench/scripts/eval_qwen3_vl_8b.sh",
+            "--model-path",
+            "{model}",
+            "--video-root",
+            "/srv/benchmarks/fastbench",
+            "--output-dir",
+            "{output}",
+            "--run-id",
+            "baseline",
+            "--num-gpus",
+            "1",
+            "--num-workers",
+            "1",
+            "--num-scorers",
+            "1"
+          ],
+          "cwd": "/srv/benchmarks/fastbench"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PATH": "/srv/venvs/fastbench/bin:/usr/local/bin:/usr/bin:/bin",
+        "HOST": "127.0.0.1",
+        "STREAMEVAL_JUDGER_BACKEND": "openai_compatible",
+        "STREAMEVAL_JUDGER_API_BASE": "http://127.0.0.1:9000/v1",
+        "STREAMEVAL_JUDGER_MODEL": "REPLACE_WITH_PINNED_JUDGE"
+      },
+      "secret_env": []
+    },
+    "fastbench-proactive": {
+      "benchmark": "fastbench",
+      "source_url": "https://github.com/Ashone3/FastBench",
+      "runner_revision": "1951dd11b7423cd76998c9f2fb04e71e95a232b1",
+      "notes": "Official script combines inference and scoring. Prestart matching local VLM and judge servers; preserve prompt and preset. Full dataset, not smoke. Data layout must match dataset/qa_video.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "fastbench-proactive",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/fastbench",
+      "dataset_root": "/srv/data/fastbench",
+      "dataset_manifest": "/srv/manifests/fastbench.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/fastbench/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "native-evaluate",
+          "kind": "inference_score",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/fastbench/scripts/eval_qwen3_vl_8b_proactive_frame.sh",
+            "--model-path",
+            "{model}",
+            "--video-root",
+            "/srv/benchmarks/fastbench",
+            "--output-dir",
+            "{output}",
+            "--run-id",
+            "proactive",
+            "--num-gpus",
+            "1",
+            "--num-workers",
+            "1",
+            "--num-scorers",
+            "1"
+          ],
+          "cwd": "/srv/benchmarks/fastbench"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PATH": "/srv/venvs/fastbench/bin:/usr/local/bin:/usr/bin:/bin",
+        "HOST": "127.0.0.1",
+        "STREAMEVAL_JUDGER_BACKEND": "openai_compatible",
+        "STREAMEVAL_JUDGER_API_BASE": "http://127.0.0.1:9000/v1",
+        "STREAMEVAL_JUDGER_MODEL": "REPLACE_WITH_PINNED_JUDGE"
+      },
+      "secret_env": []
+    },
+    "spot-detection": {
+      "benchmark": "spot",
+      "source_url": "https://github.com/dibschat/SPOT-Bench",
+      "runner_revision": "06248474e38e5dd1b6f6f475c882f8975d3a400b",
+      "notes": "Detection ABD+PNR only. Interaction/Intervention are partial release and need separate judge/access profiles. All streaming outputs remain in native traces.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "spot-detection",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/spot",
+      "dataset_root": "/srv/data/spot",
+      "dataset_manifest": "/srv/manifests/spot.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/spot/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer-abd",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/spot/bin/python",
+            "/srv/benchmarks/spot/inference.py",
+            "--task",
+            "ABD",
+            "--model",
+            "QwenVL",
+            "--qwen_version",
+            "3",
+            "--model_path",
+            "{model}",
+            "--annotation_root",
+            "{data}",
+            "--video_root",
+            "{data}/videos",
+            "--result_dir",
+            "{output}"
+          ],
+          "cwd": "/srv/benchmarks/spot"
+        },
+        {
+          "id": "infer-pnr",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/spot/bin/python",
+            "/srv/benchmarks/spot/inference.py",
+            "--task",
+            "PNR",
+            "--model",
+            "QwenVL",
+            "--qwen_version",
+            "3",
+            "--model_path",
+            "{model}",
+            "--annotation_root",
+            "{data}",
+            "--video_root",
+            "{data}/videos",
+            "--result_dir",
+            "{output}"
+          ],
+          "cwd": "/srv/benchmarks/spot"
+        },
+        {
+          "id": "score-detection",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/spot/bin/python",
+            "/srv/benchmarks/spot/score.py",
+            "--tasks",
+            "ABD",
+            "PNR",
+            "--model",
+            "QwenVL",
+            "--annotation_root",
+            "{data}",
+            "--result_dir",
+            "{output}"
+          ],
+          "cwd": "/srv/benchmarks/spot"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PATH": "/srv/venvs/spot/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "secret_env": []
+    },
+    "ovo-offline": {
+      "benchmark": "ovo",
+      "source_url": "https://github.com/JoeLeelyf/OVO-Bench",
+      "runner_revision": "c34093f9a072d93f9e1c6b923446dfba71f4528e",
+      "notes": "All 12 tasks. Use the actual QWen2VL_7B result directory from utils/OVOBench.py, correcting the stale underscore in the example shell wrapper. Offline baseline is not a streaming Gamst hybrid. Online models need their own OVOBenchOnline implementation.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "ovo-offline",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/ovo",
+      "dataset_root": "/srv/data/ovo",
+      "dataset_manifest": "/srv/manifests/ovo.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/ovo/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/ovo/bin/python",
+            "/srv/benchmarks/ovo/inference.py",
+            "--mode",
+            "offline",
+            "--model",
+            "QWen2VL_7B",
+            "--model_path",
+            "{model}",
+            "--anno_path",
+            "{data}/ovo_bench_new.json",
+            "--video_dir",
+            "{data}/src_videos",
+            "--chunked_dir",
+            "{data}/chunked_videos",
+            "--result_dir",
+            "{output}"
+          ],
+          "cwd": "/srv/benchmarks/ovo"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/ovo/bin/python",
+            "/srv/benchmarks/ovo/score.py",
+            "--mode",
+            "offline",
+            "--model",
+            "QWen2VL_7B",
+            "--result_dir",
+            "{output}"
+          ],
+          "cwd": "/srv/benchmarks/ovo"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PATH": "/srv/venvs/ovo/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "secret_env": []
+    },
+    "omnipro-probe": {
+      "benchmark": "omnipro",
+      "source_url": "https://github.com/RuixiangZhao/OmniPro",
+      "runner_revision": "7c72e8117f180bf9a22320c1dc2c005bbe4c4a0f",
+      "notes": "Probe and online metrics remain separate. Pin judge where content judging is required. Audio ablations use separate profiles and native model names; audio/video paths must match the original data layout.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "omnipro-probe",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/omnipro",
+      "dataset_root": "/srv/data/omnipro",
+      "dataset_manifest": "/srv/manifests/omnipro.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/omnipro/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/omnipro/bin/python",
+            "/srv/benchmarks/omnipro/scripts/run_probe.py",
+            "--model",
+            "{native_model}",
+            "--model_path",
+            "{model}",
+            "--data_path",
+            "{data}/benchmark.json",
+            "--num_gpus",
+            "1",
+            "--output_dir",
+            "{output}",
+            "--no_resume"
+          ],
+          "cwd": "/srv/benchmarks/omnipro"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/omnipro/bin/python",
+            "/srv/benchmarks/omnipro/scripts/compute_metrics.py",
+            "--pred_dir",
+            "{output}",
+            "--tolerance",
+            "3"
+          ],
+          "cwd": "/srv/benchmarks/omnipro"
+        }
+      ],
+      "variables": {
+        "native_model": "qwen2.5-omni"
+      },
+      "environment": {
+        "PATH": "/srv/venvs/omnipro/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "secret_env": []
+    },
+    "omnipro-online": {
+      "benchmark": "omnipro",
+      "source_url": "https://github.com/RuixiangZhao/OmniPro",
+      "runner_revision": "7c72e8117f180bf9a22320c1dc2c005bbe4c4a0f",
+      "notes": "Probe and online metrics remain separate. Pin judge where content judging is required. Audio ablations use separate profiles and native model names; audio/video paths must match the original data layout.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "omnipro-online",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/omnipro",
+      "dataset_root": "/srv/data/omnipro",
+      "dataset_manifest": "/srv/manifests/omnipro.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/omnipro/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/omnipro/bin/python",
+            "/srv/benchmarks/omnipro/scripts/run_online.py",
+            "--model",
+            "{native_model}",
+            "--model_path",
+            "{model}",
+            "--data_path",
+            "{data}/benchmark.json",
+            "--num_gpus",
+            "1",
+            "--output_dir",
+            "{output}",
+            "--no_resume"
+          ],
+          "cwd": "/srv/benchmarks/omnipro"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/omnipro/bin/python",
+            "/srv/benchmarks/omnipro/scripts/compute_online_metrics.py",
+            "--pred_dir",
+            "{output}",
+            "--tolerance",
+            "3"
+          ],
+          "cwd": "/srv/benchmarks/omnipro"
+        }
+      ],
+      "variables": {
+        "native_model": "minicpm-o"
+      },
+      "environment": {
+        "PATH": "/srv/venvs/omnipro/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "secret_env": []
+    },
+    "streamarena-offline": {
+      "benchmark": "streamarena",
+      "source_url": "https://github.com/JIA-Lab-research/StreamArena",
+      "runner_revision": "ec0325b9552b045c2e53afbf425315ce867313ee",
+      "notes": "Offline RTP/HR/Tool only; does not test Pro. Tool search and judge may transmit content externally: review endpoints explicitly. StreamMind continuous/proactive recipe is separate.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "streamarena-offline",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/streamarena",
+      "dataset_root": "/srv/data/streamarena",
+      "dataset_manifest": "/srv/manifests/streamarena.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/streamarena/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer",
+          "kind": "inference",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/streamarena/method/offline/scripts/run_qwen.sh"
+          ],
+          "cwd": "/srv/benchmarks/streamarena"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/streamarena/judge/scripts/run_judge.sh",
+            "{output}/records.jsonl"
+          ],
+          "cwd": "/srv/benchmarks/streamarena"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PATH": "/srv/venvs/streamarena/bin:/usr/local/bin:/usr/bin:/bin",
+        "BASE_URL": "http://127.0.0.1:8000/v1",
+        "MODEL": "REPLACE_WITH_SERVED_MODEL",
+        "DATASET": "{data}/question.en.jsonl",
+        "VIDEO_DIR": "{data}/videos",
+        "OUT": "{output}/records.jsonl",
+        "AUTO_JUDGE": "0",
+        "JUDGE_URL": "REPLACE_WITH_REVIEWED_JUDGE_ENDPOINT",
+        "JUDGE_MODEL": "REPLACE_WITH_PINNED_JUDGE",
+        "CONCURRENCY": "1"
+      },
+      "secret_env": [
+        "JUDGE_API_KEY",
+        "SERPER_API_KEY"
+      ]
+    },
+    "streamarena-continuous": {
+      "benchmark": "streamarena",
+      "source_url": "https://github.com/JIA-Lab-research/StreamArena",
+      "runner_revision": "ec0325b9552b045c2e53afbf425315ce867313ee",
+      "notes": "Continuous multi-turn/proactive driver. Install/configure the upstream StreamMind agent and its model endpoints. A Gamst agent must implement the same StreamingAgent interface and use a separate gamst-extension profile; do not relabel StreamMind output as Gamst.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "streamarena-continuous",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/streamarena",
+      "dataset_root": "/srv/data/streamarena",
+      "dataset_manifest": "/srv/manifests/streamarena.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/streamarena/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer",
+          "kind": "inference",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/streamarena/method/streammind/scripts/run_streammind.sh"
+          ],
+          "cwd": "/srv/benchmarks/streamarena"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/streamarena/judge/scripts/run_judge.sh",
+            "{output}/records.jsonl"
+          ],
+          "cwd": "/srv/benchmarks/streamarena"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PATH": "/srv/venvs/streamarena/bin:/usr/local/bin:/usr/bin:/bin",
+        "AGENT": "REPLACE_WITH_INSTALLED_AGENT_CLASS",
+        "DATASET": "{data}/question.en.jsonl",
+        "VIDEO_DIR": "{data}/videos",
+        "OUT": "{output}/records.jsonl",
+        "FPS": "2",
+        "ASR_URL": "REPLACE_WITH_LOCAL_ASR_ENDPOINT",
+        "JUDGE_URL": "REPLACE_WITH_REVIEWED_JUDGE_ENDPOINT",
+        "JUDGE_MODEL": "REPLACE_WITH_PINNED_JUDGE",
+        "CONCURRENCY": "1"
+      },
+      "secret_env": [
+        "JUDGE_API_KEY",
+        "SERPER_API_KEY"
+      ]
+    },
+    "streamingbench-regression": {
+      "benchmark": "streamingbench",
+      "source_url": "https://github.com/THUNLP-MT/StreamingBench",
+      "runner_revision": "89299232c4cc1cc3721951173c5f107b48cf6877",
+      "notes": "Native MiniCPM-V baseline. Configure/pin its model loader to local downloaded weights before enabling; if code changes commit the patch and mark protocol differences. Omni support must be real, not vision silently substituted. 60-second context distinct from all-context scores.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "streamingbench-regression",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/streamingbench",
+      "dataset_root": "/srv/data/streamingbench",
+      "dataset_manifest": "/srv/manifests/streamingbench.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/streamingbench/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer-real",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/eval.py",
+            "--model_name",
+            "MiniCPM-V",
+            "--benchmark_name",
+            "Streaming",
+            "--data_file",
+            "{data}/questions_real.json",
+            "--output_file",
+            "{output}/real.json",
+            "--context_time",
+            "60"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src"
+        },
+        {
+          "id": "score-real",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/data/count.py",
+            "--model",
+            "MiniCPM-V",
+            "--task",
+            "real",
+            "--src",
+            "{output}/real.json"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src/data"
+        },
+        {
+          "id": "infer-omni",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/eval.py",
+            "--model_name",
+            "MiniCPM-V",
+            "--benchmark_name",
+            "Streaming",
+            "--data_file",
+            "{data}/questions_omni.json",
+            "--output_file",
+            "{output}/omni.json",
+            "--context_time",
+            "60"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src"
+        },
+        {
+          "id": "score-omni",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/data/count.py",
+            "--model",
+            "MiniCPM-V",
+            "--task",
+            "omni",
+            "--src",
+            "{output}/omni.json"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src/data"
+        },
+        {
+          "id": "infer-sqa",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/eval.py",
+            "--model_name",
+            "MiniCPM-V",
+            "--benchmark_name",
+            "StreamingSQA",
+            "--data_file",
+            "{data}/questions_sqa.json",
+            "--output_file",
+            "{output}/sqa.json",
+            "--context_time",
+            "60"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src"
+        },
+        {
+          "id": "score-sqa",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/data/count.py",
+            "--model",
+            "MiniCPM-V",
+            "--task",
+            "sqa",
+            "--src",
+            "{output}/sqa.json"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src/data"
+        },
+        {
+          "id": "infer-proactive",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/eval.py",
+            "--model_name",
+            "MiniCPM-V",
+            "--benchmark_name",
+            "StreamingProactive",
+            "--data_file",
+            "{data}/questions_proactive.json",
+            "--output_file",
+            "{output}/proactive.json",
+            "--context_time",
+            "60"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src"
+        },
+        {
+          "id": "score-proactive",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/streamingbench/bin/python",
+            "/srv/benchmarks/streamingbench/src/data/count.py",
+            "--model",
+            "MiniCPM-V",
+            "--task",
+            "proactive",
+            "--src",
+            "{output}/proactive.json"
+          ],
+          "cwd": "/srv/benchmarks/streamingbench/src/data"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PATH": "/srv/venvs/streamingbench/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "secret_env": []
+    },
+    "infstreams-long": {
+      "benchmark": "infstreams",
+      "source_url": "https://github.com/mit-han-lab/streaming-vlm",
+      "runner_revision": "a940d8cbfa14eefe651b7f4adeb81825c28cc6c6",
+      "notes": "Direct single-shard entry points avoid upstream hardcoded NFS paths and eight-GPU shell defaults. Preserve original caption prompt and paired baseline. Inspect effective duration/context semantics; a run timeout does not establish a completed long session. Judge requires explicit endpoint/data-transfer review.",
+      "enabled": false,
+      "track": "official",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "infstreams-long",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "REPLACE_WITH_MODEL_ID",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/infstreams",
+      "dataset_root": "/srv/data/infstreams",
+      "dataset_manifest": "/srv/manifests/infstreams.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/infstreams/bin/hf",
+      "output_dirs": [
+        "answers",
+        "scores"
+      ],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "generate",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/infstreams/bin/python",
+            "/srv/benchmarks/infstreams/streaming_vlm/eval/model_compete/generate_segments.py",
+            "--model_path",
+            "{model}",
+            "--model_base",
+            "Qwen",
+            "--eval_metadata",
+            "{data}/eval_all_metadata.jsonl",
+            "--start_time",
+            "1000",
+            "--duration",
+            "10000",
+            "--temperature",
+            "0.9",
+            "--start_line",
+            "0",
+            "--end_line",
+            "{total_lines}",
+            "--out_dir",
+            "{output}/answers/result_0.jsonl",
+            "--query",
+            "{caption_prompt}"
+          ],
+          "cwd": "/srv/benchmarks/infstreams"
+        },
+        {
+          "id": "merge",
+          "kind": "prepare",
+          "argv": [
+            "/srv/venvs/infstreams/bin/python",
+            "/srv/benchmarks/infstreams/streaming_vlm/eval/model_compete/merge_result.py",
+            "--shard_dir",
+            "{output}/answers"
+          ],
+          "cwd": "/srv/benchmarks/infstreams"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/infstreams/bin/python",
+            "/srv/benchmarks/infstreams/streaming_vlm/eval/model_compete/score_segments.py",
+            "--merged_a",
+            "{output}/answers/merged_result.jsonl",
+            "--merged_b",
+            "{data}/baseline/merged_result.jsonl",
+            "--score_metadata",
+            "{data}/temp_score_clips.jsonl",
+            "--judge_model",
+            "{judge_model}",
+            "--start_line",
+            "0",
+            "--end_line",
+            "{score_lines}",
+            "--out_path",
+            "{output}/scores/score_segments_0.jsonl"
+          ],
+          "cwd": "/srv/benchmarks/infstreams"
+        },
+        {
+          "id": "merge-score",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/infstreams/bin/python",
+            "/srv/benchmarks/infstreams/streaming_vlm/eval/model_compete/merge_score.py",
+            "--pair_dir",
+            "{output}/scores"
+          ],
+          "cwd": "/srv/benchmarks/infstreams"
+        }
+      ],
+      "variables": {
+        "total_lines": "REPLACE_WITH_METADATA_LINE_COUNT",
+        "score_lines": "REPLACE_WITH_SCORE_METADATA_LINE_COUNT",
+        "caption_prompt": "REPLACE_WITH_VERIFIED_ORIGINAL_PROMPT",
+        "judge_model": "REPLACE_WITH_PINNED_JUDGE"
+      },
+      "environment": {
+        "PATH": "/srv/venvs/infstreams/bin:/usr/local/bin:/usr/bin:/bin",
+        "EVAL_DATASET_PATH": "{data}"
+      },
+      "secret_env": [
+        "OPENAI_API_KEY"
+      ]
+    }
+  }
+}

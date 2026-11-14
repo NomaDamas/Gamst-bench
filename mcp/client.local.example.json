@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gamst-bench-catalog": {
+      "command": "/ABSOLUTE/PATH/TO/gamst-bench/scripts/serve-mcp.sh",
+      "args": []
+    }
+  }
+}

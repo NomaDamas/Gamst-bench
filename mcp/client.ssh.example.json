@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gamst-bench": {
+      "command": "ssh",
+      "args": ["-T", "REPLACE_WITH_GCE_SSH_ALIAS", "/srv/gamst-bench/scripts/serve-mcp.sh", "--config", "/srv/private/gamst-mcp.json"]
+    }
+  }
+}

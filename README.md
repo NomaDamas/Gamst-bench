@@ -2,46 +2,46 @@
 
 **Less compute. Keep what matters.**
 
-기존 에이전트에 중요한 정보를 적은 자원으로 제때 전달하는지 평가하는 **컨텍스트 파이프라인 벤치마크**.
+A **context-pipeline benchmark** for evaluating whether existing agents receive important evidence on time with less compute.
 
-**[대시보드](https://gamst-bench.jinminseong.com)** · [평가 프로토콜](docs/PROTOCOL.md) · [실행 가이드](docs/RUNBOOK.md) · [주석 규칙](docs/ANNOTATION.md) · [어댑터 계약](docs/ADAPTERS.md)
+**[Dashboard](https://gamst-bench.jinminseong.com)** · [Evaluation protocol](docs/PROTOCOL.md) · [Runbook](docs/RUNBOOK.md) · [Annotation guidelines](docs/ANNOTATION.md) · [Adapter contract](docs/ADAPTERS.md)
 
-> 공개 데이터는 36개 합성 시나리오 × A/B/C/D, 총 144개 프로토콜 검증 결과입니다. 실제 모델 추론·물리 센서 실험·8시간 soak를 실행한 결과가 아닙니다. 샘플 성능으로 품질 보존이나 비용 절감을 주장하지 않습니다.
+> The public release contains 36 synthetic scenarios × A/B/C/D: 144 protocol-validation runs. These are not real model inference, physical-sensor experiments, or an eight-hour soak. Sample results do not establish quality preservation or cost savings.
 
 <a id="contents"></a>
-## 🗂️ 목차
+## 🗂️ Contents
 
-[🚦 현재 상태](#status) · [🎯 평가 대상](#evaluation) · [🔌 평가 MCP](#multi-benchmark-mcp) · [☁️ GCP 실행 순서](#gcp-workflow)<br>
-[🧭 벤치마크별 정보](#benchmark-atlas) · [📊 공개 결과](#benchmark-results) · [🛠️ 로컬 개발](#development) · [🧪 재현](#reproduce)<br>
-[📤 결과 게시](#publish) · [📏 수용 기준](#acceptance) · [🚀 배포](#deployment) · [📚 자료](#references)
+[🚦 Current status](#status) · [🎯 Evaluation scope](#evaluation) · [🔌 Evaluation MCP](#multi-benchmark-mcp) · [☁️ GCP workflow](#gcp-workflow)<br>
+[🧭 Benchmark atlas](#benchmark-atlas) · [📊 Public results](#benchmark-results) · [🛠️ Local development](#development) · [🧪 Reproduction](#reproduce)<br>
+[📤 Publish evidence](#publish) · [📏 Acceptance criteria](#acceptance) · [🚀 Deployment](#deployment) · [📚 References](#references)
 
 <a id="status"></a>
-## 🚦 구현 및 실측 상태
+## 🚦 Implementation and measurement status
 
-**구현 완료와 실제 평가 완료를 구분합니다.** 모델 실행과 벤치마크 데이터 다운로드는 GCP에서만 진행합니다.
+**Implementation completion and evaluation completion are separate milestones.** Model execution and benchmark dataset downloads take place on GCP only.
 
-- [x] 교차 필터링 대시보드와 README 결과 동기화.
-- [x] 7개 벤치마크용 MCP, 10개 공식 실행 설정, 비동기 실행·취소·로그 조회.
-- [x] GCP 프로젝트 확인, 코드 버전·데이터 해시 검증, GPU 자원 기록.
-- [x] MCP 통신·실행 차단·실패 처리 테스트 및 [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
-- [ ] GCP VM 설치와 계정·프로젝트·GPU 환경 검증.
-- [ ] 데이터 접근 승인, 고정된 모델·데이터 준비, 소규모 실행 확인.
-- [ ] 벤치마크별 Gamst 전용 모델/에이전트 어댑터와 실제 호환성 검증.
-- [ ] 전체 실측, 독립 채점, 이벤트 응답 지연과 전체 파이프라인 비용 검증.
-- [ ] 검토한 결과의 공개 게시 및 각 공식 리더보드 제출 요건 충족.
+- [x] Cross-filtering dashboard and synchronized README results.
+- [x] MCP for seven benchmarks, ten native execution recipes, asynchronous execution, cancellation and log inspection.
+- [x] Checks for GCP project identity, pinned code revisions and dataset hashes, plus GPU resource logging.
+- [x] Tests for MCP communication, execution refusal and failure handling, plus [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
+- [ ] GCP VM installation and verification of the account, project and GPU environment.
+- [ ] Dataset access approval, pinned models/data and small-scale execution checks.
+- [ ] Gamst-specific model/agent adapters and real compatibility validation for each benchmark.
+- [ ] Full measured runs, independent scoring, event-response latency and full-pipeline cost verification.
+- [ ] Publication of reviewed results and compliance with each official leaderboard’s submission requirements.
 
-현재 공개 수치는 **합성 프로토콜 검증**입니다. 논문 보고값, 직접 실행한 공식 점수, Gamst 확장 평가는 각각 구분하며, 아직 Gamst의 성능 우위를 입증하지 않았습니다.
+Current public figures are **synthetic protocol checks**. Published reference numbers, directly reproduced official scores and Gamst extension results remain separate. Gamst superiority has not been established.
 
 
 <a id="evaluation"></a>
-## 🎯 평가 대상
+## 🎯 Evaluation scope
 
-- **A:** VLM 중심 처리. **B:** 경량 인식만. **C:** 선택적 호출을 포함한 Gamst 혼합. **D:** 동일 모델의 주기적 혼합.
-- 평가 단위: 센서 + 인식 모델 + VLM + 정책 + 메모리 + 소비자 LLM + 하드웨어.
-- 핵심 지표: **기한 내 근거 있는 성공률**. 정답, 의미적으로 유효한 근거, 시간 조건을 모두 충족해야 성공합니다.
-- 6개 suite: 짧은 사건 / 작은 의미 변화 / 객체·상태 메모리 / 음성·영상 수정 / 질문 이전 문맥 보존 / 단절·과부하 복구.
-- 전체 파이프라인 비용, p95 답변 지연, 중요 사실 재현율, 근거 없는 주장, 오래된 상태 오류, 기권, 시간당 오탐, 메모리와 드롭을 함께 공개합니다.
-- 기존 FastBench 등의 공식 프로토콜 점수는 별도 결과이며 Gamst 종합 점수에 섞지 않습니다.
+- **A:** VLM-centered processing. **B:** Lightweight perception only. **C:** Gamst hybrid with selective calls. **D:** Periodic hybrid using the same model.
+- Evaluation unit: sensors + perception models + VLM + policy + memory + consumer LLM + hardware.
+- Primary metric: **grounded, on-time success**. An answer must be correct, supported by semantically valid evidence and delivered within the deadline.
+- Six suites: brief events / subtle semantic changes / object and state memory / audio–visual revisions / context retained before a query / interruption and overload recovery.
+- Report full-pipeline cost, p95 answer latency, critical-fact recall, unsupported claims, stale-state errors, abstentions, false alerts per hour, memory and dropped inputs.
+- Official-protocol scores from FastBench and other external benchmarks remain separate from Gamst’s aggregate evaluation.
 
 <!-- MCP:START -->
 <a id="multi-benchmark-mcp"></a>
@@ -66,35 +66,35 @@ No inference or benchmark dataset download was executed locally. MCP protocol te
 <!-- MCP:END -->
 
 <a id="gcp-workflow"></a>
-## ☁️ GCP 평가 실행 순서
+## ☁️ GCP evaluation workflow
 
-1. **환경 준비:** 승인된 계정의 `gamst` 프로젝트에서 실제 프로젝트 ID·GPU·비용·정지 정책을 확인합니다. [GCP 준비 문서](infra/gcp/README.md).
-2. **데이터 준비:** 원본 시간 정보와 AV 동기화를 보존하고, 접근 권한·revision·파일 해시·세션별 분할을 고정합니다. 데이터와 모델은 로컬에 다운로드하지 않습니다.
-3. **우선 평가:** FastBench → SPOT Detection → OVO. 작은 개발용 샘플로 실행·채점을 확인한 뒤 전체 평가합니다.
-4. **확장 평가:** OmniPro의 Probe/Online과 AV/V-only/A-only 비교, StreamArena의 연속 세션·능동 대응을 평가합니다.
-5. **보조 평가:** StreamingBench로 기본 이해력 회귀를, Inf-Streams-Eval로 장시간 품질과 자원 변화를 확인합니다.
-6. **Gamst 고유 평가:** 작은 OCR 변화, 음성 정정, 센서 단절, 삭제된 기억의 재등장, 오래된 상태 오인을 별도 held-out 데이터로 검증합니다.
-7. **게시:** 같은 모델·하드웨어·소비자 LLM 조건에서 품질·비용·지연을 비교하고, 독립 검토 후 공개합니다. [비교 설계](docs/COMPARISONS.md).
+1. **Prepare the environment:** verify the unique project ID, GPU, cost and stop policy for the authorized account’s `gamst` project. [GCP preparation](infra/gcp/README.md).
+2. **Prepare data:** preserve original timestamps and AV synchronization; freeze access permissions, revisions, file hashes and session-level splits. Do not download datasets or models locally.
+3. **Run the initial evaluations:** FastBench → SPOT Detection → OVO. Verify execution and scoring on a small development sample before a full run.
+4. **Expand coverage:** evaluate OmniPro Probe/Online and AV/vision-only/audio-only variants, then StreamArena continuous sessions and proactive responses.
+5. **Run supporting evaluations:** use StreamingBench for understanding regressions and Inf-Streams-Eval for long-session quality and resource behavior.
+6. **Evaluate Gamst-specific cases:** use separate held-out data for subtle OCR changes, audio corrections, sensor gaps, reappearing deleted memories and stale-state errors.
+7. **Publish:** compare quality, cost and latency with matched models, hardware and consumer LLMs, then publish after independent review. [Comparison design](docs/COMPARISONS.md).
 
-### 🔌 MCP 연결과 도구
+### 🔌 MCP connection and tools
 
-Gamst의 **컨텍스트 제공 MCP**와 이 저장소의 **평가 실행 MCP**는 서로 다른 서버입니다. [Gamst 프로젝트](https://github.com/NomaDamas/Gamst) · [MCP 상세 안내](docs/MCP.md).
+Gamst’s **context-delivery MCP** and this repository’s **evaluation-execution MCP** are separate servers. [Gamst project](https://github.com/NomaDamas/Gamst) · [MCP guide](docs/MCP.md).
 
 ```bash
-# MCP 도구 환경만 설치합니다. 모델·벤치마크 데이터는 다운로드하지 않습니다.
+# Install MCP tooling only. No model weights or benchmark datasets are downloaded.
 uv venv .venv-mcp --python 3.12
 uv pip install --python .venv-mcp/bin/python -r requirements-mcp.txt
 ./scripts/serve-mcp.sh
 ```
 
-설정 없이 실행하면 카탈로그만 제공하고 평가 프로필은 등록하지 않습니다. 실제 실행은 [SSH 연결 예시](mcp/client.ssh.example.json)와 [비공개 설정 템플릿](mcp/profiles.example.json)을 사용해 GCE에 연결합니다. 템플릿은 검토 전 비활성 상태입니다.
+Without a configuration, the server provides the catalog and registers no execution profiles. For real execution, connect to GCE using the [SSH client example](mcp/client.ssh.example.json) and [private configuration template](mcp/profiles.example.json). Templates remain disabled until reviewed.
 
-- **탐색:** `list_benchmarks`, `get_benchmark`, `list_profiles`.
-- **준비:** `plan_dataset`, `prepare_dataset`, `plan_evaluation`.
-- **실행 관리:** `start_evaluation`, `list_runs`, `get_run`, `cancel_run`.
-- **산출물:** `list_artifacts`, `read_artifact`.
+- **Discovery:** `list_benchmarks`, `get_benchmark`, `list_profiles`.
+- **Preparation:** `plan_dataset`, `prepare_dataset`, `plan_evaluation`.
+- **Execution management:** `start_evaluation`, `list_runs`, `get_run`, `cancel_run`.
+- **Artifacts:** `list_artifacts`, `read_artifact`.
 
-공식 점수는 각 채점기와 원래 지표를 유지합니다. GPU 자원 기록만으로 전체 비용·이벤트 지연을 계산하지 않으며, 실행 종료를 평가 통과로 표시하지 않습니다.
+Official scores retain their native scorers and metrics. GPU resource logs alone do not establish full cost or event-response latency, and execution completion is not an evaluation pass.
 
 
 <!-- BENCHMARKS:START -->
@@ -311,7 +311,7 @@ GCP only. Status: **not_ready**. [Pinned Gamst readiness source](https://github.
 
 <!-- RESULTS:START -->
 
-> **SYNTHETIC — 합성 프로토콜 검증. 실제 모델 성능·절감 효과를 증명하지 않습니다.**
+> **SYNTHETIC — Protocol validation only. Does not establish real model performance or cost savings.**
 
 Release 2026-11-14 · gamst-context-v0.2 · 144 configuration-task runs
 
@@ -334,9 +334,9 @@ Source manifest: [data/release.json](data/release.json). Generated with `npm run
 <!-- RESULTS:END -->
 
 <a id="development"></a>
-## 🛠️ 로컬 개발
+## 🛠️ Local development
 
-Node.js 22.22+와 Python 3.10+를 사용합니다. 평가 코어는 Python 표준 라이브러리만 사용하며 모델을 자동 설치하지 않습니다.
+Use Node.js 22.22+ and Python 3.10+. The evaluation core uses only the Python standard library and does not install models automatically.
 
 ```bash
 npm ci
@@ -347,13 +347,13 @@ npm run results:check
 npm run build
 ```
 
-대시보드는 구성/과제/정책/센서/하드웨어/증거 수준/비용 예산/사건 길이로 교차 필터링합니다. URL 공유, CSV 내보내기, 증거 타임라인, 자원 시계열과 세션 단위 95% 신뢰구간을 제공합니다. 화면의 탐색용 응답 기한은 사전 고정한 수용 기준을 바꾸지 않습니다.
+The dashboard cross-filters configurations, tasks, policies, sensors, hardware, evidence levels, cost budgets and event duration. It provides shareable URLs, CSV export, evidence timelines, resource histories and session-level 95% confidence intervals. Exploratory UI deadlines do not change preregistered acceptance criteria.
 
 <a id="reproduce"></a>
-## 🧪 합성 평가 재현
+## 🧪 Reproduce synthetic evaluation
 
 ```bash
-# 출력 폴더는 존재하지 않는 새 경로를 지정합니다.
+# Choose a new output directory that does not already exist.
 python3 -m gamst_bench demo --out runs/demo-001
 python3 -m gamst_bench validate --plan runs/demo-001/plan.json
 python3 -m gamst_bench evaluate \
@@ -363,44 +363,44 @@ python3 -m gamst_bench evaluate \
   --out runs/demo-001/recomputed.json
 ```
 
-`demo`는 합성 프로토콜만 검증합니다. 실제 평가에서는 freeze → collect → 외부 채점 → evaluate 순서로 실행하세요. 계획과 입력 해시, 채점-실행 연결, 누락된 쌍, 실패 페널티, 세션 단위 bootstrap을 검사합니다. 합성 자료는 수용 판정을 통과할 수 없습니다.
+`demo` validates the synthetic protocol only. Real evaluation follows freeze → collect → independent assessment → evaluate. The pipeline checks plan/input hashes, assessment-to-trace linkage, missing pairs, failure penalties and session-level bootstrap intervals. Synthetic evidence cannot pass acceptance.
 
-실제 모델 어댑터, 외부 벤치마크 결과 import, 장시간 수집 명령은 [RUNBOOK](docs/RUNBOOK.md)에 있습니다. 참조 어댑터의 실제 체크포인트 호환성은 미검증이며, 기존 Gamst 설치와 명시적으로 선택한 모델·플러그인이 필요합니다.
+See the [RUNBOOK](docs/RUNBOOK.md) for real-model adapters, external benchmark result imports and long-duration collection. Real checkpoint compatibility of the reference adapter is unverified; it requires an existing Gamst installation and explicitly selected models/plugins.
 
 <a id="publish"></a>
-## 📤 실측 결과 게시
+## 📤 Publish measured evidence
 
-1. 실험 계획·입력·코드·모델 revision을 고정하고 계획 해시를 실행 전 별도 기록합니다.
-2. 동일 입력과 소비자 LLM을 유지하여 A/B/C/D를 수집합니다. 실패·타임아웃을 삭제하지 않습니다.
-3. `assess-template`으로 채점 양식을 만들고 원시 증거를 확인해 사람이 채웁니다. 값의 해시 일치는 정확성이나 독립성을 보증하지 않습니다.
-4. `data/release.json`에서 검토된 plan/traces/assessments를 지정합니다. `npm run results`가 공개 JSON과 README를 같은 소스에서 다시 계산합니다.
-5. 테스트·빌드를 통과한 뒤 `npm run deploy`로 Cloudflare에 배포합니다.
+1. Freeze the experiment plan, inputs, code and model revisions, and record the plan hash separately before execution.
+2. Collect A/B/C/D with identical inputs and the same consumer LLM. Keep failures and timeouts.
+3. Generate a review form with `assess-template` and complete it through human inspection of raw evidence. Matching hashes do not establish correctness or independence.
+4. Point `data/release.json` to the reviewed plan/traces/assessments. `npm run results` recomputes the public JSON and README from the same sources.
+5. After tests and the build pass, deploy to Cloudflare with `npm run deploy`.
 
-관측 원본에 개인정보가 있다면 공개 저장소에 올리지 않습니다. 공개용 식별자와 허가된 자료만 사용하고 비공개 원본의 해시·평가 절차를 기록합니다. 기본 `.gitignore`는 `runs/`를 제외합니다.
+Do not place private source observations in the public repository. Publish only approved identifiers and authorized material; retain hashes and evaluation procedures for private originals. The default `.gitignore` excludes `runs/`.
 
 <a id="acceptance"></a>
-## 📏 수용 기준과 한계
+## 📏 Acceptance criteria and limitations
 
-엔지니어링 게이트는 비용 비율 ≤0.8, p95 지연 비율 ≤0.9, 평균 품질 차이 ≥0, 선언된 중요 사실 보존입니다. 점추정치와 세션-paired bootstrap 95% 구간 모두 기준을 충족해야 합니다. held-out, 실측, 최소 독립 세션 수도 필요합니다. 현재 공개 결과는 **not passed**입니다.
+Engineering gates require a cost ratio ≤0.8, a p95 latency ratio ≤0.9, a mean quality difference ≥0 and preservation of declared critical facts. Both point estimates and session-paired bootstrap 95% intervals must meet the thresholds. Held-out measured evidence and a minimum number of independent sessions are also required. Current public results are **not passed**.
 
-- `measured` 표기나 `numeric_pass_requires_audit`는 실제 모델 실행·측정·채점의 진위를 인증하지 않습니다.
-- 기본 수집기의 RSS는 어댑터 프로세스 트리만 측정합니다. 별도 모델 서버·GPU 메모리·에너지·하드웨어 비용은 추가 계측이 필요합니다.
-- 근거·정답의 의미 판단은 외부 검수입니다. 모델의 자기보고 confidence를 정답으로 쓰지 않습니다.
-- 타임아웃에는 사전 정의한 지연 페널티를 적용합니다. 잘못된 빠른 답은 품질 0이며, 비용·지연만으로 통과하지 않습니다.
-- 웹 UI 자동화 도구가 연결되지 않은 환경에서는 DOM 기반 상호작용 테스트와 빌드/HTTP 검증을 수행합니다. 실제 브라우저 시각 검증은 별도입니다.
+- The `measured` label or `numeric_pass_requires_audit` status does not authenticate model execution, measurements or scoring.
+- Collector RSS covers only the adapter process tree. Separate model servers, GPU memory, energy and hardware costs require additional instrumentation.
+- Evidence validity and answer correctness require external review. A model’s self-reported confidence is not ground truth.
+- Timeouts receive the predefined latency penalty. Fast incorrect answers receive zero quality; cost and latency alone cannot establish a pass.
+- When browser UI automation is unavailable, validation uses DOM interaction tests, builds and HTTP checks. Visual browser review remains separate.
 
 <a id="deployment"></a>
-## 🚀 웹사이트 배포
+## 🚀 Website deployment
 
-Cloudflare Workers Static Assets · **gamst-bench.jinminseong.com**. 기존 `jinminseong.com` 블로그와 분리된 Worker입니다.
+Cloudflare Workers Static Assets · **gamst-bench.jinminseong.com**. This Worker is separate from the existing `jinminseong.com` blog.
 
 ```bash
 npm run deploy
 ```
 
-GitHub Actions는 Python 평가 테스트, 웹 상호작용 테스트, 소스 결과 동기화와 빌드를 검증합니다. 자동 배포는 설정하지 않았으며 `npm run deploy`로 배포합니다.
+GitHub Actions checks Python evaluation tests, web interactions, source/result synchronization and the build. Automatic deployment is not configured; use `npm run deploy`.
 
 <a id="references"></a>
-## 📚 참고 자료
+## 📚 References
 
-[Gamst](https://github.com/NomaDamas/Gamst)의 [확장 계획](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-expansion-plan.md), [평가 계약](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-evaluation.md), [실시간 계약](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/realtime.md)을 토대로 설계했습니다. 외부 기준은 [FastBench](https://github.com/Ashone3/FastBench), [SPOT-Bench](https://dibschat.github.io/SPOT-Bench/), [Inf-Streams-Eval](https://research.nvidia.com/labs/eai/publication/streamingvlm/). 대시보드 디자인은 [LiveBench](https://livebench.ai/)에서 영감을 받았습니다. 각 프로젝트와 별개이며 공식 제휴나 재현 성공을 주장하지 않습니다.
+Designed around [Gamst](https://github.com/NomaDamas/Gamst)’s [expansion plan](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-expansion-plan.md), [evaluation contract](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/perception-evaluation.md) and [realtime contract](https://github.com/NomaDamas/Gamst/blob/HEAD/docs/realtime.md). External references include [FastBench](https://github.com/Ashone3/FastBench), [SPOT-Bench](https://dibschat.github.io/SPOT-Bench/) and [Inf-Streams-Eval](https://research.nvidia.com/labs/eai/publication/streamingvlm/). The dashboard design was inspired by [LiveBench](https://livebench.ai/). This is an independent project; no official affiliation or successful reproduction is claimed.

@@ -1,12 +1,12 @@
 # 📊 GAMST Bench
 
-**Less compute. Keep what matters.**
+**Real-time perception for existing LLMs, at a fraction of VLM cost.**
 
-A **context-pipeline benchmark** for evaluating whether existing agents receive important evidence on time with less compute.
+A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweight perception plus selective VLM calls, still receive grounded, on-time evidence, and how much cheaper is that than running a VLM on every frame?
 
 **[Dashboard](https://gamst-bench.jinminseong.com)** · [Evaluation protocol](docs/PROTOCOL.md) · [Runbook](docs/RUNBOOK.md) · [Annotation guidelines](docs/ANNOTATION.md) · [Adapter contract](docs/ADAPTERS.md)
 
-> The public release contains 36 synthetic scenarios × A/B/C/D: 144 protocol-validation runs. These are not real model inference, physical-sensor experiments, or an eight-hour soak. Sample results do not establish quality preservation or cost savings.
+> The public release contains 36 synthetic scenarios × 13 configurations (five matched arms A–E plus eight VLM-budget sweep points): 468 protocol-validation runs. These are not real model inference, physical-sensor experiments, or an eight-hour soak. Sample results do not establish quality preservation or cost savings.
 
 <a id="contents"></a>
 ## 🗂️ Contents
@@ -36,7 +36,9 @@ Current public figures are **synthetic protocol checks**. Published reference nu
 <a id="evaluation"></a>
 ## 🎯 Evaluation scope
 
-- **A:** VLM-centered processing. **B:** Lightweight perception only. **C:** Gamst hybrid with selective calls. **D:** Periodic hybrid using the same model.
+- **A:** VLM-centered processing. **B:** Lightweight perception only (text LLM, no VLM). **C:** Gamst hybrid with selective calls. **D:** Periodic hybrid using the same model. **E:** Small streaming VLM watching continuously (StreamingVLM-style), the strongest cheap alternative.
+- Acceptance comparisons: **C vs A** (whole approach), **C vs D** (selection vs fixed schedule) and **C vs E** (Gamst vs a lightweight streaming VLM). Each is gated separately.
+- **VLM budget sweep:** C and D also run at 1, 2, 3, 6 and 12 VLM calls per session (`role: sweep`). The curve shows the budget at which each policy reaches a given quality. Sweep points never enter acceptance.
 - Evaluation unit: sensors + perception models + VLM + policy + memory + consumer LLM + hardware.
 - Primary metric: **grounded, on-time success**. An answer must be correct, supported by semantically valid evidence and delivered within the deadline.
 - Six suites: brief events / subtle semantic changes / object and state memory / audio–visual revisions / context retained before a query / interruption and overload recovery.
@@ -290,6 +292,7 @@ No verified numeric result imported.
 - **Gamst + LLM**: Sensors → Thin perception → Gamst memory → Consumer LLM. Test how much useful evidence survives without semantic VLM calls. Status: not run.
 - **Gamst + VLM + LLM**: Sensors → Gamst triggers → Selective VLM → Gamst memory → Consumer LLM. Test quality preservation with selective semantic inspection. Status: not run.
 - **Periodic VLM + LLM**: Sensors → Periodic VLM → Same memory → Consumer LLM. Control for whether selection beats a fixed inference schedule. Status: not run.
+- **Streaming small VLM + LLM**: Sensors → Small VLM at 4 Hz → Same memory → Consumer LLM. Strongest cheap alternative (StreamingVLM-style): a lightweight VLM watching continuously. Gamst must match it on cost and beat it on grounded quality. Status: not run.
 - **Published native method**: Official input protocol → Native model / controller → Official scorer. Reproduce ProactiveFrame, Ctrl-SPOT or other native baselines under their own protocols. Status: not run.
 
 ### 🚦 Readiness
@@ -313,21 +316,25 @@ GCP only. Status: **not_ready**. [Pinned Gamst readiness source](https://github.
 
 > **SYNTHETIC — Protocol validation only. Does not establish real model performance or cost savings.**
 
-Release 2026-11-14 · gamst-context-v0.2 · 144 configuration-task runs
+Release 2026-11-15 · gamst-context-v0.2 · 468 configuration-task runs
 
 | Configuration | Policy | Runs | Grounded & on time | Critical recall | Answer p95 (ms) | Full pipeline USD/h | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A · VLM-centered | vlm | 36 | 0.0% | 83.3% | 3100 | 3.12 | synthetic |
+| A · VLM-centered | vlm | 36 | 72.2% | 86.1% | 2100 | 7.44 | synthetic |
 | B · Thin models only | thin | 36 | 66.7% | 66.7% | 780 | 0.24 | synthetic |
-| C · GAMST hybrid | hybrid | 36 | 97.2% | 97.2% | 1250 | 0.96 | synthetic |
-| D · Periodic hybrid | periodic | 36 | 88.9% | 88.9% | 1950 | 1.68 | synthetic |
+| C · GAMST hybrid | hybrid | 36 | 97.2% | 97.2% | 1300 | 1.68 | synthetic |
+| D · Periodic hybrid | periodic | 36 | 83.3% | 83.3% | 1900 | 1.68 | synthetic |
+| E · Streaming small VLM | streaming | 36 | 66.7% | 66.7% | 820 | 3.12 | synthetic |
 
-- **C vs A: not_passed** — cost ratio 0.31, p95 ratio 0.40, quality difference 0.14; 36 session clusters.
-- **C vs D: not_passed** — cost ratio 0.57, p95 ratio 0.64, quality difference 0.08; 36 session clusters.
+Budget sweep (VLM calls per 30 s session → grounded & on time): hybrid 1→63.9%, 2→80.6%, 3→88.9%, 6→97.2%, 12→97.2%; periodic 1→0.0%, 2→0.0%, 3→22.2%, 6→83.3%, 12→91.7%.
+
+- **C vs A: not_passed** — cost ratio 0.23, p95 ratio 0.62, quality difference 0.11; 36 session clusters.
+- **C vs D: not_passed** — cost ratio 1.00, p95 ratio 0.68, quality difference 0.14; 36 session clusters.
+- **C vs E: not_passed** — cost ratio 0.54, p95 ratio 1.59, quality difference 0.31; 36 session clusters.
 
 Official FastBench / SPOT-Bench / Inf-Streams-Eval: **not measured**.
 
-Frozen plan SHA256: `07b58ddb85ad77dd2b7cc2260a2f96023b1dd50b2b59306ed513cb4bf4852a1a`
+Frozen plan SHA256: `9471ca672b996763277a1a19c6d59f4b96ebb7c60cfcbe31baeb2078d93fb37c`
 
 Source manifest: [data/release.json](data/release.json). Generated with `npm run results`.
 
@@ -347,7 +354,7 @@ npm run results:check
 npm run build
 ```
 
-The dashboard cross-filters configurations, tasks, policies, sensors, hardware, evidence levels, cost budgets and event duration. It provides shareable URLs, CSV export, evidence timelines, resource histories and session-level 95% confidence intervals. Exploratory UI deadlines do not change preregistered acceptance criteria.
+The dashboard has four tabs: **Overview** (headline Gamst-hybrid verdict against A, D or E, cost–success frontier, VLM-budget curve, the five pipelines), **Results** (suite + deadline filters, advanced filters collapsed; Ranking / Diagnostics / Traces sub-views), **Benchmarks** (coverage matrix mapping each external benchmark to the Gamst problems it tests, with a per-benchmark detail panel) and **Method** (protocol, acceptance gates with 95% CIs, official-protocol runs, readiness). Filters, selection and tab live in the URL; clicking any chart element cross-filters everything. Exploratory UI deadlines do not change preregistered acceptance criteria.
 
 <a id="reproduce"></a>
 ## 🧪 Reproduce synthetic evaluation

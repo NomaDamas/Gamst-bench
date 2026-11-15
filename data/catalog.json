@@ -44,7 +44,12 @@
           "cost_usd_per_hour": null,
           "latency_p95_ms": null
         }
-      ]
+      ],
+      "covers": {
+        "transient": "direct",
+        "retention": "partial",
+        "timing": "partial"
+      }
     },
     {
       "id": "spot",
@@ -98,7 +103,11 @@
           "cost_usd_per_hour": null,
           "latency_p95_ms": null
         }
-      ]
+      ],
+      "covers": {
+        "timing": "direct",
+        "transient": "partial"
+      }
     },
     {
       "id": "ovo",
@@ -115,7 +124,12 @@
       "limitations": "Published and revised code protocols differ. CC BY-NC-SA and source licenses apply. No verified score imported in this catalog.",
       "phase": 1,
       "integration": "planned",
-      "results": []
+      "results": [],
+      "covers": {
+        "memory": "direct",
+        "retention": "direct",
+        "timing": "partial"
+      }
     },
     {
       "id": "streamingbench",
@@ -157,7 +171,12 @@
           "cost_usd_per_hour": null,
           "latency_p95_ms": null
         }
-      ]
+      ],
+      "covers": {
+        "semantic": "partial",
+        "memory": "partial",
+        "revision": "partial"
+      }
     },
     {
       "id": "omnipro",
@@ -199,7 +218,11 @@
           "cost_usd_per_hour": null,
           "latency_p95_ms": null
         }
-      ]
+      ],
+      "covers": {
+        "revision": "direct",
+        "timing": "direct"
+      }
     },
     {
       "id": "streamarena",
@@ -265,7 +288,12 @@
           "cost_usd_per_hour": null,
           "latency_p95_ms": null
         }
-      ]
+      ],
+      "covers": {
+        "retention": "direct",
+        "memory": "direct",
+        "timing": "partial"
+      }
     },
     {
       "id": "infstreams",
@@ -295,7 +323,11 @@
           "cost_usd_per_hour": null,
           "latency_p95_ms": null
         }
-      ]
+      ],
+      "covers": {
+        "retention": "partial",
+        "resilience": "partial"
+      }
     },
     {
       "id": "omnivideo",
@@ -312,7 +344,10 @@
       "limitations": "Research-only access conditions; official offline QA does not establish causal real-time latency. No verified score imported.",
       "phase": 3,
       "integration": "planned",
-      "results": []
+      "results": [],
+      "covers": {
+        "revision": "partial"
+      }
     },
     {
       "id": "vsas",
@@ -329,7 +364,12 @@
       "limitations": "Announced apple/ml-vsas-bench URL returned 404 at review; research reference only.",
       "phase": 3,
       "integration": "planned",
-      "results": []
+      "results": [],
+      "covers": {
+        "timing": "direct",
+        "resilience": "partial",
+        "cost": "partial"
+      }
     }
   ],
   "arms": [
@@ -380,6 +420,18 @@
         "Consumer LLM"
       ],
       "role": "Control for whether selection beats a fixed inference schedule.",
+      "status": "not_run"
+    },
+    {
+      "id": "streaming",
+      "name": "Streaming small VLM + LLM",
+      "path": [
+        "Sensors",
+        "Small VLM at 4 Hz",
+        "Same memory",
+        "Consumer LLM"
+      ],
+      "role": "Strongest cheap alternative (StreamingVLM-style): a lightweight VLM watching continuously. Gamst must match it on cost and beat it on grounded quality.",
       "status": "not_run"
     },
     {

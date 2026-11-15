@@ -1,4 +1,4 @@
-"""Reference A/B/C/D adapter using installed Gamst plugins and compatible local model servers.
+"""Reference A/B/C/D/E adapter using installed Gamst plugins and compatible local model servers.
 
 stdin/stdout: collector JSONL. Actual inference requires supplied model servers and
 plugin factories. Not a claim of validation for any particular checkpoint.
@@ -53,7 +53,7 @@ class Adapter:
         queue.put_nowait(value)
     async def start(self,message):
         self.config=message['configuration'];self.consumer=message['consumer_model']
-        if self.config['policy']!='vlm':
+        if self.config['policy'] not in ('vlm','streaming'):
             from humansense import HumanSense
             self.human=HumanSense(consent=True,retention_hours=.01)
             await self.human.__aenter__()
@@ -102,7 +102,7 @@ class Adapter:
                 elif self.human and modality=='text':await self.human.push_text(payload['text'])
                 elif self.human and modality=='signal':await self.human.push_signal(payload['name'],payload['value'],payload.get('modality','video'),model_id=payload['model_id'],model_version=payload['model_version'])
                 elif modality in ('text','signal'):description=json.dumps(payload,ensure_ascii=False)
-                elif modality=='audio':raise ValueError('VLM-only reference needs an audio-capable adapter for audio; do not silently drop it')
+                elif modality=='audio':raise ValueError('VLM-only and streaming-VLM references need an audio-capable adapter for audio; do not silently drop it')
                 if self.human:
                     context=await self.human.get_context(window='30s');description=json.dumps(context,ensure_ascii=False)
                 if generation!=self.generation:continue
@@ -115,7 +115,7 @@ class Adapter:
                 novelty_due=policy=='hybrid' and novelty>=self.args.novelty_threshold and now-self.last_dispatch>=self.args.vlm_interval
                 # Reference hybrid: thumbnail novelty, query escalation and periodic audit.
                 # This inexpensive trigger is not a validated semantic sentinel.
-                if self.frames and (policy=='vlm' and now-self.last_dispatch>=self.args.vlm_interval or policy in ('hybrid','periodic') and (periodic_due or novelty_due)):
+                if self.frames and (policy=='vlm' and now-self.last_dispatch>=self.args.vlm_interval or policy=='streaming' and now-self.last_dispatch>=self.args.streaming_interval or policy in ('hybrid','periodic') and (periodic_due or novelty_due)):
                     self.last_dispatch=now;self.enqueue(self.semantic_queue,(generation,list(self.frames)))
                 if self.query and not self.answered:self.enqueue(self.answer_queue,generation)
                 self.emit('resource',rss_mb=None,queue_depth=self.audio_queue.qsize()+self.video_queue.qsize(),dropped=self.drops,age_ms=None)
@@ -132,7 +132,9 @@ class Adapter:
             generation,frames=await self.semantic_queue.get()
             try:
                 content=[{'type':'text','text':'Describe observable changes, OCR and current versus last-seen state. Do not infer hidden emotions. Frames are chronological.'}]+[{'type':'image_url','image_url':{'url':'data:image/jpeg;base64,'+jpeg}} for _,jpeg,_ in frames]
-                text,usage=await asyncio.to_thread(request_chat,self.args.vlm_url,self.config['model'],[{'role':'user','content':content}],self.args.allow_remote)
+                # Streaming arm E runs its own lightweight VLM endpoint; A/C/D share the matched VLM.
+                endpoint=self.args.streaming_url if self.config['policy']=='streaming' else self.args.vlm_url
+                text,usage=await asyncio.to_thread(request_chat,endpoint,self.config['model'],[{'role':'user','content':content}],self.args.allow_remote)
                 self.account(usage,'vlm')
                 if generation!=self.generation:continue
                 self.last_semantic=max(at for _,_,at in frames)/1000;refs=[id for id,_,_ in frames]
@@ -180,7 +182,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--vlm-url',default='http://127.0.0.1:8080/v1');parser.add_argument('--consumer-url',default='http://127.0.0.1:11434/v1')
     parser.add_argument('--allow-remote',action='store_true');parser.add_argument('--vlm-interval',type=float,default=1);parser.add_argument('--semantic-interval',type=float,default=5)
+    parser.add_argument('--streaming-url',default='http://127.0.0.1:8081/v1');parser.add_argument('--streaming-interval',type=float,default=.25)
     parser.add_argument('--novelty-threshold',type=float,default=.08)
-    args=parser.parse_args();require(0<=args.novelty_threshold<=1,'novelty threshold must be 0..1');require(args.vlm_interval>0 and args.semantic_interval>0,'positive intervals required');asyncio.run(run(args))
+    args=parser.parse_args();require(0<=args.novelty_threshold<=1,'novelty threshold must be 0..1');require(args.vlm_interval>0 and args.semantic_interval>0 and args.streaming_interval>0,'positive intervals required');asyncio.run(run(args))
 
 if __name__=='__main__':main()

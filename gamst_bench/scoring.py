@@ -144,5 +144,5 @@ def evaluate(plan, traces, assessments):
         provenance='Synthetic protocol fixtures; no trained model execution.' if plan['evidence']=='synthetic' else 'Measured traces with external assessments; independent audit required.',
         protocol=plan['protocol'],hardware=plan['hardware'],consumer=plan['consumer_model'],systems=plan['systems'],rows=rows,
         summaries={s['id']:summarize([r for r in rows if r['system_id']==s['id']]) for s in plan['systems']},
-        comparisons=[comparison(plan,rows,plan['baseline'],plan['candidate'])]+([comparison(plan,rows,'D',plan['candidate'])] if 'D' in {s['id'] for s in plan['systems']} and plan['baseline']!='D' else []),
+        comparisons=[comparison(plan,rows,baseline,plan['candidate']) for baseline in [plan['baseline'],*plan['controls']]],
         official_scores=[],acceptance='not_established' if plan['evidence']=='synthetic' else 'independent_audit_required')

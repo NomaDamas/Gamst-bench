@@ -77,6 +77,11 @@ class ProtocolTests(unittest.TestCase):
   trace=self.traces[0];grade=self.grades[0]
   trace['outputs'].insert(0,{'type':'context','received_ms':task['available_ms']+50,'evidence_ids':grade['evidence_ids']})
   self.update_trace();self.assertEqual(self.row()['context_latency_ms'],50)
+ def test_sweep_configuration_cannot_be_acceptance_arm(self):
+  self.plan['baseline']='C3'
+  with self.assertRaisesRegex(ValueError,'primary baseline'):freeze(self.plan)
+ def test_every_control_is_compared_to_candidate(self):
+  self.assertEqual([c['baseline'] for c in self.report['comparisons']],[self.plan['baseline'],*self.plan['controls']])
  def test_mismatched_sensor_track_rejected(self):
   self.plan['systems'][0]['sensor_track']='different'
   with self.assertRaisesRegex(ValueError,'sensor tracks'):freeze(self.plan)
@@ -122,11 +127,11 @@ class CollectorTests(unittest.IsolatedAsyncioTestCase):
  async def test_collect_retains_every_pair(self):
   with tempfile.TemporaryDirectory() as d:
    result=await collect(self.plan,{s['id']:self.command for s in self.plan['systems']},Path(d)/'run')
-   self.assertEqual(result['traces'],4);self.assertEqual(len(read(Path(d)/'run/traces.json')),4)
+   n=len(self.plan['systems']);self.assertEqual(result['traces'],n);self.assertEqual(len(read(Path(d)/'run/traces.json')),n)
  async def test_spawn_failure_preserves_all_pairs(self):
   with tempfile.TemporaryDirectory() as d:
    await collect(self.plan,{s['id']:['/does-not-exist/gamst-adapter'] for s in self.plan['systems']},Path(d)/'run')
-   traces=read(Path(d)/'run/traces.json');self.assertEqual(len(traces),4)
+   traces=read(Path(d)/'run/traces.json');self.assertEqual(len(traces),len(self.plan['systems']))
    self.assertTrue(all(t['status']=='error' and 'spawn_failed' in t['diagnostics'] for t in traces))
  async def test_short_soak_is_not_quality_acceptance(self):
   with tempfile.TemporaryDirectory() as d:

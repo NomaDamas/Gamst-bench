@@ -1,21 +1,42 @@
 import {useState} from 'react';
 import catalog from '../data/catalog.json';
 import recipes from '../mcp/recipes.json';
-import {data} from './benchmark';
+import {data,suites} from './benchmark';
 import type {Report} from './benchmark';
+
+/** Gamst problems as matrix columns: the six Gamst suites plus timing and system cost. */
+export const problems:{id:string;short:string;description:string}[]=[
+ ...Object.entries(suites).map(([id,s])=>({id,short:s.short,description:s.description})),
+ {id:'timing',short:'Timing',description:'Respond when it matters, stay silent otherwise.'},
+ {id:'cost',short:'Cost / latency',description:'Wall-clock latency and whole-pipeline compute cost.'},
+];
+type Coverage=Record<string,string|undefined>;
+
 export default function BenchmarkAtlas({report=data}:{report?:Pick<Report,'evidence'|'official_scores'>}={}){
- const [index,setIndex]=useState(0),[armIndex,setArm]=useState(1),[view,setView]=useState('published');
- const b=catalog.benchmarks[index],arm=catalog.arms[armIndex];
+ const [index,setIndex]=useState(0),[view,setView]=useState<'published'|'gamst'>('published');
+ const b=catalog.benchmarks[index];
+ const covers=b.covers as Coverage;
  const measured=report.evidence==='measured'?report.official_scores.filter(r=>r.benchmark===b.name):[];
- return <section id="benchmarks" className="panel atlas"><div className="panel-title"><div><span className="eyebrow muted">BENCHMARK ATLAS · REVIEWED {catalog.reviewed_at}</span><h2>One problem. Several ways to test it.</h2><p>Published reference results and planned Gamst comparisons. Different protocols never share a ranking.</p></div></div>
- <div className="atlas-tabs" role="tablist" aria-label="Benchmark"><>{catalog.benchmarks.map((item,i)=><button key={item.id} id={'tab-'+item.id} role="tab" aria-selected={index===i} aria-controls={'panel-'+item.id} tabIndex={index===i?0:-1} onClick={()=>setIndex(i)} onKeyDown={e=>{let next=i;if(e.key==='ArrowRight')next=(i+1)%catalog.benchmarks.length;else if(e.key==='ArrowLeft')next=(i+catalog.benchmarks.length-1)%catalog.benchmarks.length;else if(e.key==='Home')next=0;else if(e.key==='End')next=catalog.benchmarks.length-1;else return;e.preventDefault();setIndex(next);document.getElementById('tab-'+catalog.benchmarks[next].id)?.focus();}}>{item.name}</button>)}</></div>
- <div role="tabpanel" id={'panel-'+b.id} aria-labelledby={'tab-'+b.id}><div className="atlas-heading"><h3>{b.name}</h3><span>{b.venue} · Phase {b.phase}</span><a href={b.source_url} target="_blank" rel="noreferrer">Official source ↗</a></div>
- <div className="atlas-grid"><article><span className="eyebrow muted">THE PROBLEM</span><h4>{b.problem}</h4><p>{b.existing}</p></article><article><span className="eyebrow muted">GAMST HYPOTHESIS · UNTESTED</span><h4>What the hybrid must prove</h4><p>{b.gamst}</p><p><strong>Measure:</strong> {b.metric}</p></article></div>
- <div className="atlas-views" aria-label="Result evidence"><button aria-pressed={view==='published'} onClick={()=>setView('published')}>Published references</button><button aria-pressed={view==='gamst'} onClick={()=>setView('gamst')}>Our GCP runs</button></div>
- {view==='published'?<div className="reference-grid">{b.results.length?b.results.map((r,i)=><article key={i} className="reference-card"><span className="mini-badge">PUBLISHED · NOT REPRODUCED</span><h4>{r.model}</h4><strong className="reference-value">{r.value}{r.unit}</strong><p>{r.metric}</p><small>{r.scope}</small><a href={r.source_url} target="_blank" rel="noreferrer">Result source ↗</a></article>):<p>No verified numeric result imported. See the official source; missing scores are not zero.</p>}</div>:measured.length?<div className="reference-grid">{measured.map((r,i)=><article className="reference-card" key={i}><span className="mini-badge">MEASURED · AUDIT REQUIRED</span><h4>{r.system_id}</h4><strong className="reference-value">{r.score}/{r.scale}</strong><p>{r.metric} · {r.split} · {r.evaluation_mode}</p><small>Protocol {r.protocol_revision}</small><a href={r.source_url}>Run artifacts ↗</a></article>)}</div>:<div className="empty"><strong>Not run on GCP</strong><span>No measured Gamst score or superiority claim is available for {b.name}.</span></div>}
- <details className="atlas-data"><summary>MCP evaluation connection</summary><p>{recipes.some(r=>r.benchmark===b.id)?'Native execution recipes available. GCP setup and GPU validation are pending.':'Reference only; no executable MCP recipe is registered.'}</p><ul>{recipes.filter(r=>r.benchmark===b.id).map(r=><li key={r.id}><strong>{r.id}</strong> — {r.validation}</li>)}</ul><a href="https://github.com/NomaDamas/Gamst-bench/blob/main/docs/MCP.md">MCP tools, setup and measurement boundaries ↗</a></details>
- <details className="atlas-data"><summary>Dataset, preparation & comparability</summary><p><strong>Data:</strong> {b.dataset_size} {b.dataset_url&&<a href={b.dataset_url}>Dataset ↗</a>}</p><p>{b.prepare}</p><p><strong>Limitations:</strong> {b.limitations}</p><p>Adapter integration: {b.integration}. Published values are snapshots, not a live SOTA ranking. Unknown cost and latency remain unknown.</p></details></div>
- <div className="atlas-heading"><h3>Compare complete systems</h3><span>Planned matched experiments · no model runs</span></div><div className="atlas-tabs" aria-label="Architecture comparison">{catalog.arms.map((a,i)=><button key={a.id} aria-pressed={armIndex===i} onClick={()=>setArm(i)}>{a.name}</button>)}</div><div className="pipeline" aria-label={arm.name+' architecture'}>{arm.path.map((step,i)=><span className="pipeline-step" key={i}>{i>0&&<span aria-hidden="true">→</span>}<strong>{step}</strong></span>)}</div><p>{arm.role}</p>
- <details className="atlas-data"><summary>GCP evaluation readiness · not ready</summary><p>Runtime: {catalog.readiness.runtime}. Gamst readiness must be verified against the pinned source; this page does not certify completion.</p><a href={catalog.readiness.gamst_source}>Upstream readiness evidence ↗</a><ul>{catalog.readiness.requirements.map(r=><li key={r}>{r}</li>)}</ul><a href="https://github.com/NomaDamas/Gamst-bench/blob/main/docs/COMPARISONS.md">Comparison protocol & cloud plan ↗</a></details>
+ const gaps=problems.filter(p=>!catalog.benchmarks.some(x=>(x.covers as Coverage)[p.id]==='direct'));
+ return <section id="benchmarks" className="atlas">
+  <div className="section-top"><div><span className="eyebrow muted">BENCHMARK ATLAS · REVIEWED {catalog.reviewed_at}</span><h2>Which benchmark tests which Gamst problem?</h2><p className="section-sub">● primary target · ○ partial signal. Click a row for data, published results and how Gamst plugs in.</p></div></div>
+  <div className="panel table-scroll"><table className="coverage" aria-label="Benchmark coverage">
+   <thead><tr><th>Benchmark</th>{problems.map(p=><th key={p.id} title={p.description}>{p.short}</th>)}<th>Best published</th></tr></thead>
+   <tbody>{catalog.benchmarks.map((x,i)=>{const c=x.covers as Coverage;const top=[...x.results].sort((p,q)=>q.value-p.value)[0];return <tr key={x.id} className={i===index?'selected-row':''}>
+    <th><button aria-pressed={i===index} aria-controls="atlas-detail" onClick={()=>{setIndex(i);setView('published');}}><strong>{x.name}</strong><small>{x.venue}</small></button></th>
+    {problems.map(p=><td key={p.id} className={'cov cov-'+(c[p.id]??'none')} aria-label={c[p.id]?p.short+': '+c[p.id]:undefined}>{c[p.id]==='direct'?'●':c[p.id]==='partial'?'○':''}</td>)}
+    <td className="best">{top?<><strong>{top.value}{top.unit}</strong><small>{top.model}</small></>:<small>—</small>}</td></tr>;})}</tbody>
+   <tfoot><tr><th>Gap Gamst Bench fills</th>{problems.map(p=><td key={p.id} className="cov">{gaps.includes(p)?'★':''}</td>)}<td><small>★ no primary benchmark</small></td></tr></tfoot>
+  </table></div>
+
+  <div id="atlas-detail" role="region" aria-label={b.name+' details'} className="panel atlas-detail">
+   <div className="atlas-heading"><h3>{b.name}</h3><span>{b.venue} · Phase {b.phase}</span><a href={b.source_url} target="_blank" rel="noreferrer">Official source ↗</a></div>
+   <div className="atlas-grid"><article><span className="eyebrow muted">THE PROBLEM</span><h4>{b.problem}</h4><p>{b.existing}</p><p className="chips">{problems.filter(p=>covers[p.id]).map(p=><span key={p.id} className={'chip chip-'+covers[p.id]}>{p.short}</span>)}</p></article><article><span className="eyebrow muted">GAMST HYPOTHESIS · UNTESTED</span><h4>What the hybrid must prove</h4><p>{b.gamst}</p><p><strong>Measure:</strong> {b.metric}</p></article></div>
+   <div className="atlas-views" role="group" aria-label="Result evidence"><button aria-pressed={view==='published'} onClick={()=>setView('published')}>Published references</button><button aria-pressed={view==='gamst'} onClick={()=>setView('gamst')}>Our GCP runs</button></div>
+   {view==='published'?<div className="reference-grid">{b.results.length?b.results.map((r,i)=><article key={i} className="reference-card"><span className="mini-badge">PUBLISHED · NOT REPRODUCED</span><h4>{r.model}</h4><strong className="reference-value">{r.value}{r.unit}</strong><p>{r.metric}</p><small>{r.scope}</small><a href={r.source_url} target="_blank" rel="noreferrer">Result source ↗</a></article>):<p>No verified numeric result imported. Missing scores are not zero.</p>}</div>
+    :measured.length?<div className="reference-grid">{measured.map((r,i)=><article className="reference-card" key={i}><span className="mini-badge">MEASURED · AUDIT REQUIRED</span><h4>{r.system_id}</h4><strong className="reference-value">{r.score}/{r.scale}</strong><p>{r.metric} · {r.split} · {r.evaluation_mode}</p><small>{r.protocol_revision}</small><a href={r.source_url} target="_blank" rel="noreferrer">Run artifact ↗</a></article>)}</div>
+    :<p className="not-run"><strong>Not run on GCP</strong> Matched Gamst and baseline runs will appear here once measured.</p>}
+   <details className="atlas-data"><summary>Dataset, preparation & MCP</summary><p><strong>Data:</strong> {b.dataset_size} {b.dataset_url&&<a href={b.dataset_url}>Dataset ↗</a>}</p><p>{b.prepare}</p><p><strong>Limitations:</strong> {b.limitations}</p><p><strong>MCP:</strong> {recipes.some(r=>r.benchmark===b.id)?recipes.filter(r=>r.benchmark===b.id).map(r=>r.id).join(', ')+' — GPU validation pending.':'Reference only; no executable recipe.'} <a href="https://github.com/NomaDamas/Gamst-bench/blob/main/docs/MCP.md">MCP guide ↗</a></p></details>
+  </div>
  </section>;
 }

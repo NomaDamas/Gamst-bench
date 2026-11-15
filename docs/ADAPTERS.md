@@ -28,7 +28,7 @@ Input ingestion and inference must be independent. The host has an eight-message
 
 ## Reference adapter
 
-`python3 -m gamst_bench.adapters.gamst_http` connects to explicitly selected chat-compatible model endpoints. A uses the VLM; B requires installed Gamst plugins; C adds thumbnail-change, query-triggered semantic calls and periodic auditing; D uses periodic semantic inspection. C's image-difference trigger is a reference implementation, not a validated semantic sentinel. Audit freshness is anchored to inspected input capture time. Freeze intervals, novelty threshold, plugin configuration, dependencies and adapter source revision.
+`python3 -m gamst_bench.adapters.gamst_http` connects to explicitly selected chat-compatible model endpoints. A uses the VLM; B requires installed Gamst plugins; C adds thumbnail-change, query-triggered semantic calls and periodic auditing; D uses periodic semantic inspection; E (`streaming`) sends frames to a separate small-VLM endpoint (`--streaming-url`, default port 8081) every `--streaming-interval` seconds (default 0.25 s, 4 Hz) without Gamst plugins. C's image-difference trigger is a reference implementation, not a validated semantic sentinel. Audit freshness is anchored to inspected input capture time. Freeze intervals, novelty threshold, plugin configuration, dependencies and adapter source revision.
 
 Non-VLM paths require an existing `humansense` installation and `GAMST_BENCH_PLUGINS`, e.g. a JSON list of `{"factory":"your_module:factory","kwargs":{}}`. Use actual supported factories; the benchmark does not guess or install them. Video plugins require numpy/OpenCV, audio plugins require numpy. Exact checkpoint/plugin compatibility has not been validated by the public synthetic tests.
 

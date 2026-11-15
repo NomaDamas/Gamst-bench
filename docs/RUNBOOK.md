@@ -1,6 +1,6 @@
 # Running a reproducible experiment
 
-Python 3.10+ is sufficient for the collector/scorer; real perception requires your existing Gamst/model environment. Start from `fixtures/protocol-v2-generated/plan.json` as a **schema example**, not real test data. The fixture generator and its outputs are synthetic.
+Python 3.10+ is sufficient for the collector/scorer; real perception requires your existing Gamst/model environment. Start from `fixtures/protocol-v3-generated/plan.json` as a **schema example**, not real test data. The fixture generator and its outputs are synthetic.
 
 ## 1. Prepare and freeze
 

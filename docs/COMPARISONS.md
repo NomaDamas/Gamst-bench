@@ -13,7 +13,10 @@ Status: design and reference catalog ready; native benchmark adapters, actual Ga
 - Thin perception → Gamst memory → same consumer LLM (text evidence only; no hidden semantic VLM calls).
 - Gamst selection → same VLM → same memory → same consumer LLM.
 - Periodic selection → same VLM → same memory → same consumer LLM.
+- Small streaming VLM (E) → same memory → same consumer LLM. Its own lightweight checkpoint; tests whether Gamst beats a cheap always-on VLM.
 - Native published methods under their original protocols, separately reported.
+
+Also sweep C and D across VLM call budgets (1, 2, 3, 6, 12 per session in the fixture) on the same inputs. Headline claim format: "C reaches A's official score at N× lower whole-pipeline cost", read off this curve.
 
 Freeze checkpoints, quantization, hardware, input availability, consumer prompt, memory capacity, output limits, budgets and dataset split before running. Run selection and memory ablations independently: identical-memory comparisons isolate selection; disabling memory tests the memory contribution. Charge thin perception, ASR, model servers, consumer inference, idle allocated GPU time and retries. Lower VLM call counts alone do not establish savings.
 

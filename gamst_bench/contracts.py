@@ -5,7 +5,9 @@ import math
 from pathlib import Path
 
 SUITES = {'transient', 'semantic', 'memory', 'revision', 'retention', 'resilience'}
-POLICIES = {'vlm', 'thin', 'hybrid', 'periodic', 'no-context', 'oracle'}
+POLICIES = {'vlm', 'thin', 'hybrid', 'periodic', 'streaming', 'no-context', 'oracle'}
+# 'sweep' configurations only trace a cost/quality curve; they never enter acceptance comparisons.
+ROLES = {'primary', 'sweep'}
 
 def require(condition, message):
     if not condition:
@@ -68,11 +70,17 @@ def validate_plan(plan):
         require(system['id'] not in ids, 'duplicate configuration')
         ids.add(system['id'])
         require(system['policy'] in POLICIES, 'unknown policy')
+        require(system.get('role') in ROLES, 'declare role: primary or sweep')
+        integer(system.get('budget_calls'), 'semantic VLM call budget per session')
+        require(system['role']=='primary' or system['policy'] in ('hybrid','periodic'), 'only hybrid/periodic configurations can be budget sweeps')
         require(system['hardware'] == plan['hardware'], 'hardware mismatch: separate experiment required')
     require(len({s['sensor_track'] for s in plan['systems']}) == 1, 'sensor tracks must match within an experiment')
     semantic_models={(s['model'],s['revision'],s['precision']) for s in plan['systems'] if s['policy'] in ('vlm','hybrid','periodic')}
     require(len(semantic_models)<=1, 'semantic checkpoint and precision must match')
-    require(plan.get('baseline') in ids and plan.get('candidate') in ids and plan['baseline'] != plan['candidate'], 'declare distinct baseline / candidate')
+    primary={s['id'] for s in plan['systems'] if s['role']=='primary'}
+    require(plan.get('baseline') in primary and plan.get('candidate') in primary and plan['baseline'] != plan['candidate'], 'declare distinct primary baseline / candidate')
+    controls=plan.get('controls')
+    require(type(controls) is list and len(set(controls))==len(controls) and all(c in primary and c not in (plan['baseline'],plan['candidate']) for c in controls), 'controls must be distinct primary configurations')
     require(type(plan.get('rate_card')) is dict, 'declare rate card, including empty for unknown')
     for key, rate in plan['rate_card'].items():
         text(key, 'rate ID')

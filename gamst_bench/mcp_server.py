@@ -21,7 +21,7 @@ def create_server(jobs):
     @server.tool(structured_output=True)
     @errors
     def list_benchmarks() -> dict[str, Any]:
-        """List seven executable recipe families plus reference-only benchmarks and provenance."""
+        """List the three core executable families (FastBench, OmniPro, StreamArena) plus reference-only catalog entries."""
         return {'benchmarks':catalog()}
     @server.tool(structured_output=True)
     @errors
@@ -30,6 +30,21 @@ def create_server(jobs):
         item=next((b for b in catalog() if b['id']==benchmark_id),None)
         require(item is not None,'unknown benchmark')
         return {'benchmark':item,'recipes':[r for r in read(ROOT/'mcp/recipes.json') if r['benchmark']==benchmark_id]}
+    @server.tool(structured_output=True)
+    @errors
+    def detect_environment() -> dict[str, Any]:
+        """Detect host OS, architecture, Python, NVIDIA and GCP CLI availability without side effects."""
+        return jobs.environment('local')
+    @server.tool(structured_output=True)
+    @errors
+    def plan_environment(target:str='local',project_id:str='',region:str='us-central1') -> dict[str, Any]:
+        """Generate reviewable OS-aware MCP/GCP setup commands; never executes them or downloads data/models."""
+        return jobs.environment(target,False,project_id or None,region)
+    @server.tool(structured_output=True)
+    @errors
+    def setup_environment(target:str='local',install:bool=False,project_id:str='',region:str='us-central1') -> dict[str, Any]:
+        """Install only local MCP dependencies when install=true; GCP always returns commands for explicit operator review."""
+        return jobs.prepare_environment(target,project_id or None,region) if install else jobs.environment(target,False,project_id or None,region)
     @server.tool(structured_output=True)
     @errors
     def list_profiles() -> dict[str, Any]:

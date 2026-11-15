@@ -47,21 +47,17 @@ Current public figures are **synthetic protocol checks**. Published reference nu
 
 <!-- MCP:START -->
 <a id="multi-benchmark-mcp"></a>
-## 🔌 Multi-benchmark MCP
+## 🔌 Core benchmark MCP
 
-Seven benchmark families, 10 native execution recipes. **Code connected; GCP GPU runs and Gamst-specific adapters are not yet validated.**
+Three core benchmark families (FastBench, OmniPro, StreamArena). 10 registered recipes remain available; only these three are in the first campaign. **Code connected; GCP GPU runs and Gamst-specific adapters are not yet validated.**
 
 [MCP tools and deployment guide](docs/MCP.md) · [Private GCP profile templates](mcp/profiles.example.json) · [SSH client example](mcp/client.ssh.example.json)
 
 - **FastBench**: `fastbench-baseline`, `fastbench-proactive`.
-- **SPOT-Bench**: `spot-detection`.
-- **OVO-Bench**: `ovo-offline`.
 - **OmniPro**: `omnipro-probe`, `omnipro-online`.
 - **StreamArena**: `streamarena-offline`, `streamarena-continuous`.
-- **StreamingBench**: `streamingbench-regression`.
-- **Inf-Streams-Eval**: `infstreams-long`.
 
-Tools cover catalog, readiness/plan hashes, GCP-only dataset download, asynchronous evaluation, cancellation, persistent status and native artifacts. Profiles preserve separate metrics/splits/modes. Templates stay disabled until cloud paths, dependencies, access, checkpoints and judges are reviewed. Published results are never imported as our measurements.
+Tools cover catalog, readiness/plan hashes, GCP-only dataset download, asynchronous evaluation, cancellation, persistent status and native artifacts. Profiles preserve separate metrics/splits/modes. Templates for other families remain reference-only until a later campaign.
 
 No inference or benchmark dataset download was executed locally. MCP protocol tests use non-model fixtures. Full-system costs and event latencies require additional real instrumentation/review; host GPU samples alone do not establish savings.
 

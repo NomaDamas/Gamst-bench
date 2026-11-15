@@ -12,11 +12,14 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
   async with Client(params) as client:
    listed=await client.list_tools()
    names={t.name for t in listed.tools}
-   self.assertTrue({'list_benchmarks','plan_evaluation','start_evaluation','list_runs','prepare_dataset','cancel_run','read_artifact'}<=names)
+   self.assertTrue({'list_benchmarks','detect_environment','plan_environment','setup_environment','plan_evaluation','start_evaluation','list_runs','prepare_dataset','cancel_run','read_artifact'}<=names)
    result=await client.call_tool('list_benchmarks',{})
    self.assertFalse(result.is_error)
-   self.assertEqual(len(result.structured_content['benchmarks']),9)
-   details=await client.call_tool('get_benchmark',{'benchmark_id':'spot'})
+   supported=[b for b in result.structured_content['benchmarks'] if b['mcp_support']=='registered native runner']
+   self.assertEqual({b['id'] for b in supported},{'fastbench','omnipro','streamarena'})
+   env=await client.call_tool('detect_environment',{})
+   self.assertFalse(env.is_error);self.assertFalse(env.structured_content['execution_allowed'])
+   details=await client.call_tool('get_benchmark',{'benchmark_id':'fastbench'})
    self.assertFalse(details.is_error);self.assertTrue(details.structured_content['recipes'])
    profiles=await client.call_tool('list_profiles',{})
    self.assertEqual(profiles.structured_content['profiles'],[])

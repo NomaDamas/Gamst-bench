@@ -11,7 +11,7 @@ from gamst_bench.mcp_worker import execute,preflight
 
 
 def profile(root):
- return dict(benchmark='spot',enabled=True,track='official',runner_revision='a'*40,dataset_revision='b'*40,model_revision='c'*40,
+ return dict(benchmark='fastbench',enabled=True,track='official',runner_revision='a'*40,dataset_revision='b'*40,model_revision='c'*40,
  dataset_manifest_sha256='d'*64,metric='T-F1',split='detection',mode='online',hardware='test-only',model='stub-not-a-model',source_url='https://example.com',
  timeout_seconds=10,data_access_reviewed=True,execution_reviewed=True,stage_outputs_reviewed=True,checkout=str(root),dataset_root=str(root),dataset_manifest=str(root/'files.json'),model_path=str(root),
  stages=[dict(id='infer',kind='inference',argv=[sys.executable,str(root/'stub.py')],cwd=str(root)),dict(id='score',kind='score',argv=[sys.executable,str(root/'stub.py')],cwd=str(root))],environment={},secret_env=[])
@@ -21,21 +21,26 @@ class JobsTests(unittest.TestCase):
  def setUp(self):
   base=ROOT/'runs/test-temporary';base.mkdir(parents=True,exist_ok=True)
   self.tmp=tempfile.TemporaryDirectory(dir=base);self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name).resolve()
-  self.p=profile(self.root);self.jobs=Jobs(dict(profiles={'spot':self.p},runs_root=str(self.root/'runs'),project_id='gamst-project'))
- def test_seven_native_families_have_recipes(self):
+  self.p=profile(self.root);self.jobs=Jobs(dict(profiles={'fastbench':self.p},runs_root=str(self.root/'runs'),project_id='gamst-project'))
+ def test_three_core_families_have_recipes(self):
   items=catalog();supported=[b for b in items if b['mcp_support']=='registered native runner']
-  self.assertEqual(len(supported),7)
+  self.assertEqual({b['id'] for b in supported},{'fastbench','omnipro','streamarena'})
   for b in supported:self.assertTrue(b['recipes']);self.assertFalse(b['gpu_validated'])
+ def test_environment_planning_has_no_execution_side_effect(self):
+  local=self.jobs.environment('local');self.assertFalse(local['execution_allowed']);self.assertFalse(local['side_effects']);self.assertTrue(local['commands'])
+  gcp=self.jobs.environment('gcp',project_id='gamst-project');self.assertFalse(gcp['execution_allowed']);self.assertTrue(any('gcloud'==c[0] for c in gcp['commands']))
+ def test_invalid_environment_target_rejected(self):
+  with self.assertRaisesRegex(ValueError,'target'):self.jobs.environment('windows-gpu')
  def test_local_start_denied_before_spawn_or_output(self):
-  plan=self.jobs.plan('spot')
+  plan=self.jobs.plan('fastbench')
   with patch('gamst_bench.mcp_jobs.gce_identity',side_effect=ValueError('not GCE')),patch('gamst_bench.mcp_jobs.subprocess.Popen') as popen:
-   with self.assertRaisesRegex(ValueError,'not GCE'):self.jobs.start('spot',plan['profile_sha256'])
+   with self.assertRaisesRegex(ValueError,'not GCE'):self.jobs.start('fastbench',plan['profile_sha256'])
    popen.assert_not_called();self.assertFalse((self.root/'runs').exists())
  def test_dataset_download_also_refuses_local_execution(self):
-  self.jobs.profiles['spot']['hf_executable']='/srv/venv/bin/hf'
-  plan=self.jobs.plan('spot')
+  self.jobs.profiles['fastbench']['hf_executable']='/srv/venv/bin/hf'
+  plan=self.jobs.plan('fastbench')
   with patch('gamst_bench.mcp_jobs.gce_identity',side_effect=ValueError('not GCE')),patch('gamst_bench.mcp_jobs.subprocess.Popen') as popen:
-   with self.assertRaisesRegex(ValueError,'not GCE'):self.jobs.start('spot',plan['profile_sha256'],'dataset')
+   with self.assertRaisesRegex(ValueError,'not GCE'):self.jobs.start('fastbench',plan['profile_sha256'],'dataset')
    popen.assert_not_called();self.assertFalse((self.root/'runs').exists())
  def test_dataset_worker_uses_catalog_revision_and_hashes_result(self):
   out=self.prepare_worker();req=json.loads((out/'request.json').read_text())
@@ -49,12 +54,12 @@ class JobsTests(unittest.TestCase):
    seen.extend(argv);data.mkdir();(data/'fixture.txt').write_text('unit fixture, no remote download');return Done()
   with patch('gamst_bench.mcp_worker.preflight',return_value={}),patch('gamst_bench.mcp_worker.subprocess.Popen',side_effect=fake_spawn):execute(out)
   self.assertEqual(json.loads((out/'status.json').read_text())['status'],'data_downloaded_review_required')
-  self.assertIn('cvml-nus/spot-bench',seen);self.assertIn('b'*40,seen)
+  self.assertIn('Ashenone3/FastBench',seen);self.assertIn('b'*40,seen)
   self.assertEqual(len(json.loads((out/'dataset-files.json').read_text())),1)
  def test_manifest_is_frozen_before_evaluation_but_not_download(self):
-  self.jobs.profiles['spot']['dataset_manifest_sha256']=None
-  self.assertTrue(self.jobs.plan('spot')['blockers'])
-  self.assertFalse(self.jobs.plan('spot','dataset')['blockers'])
+  self.jobs.profiles['fastbench']['dataset_manifest_sha256']=None
+  self.assertTrue(self.jobs.plan('fastbench')['blockers'])
+  self.assertFalse(self.jobs.plan('fastbench','dataset')['blockers'])
   manifest=[{'path':'fixture.txt','sha256':'0'*64}]
   (self.root/'files.json').write_text(json.dumps(manifest))
   p=copy.deepcopy(self.p);p['dataset_manifest_sha256']='0'*64
@@ -62,7 +67,7 @@ class JobsTests(unittest.TestCase):
   with patch('gamst_bench.mcp_worker.gce_identity',return_value={}),patch('gamst_bench.mcp_worker.subprocess.check_output',side_effect=['a'*40,'']):
    with self.assertRaisesRegex(ValueError,'manifest changed'):preflight(req)
  def test_changed_profile_and_disabled_template_refused(self):
-  with self.assertRaisesRegex(ValueError,'changed'):self.jobs.start('spot','0'*64)
+  with self.assertRaisesRegex(ValueError,'changed'):self.jobs.start('fastbench','0'*64)
   p=copy.deepcopy(self.p);p['enabled']=False
   with self.assertRaisesRegex(ValueError,'disabled'):validate_profile(p)
   p=copy.deepcopy(self.p);p['variables']={'judge':'REPLACE_ME'}

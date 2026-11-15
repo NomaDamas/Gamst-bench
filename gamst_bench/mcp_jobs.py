@@ -2,16 +2,19 @@
 import copy
 import json
 import os
+import platform
+import shutil
 from pathlib import Path
 import re
 import subprocess
 import sys
 import uuid
+ROOT=Path(__file__).resolve().parents[1]
 from .contracts import read, require, digest, write_new
 from .cloud import gce_identity
 
-ROOT=Path(__file__).resolve().parents[1]
-SUPPORTED={'fastbench','spot','ovo','omnipro','streamarena','streamingbench','infstreams'}
+CORE_BENCHMARKS=('fastbench','omnipro','streamarena')
+SUPPORTED=set(CORE_BENCHMARKS)
 TOKEN=re.compile(r'\{([a-z_]+)\}')
 
 
@@ -67,6 +70,7 @@ def validate_profile(p, enabled=True):
     return p
 
 
+
 class Jobs:
     def __init__(self,config=None):
         self.config=copy.deepcopy(config or {'profiles':{},'runs_root':str(ROOT/'runs/mcp'),'project_id':''})
@@ -74,7 +78,34 @@ class Jobs:
         require(self.root.is_absolute(),'absolute runs root required')
         self.profiles=self.config.get('profiles',{})
         require(type(self.profiles) is dict,'profiles must be a map')
-
+    def environment(self,target='local',install=False,project_id=None,region='us-central1'):
+        require(target in ('local','gcp'),'target must be local or gcp')
+        host={'os':platform.system().lower(),'architecture':platform.machine(),'python':platform.python_version(),
+              'gpu':shutil.which('nvidia-smi') is not None,'uv':shutil.which('uv') is not None,
+              'gcloud':shutil.which('gcloud') is not None}
+        if target=='local':
+            root=str((ROOT/'.venv-mcp').resolve());python=f'{root}/bin/python'
+            commands=[['python3','-m','venv',root],['python3','-m','pip','install','-r',str(ROOT/'requirements-mcp.txt')]]
+            return {'target':'local','host':host,'install_requested':install,'side_effects':install,'commands':commands,
+                    'execution_allowed':False,'reason':'Local benchmark inference and dataset downloads are disabled; this prepares only MCP tooling.','python':python}
+        require(project_id or self.config.get('project_id'),'project_id required for GCP plan')
+        project=project_id or self.config['project_id']
+        commands=[['gcloud','compute','instances','create','gamst-bench-gpu','--project',project,'--zone',region+'-a','--machine-type','g2-standard-8','--accelerator','type=nvidia-l4,count=1','--maintenance-policy','TERMINATE','--restart-on-failure=no'],
+                  ['gcloud','compute','ssh','gamst-bench-gpu','--project',project,'--zone',region+'-a','--command','git clone --revision PINNED_COMMIT REPO /srv/gamst-bench && uv venv /srv/gamst-mcp --python 3.12 && uv pip install --python /srv/gamst-mcp/bin/python -r /srv/gamst-bench/requirements-mcp.txt']]
+        return {'target':'gcp','host':host,'project_id':project,'region':region,'install_requested':install,'side_effects':False,'commands':commands,
+                'execution_allowed':False,'reason':'Plan only. VM creation, billing and dataset/model downloads require explicit operator execution on GCP.'}
+    def prepare_environment(self,target='local',project_id=None,region='us-central1'):
+        plan=self.environment(target,True,project_id,region)
+        if target!='local':
+            plan['execution_allowed']=False
+            return plan
+        venv=Path(plan['python']).parent.parent
+        if not venv.exists():subprocess.run(plan['commands'][0],check=True,cwd=ROOT)
+        subprocess.run(plan['commands'][1],check=True,cwd=ROOT)
+        plan['installed']=True
+        plan['execution_allowed']=False
+        plan['reason']='MCP tooling installed locally; benchmark inference and dataset downloads remain disabled.'
+        return plan
     def profiles_info(self):
         return [{'id':k,'benchmark':v.get('benchmark'),'enabled':v.get('enabled',False),'track':v.get('track'),'mode':v.get('mode'),'readiness':self.plan(k)['blockers']} for k,v in self.profiles.items()]
 

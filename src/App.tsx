@@ -40,7 +40,7 @@ export default function App(){
  useEffect(()=>{const query=writeFilters(f);history.replaceState(null,'',location.pathname+(query?'?'+query:'')+location.hash);},[f]);
  useEffect(()=>{const fn=()=>{setF(readFilters(location.search));setPage(readPage());};addEventListener('popstate',fn);addEventListener('hashchange',fn);return()=>{removeEventListener('popstate',fn);removeEventListener('hashchange',fn);};},[]);
  useEffect(()=>{if(!notice)return;const timer=setTimeout(()=>setNotice(''),3500);return()=>clearTimeout(timer);},[notice]);
- const go=(p:Page)=>{if(p!==page)history.pushState(null,'',location.pathname+location.search+'#'+p);setPage(p);scrollTo?.(0,0);};
+ const go=(p:Page)=>{if(p!==page)history.pushState(null,'',location.pathname+location.search+'#'+p);setPage(p);};
  const update=(p:Partial<Filters>)=>setF(v=>({...v,...p}));
  const select=(id:string)=>setF(v=>({...v,selected:v.selected.includes(id)?v.selected.filter(s=>s!==id):[...v.selected,id]}));
  const focus=(id:string)=>{setF(v=>({...v,selected:[id]}));go('results');};

@@ -1,6 +1,6 @@
 # Gamst Bench MCP
 
-The MCP server exposes **seven native benchmark families** through registered execution profiles. The client can inspect plans locally; downloads and inference require a matching **GCE VM**. The server uses private stdio, normally over SSH. It does not provision a VM, expose a public HTTP endpoint, or modify your MCP host configuration.
+The MCP server exposes **three core benchmark families** for the first evaluation campaign: FastBench, OmniPro and StreamArena. The remaining catalog entries stay available as reference or future profiles. The client can inspect plans locally; benchmark downloads and inference require a matching **GCE VM**. The server uses private stdio, normally over SSH. It does not silently provision a VM, accept billing, or modify the MCP host configuration.
 
 ```mermaid
 flowchart LR
@@ -16,17 +16,17 @@ flowchart LR
 
 ## Tools
 
-- `list_benchmarks`: capability, source, data requirements and recipe availability.
+- `detect_environment`: detect OS, architecture, Python, NVIDIA and GCloud availability without side effects.
+- `plan_environment`: generate reviewable local/GCP setup commands; never executes them.
+- `setup_environment`: with `install=true`, installs only the local MCP environment; GCP remains plan-only.
+- `list_benchmarks`: list the three core executable families plus reference-only entries.
 - `get_benchmark(benchmark_id)`: source-pinned native command recipes and limitations.
-- `list_profiles`: operator-installed execution profiles and readiness blockers.
+- `list_profiles`: operator-installed execution profiles and unresolved setup blockers.
 - `plan_evaluation(profile_id)`: frozen profile hash and exact stages; no inference.
 - `plan_dataset(profile_id)`: plan the download before the data manifest exists.
-- `prepare_dataset(profile_id, profile_sha256)`: on GCE, download the catalog dataset at the pinned revision into a **new** directory and write a file-hash manifest. Dataset access must already be reviewed. This does not accept dataset terms or extract archives.
+- `prepare_dataset(profile_id, profile_sha256)`: on GCE, download the catalog dataset at the pinned revision into a **new** directory and write a file-hash manifest.
 - `start_evaluation(profile_id, profile_sha256)`: check GCE project, start a background worker and return a run ID.
-- `list_runs()`: recover up to 100 recent run IDs after reconnecting.
-- `get_run(run_id)`: persisted status, heartbeat, stage and failure reason.
-- `cancel_run(run_id)`: request termination of only that run's owned subprocess group. Separate model servers and VM remain running.
-- `list_artifacts(run_id)` and `read_artifact(run_id, path)`: inspect native predictions, scorer logs, provenance and host GPU samples. Reads are run-scoped and bounded.
+- `list_runs`, `get_run`, `cancel_run`, `list_artifacts`, `read_artifact`: persistent run lifecycle and bounded artifact inspection.
 
 The API accepts registered profile IDs, never arbitrary caller-supplied shell commands. A profile is trusted operator configuration and can execute code: review it before enabling. Remote model/tool/judge calls inside native code require explicit endpoint and data-transfer review. Offline HF flags prevent implicit Hugging Face model downloads during evaluation; they are **not a network firewall**.
 

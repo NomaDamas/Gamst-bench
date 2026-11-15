@@ -49,7 +49,8 @@
         "transient": "direct",
         "retention": "partial",
         "timing": "partial"
-      }
+      },
+      "core": true
     },
     {
       "id": "spot",
@@ -107,7 +108,8 @@
       "covers": {
         "timing": "direct",
         "transient": "partial"
-      }
+      },
+      "core": false
     },
     {
       "id": "ovo",
@@ -129,7 +131,8 @@
         "memory": "direct",
         "retention": "direct",
         "timing": "partial"
-      }
+      },
+      "core": false
     },
     {
       "id": "streamingbench",
@@ -176,7 +179,8 @@
         "semantic": "partial",
         "memory": "partial",
         "revision": "partial"
-      }
+      },
+      "core": false
     },
     {
       "id": "omnipro",
@@ -222,7 +226,8 @@
       "covers": {
         "revision": "direct",
         "timing": "direct"
-      }
+      },
+      "core": true
     },
     {
       "id": "streamarena",
@@ -293,7 +298,8 @@
         "retention": "direct",
         "memory": "direct",
         "timing": "partial"
-      }
+      },
+      "core": true
     },
     {
       "id": "infstreams",
@@ -327,7 +333,8 @@
       "covers": {
         "retention": "partial",
         "resilience": "partial"
-      }
+      },
+      "core": false
     },
     {
       "id": "omnivideo",
@@ -347,7 +354,8 @@
       "results": [],
       "covers": {
         "revision": "partial"
-      }
+      },
+      "core": false
     },
     {
       "id": "vsas",
@@ -369,7 +377,8 @@
         "timing": "direct",
         "resilience": "partial",
         "cost": "partial"
-      }
+      },
+      "core": false
     }
   ],
   "arms": [

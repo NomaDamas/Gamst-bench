@@ -54,8 +54,8 @@ class Adapter:
     async def start(self,message):
         self.config=message['configuration'];self.consumer=message['consumer_model']
         if self.config['policy'] not in ('vlm','streaming'):
-            from humansense import HumanSense
-            self.human=HumanSense(consent=True,retention_hours=.01)
+            from gamst import Gamst
+            self.human=Gamst(consent=True,retention_hours=.01)
             await self.human.__aenter__()
             factories=json.loads(os.environ.get('GAMST_BENCH_PLUGINS','[]'))
             require(factories,'thin/hybrid policies require explicit installed plugin factories')

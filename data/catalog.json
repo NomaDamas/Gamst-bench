@@ -50,7 +50,8 @@
         "retention": "partial",
         "timing": "partial"
       },
-      "core": true
+      "core": true,
+      "required": true
     },
     {
       "id": "spot",
@@ -109,7 +110,8 @@
         "timing": "direct",
         "transient": "partial"
       },
-      "core": false
+      "core": false,
+      "required": false
     },
     {
       "id": "ovo",
@@ -132,7 +134,8 @@
         "retention": "direct",
         "timing": "partial"
       },
-      "core": false
+      "core": false,
+      "required": false
     },
     {
       "id": "streamingbench",
@@ -180,7 +183,8 @@
         "memory": "partial",
         "revision": "partial"
       },
-      "core": false
+      "core": false,
+      "required": false
     },
     {
       "id": "omnipro",
@@ -227,7 +231,8 @@
         "revision": "direct",
         "timing": "direct"
       },
-      "core": true
+      "core": true,
+      "required": true
     },
     {
       "id": "streamarena",
@@ -299,7 +304,8 @@
         "memory": "direct",
         "timing": "partial"
       },
-      "core": true
+      "core": true,
+      "required": true
     },
     {
       "id": "infstreams",
@@ -334,7 +340,8 @@
         "retention": "partial",
         "resilience": "partial"
       },
-      "core": false
+      "core": false,
+      "required": false
     },
     {
       "id": "omnivideo",
@@ -355,7 +362,8 @@
       "covers": {
         "revision": "partial"
       },
-      "core": false
+      "core": false,
+      "required": false
     },
     {
       "id": "vsas",
@@ -367,18 +375,19 @@
       "metric": "Official continuous-response metrics",
       "dataset_size": "18,000+ annotations (paper)",
       "dataset_url": null,
-      "source_url": "https://arxiv.org/abs/2604.07634",
-      "prepare": "Track official code/data release before integrating.",
-      "limitations": "Announced apple/ml-vsas-bench URL returned 404 at review; research reference only.",
+      "source_url": "https://openaccess.thecvf.com/content/CVPR2026F/html/Vasu_VSAS-Bench_Real-Time_Evaluation_of_Visual_Streaming_Assistant_Models_CVPRF_2026_paper.html",
+      "prepare": "Await and pin the official runner, dataset manifest and scorer release; do not substitute an unofficial implementation.",
+      "limitations": "Paper and official publication are available, but an official executable/data/scorer release was not verified at review time.",
       "phase": 3,
-      "integration": "planned",
+      "integration": "required-blocked",
       "results": [],
       "covers": {
         "timing": "direct",
         "resilience": "partial",
         "cost": "partial"
       },
-      "core": false
+      "core": true,
+      "required": true
     }
   ],
   "arms": [

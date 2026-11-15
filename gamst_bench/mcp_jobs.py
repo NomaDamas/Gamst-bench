@@ -13,15 +13,16 @@ ROOT=Path(__file__).resolve().parents[1]
 from .contracts import read, require, digest, write_new
 from .cloud import gce_identity
 
-CORE_BENCHMARKS=('fastbench','omnipro','streamarena')
-SUPPORTED=set(CORE_BENCHMARKS)
+CORE_BENCHMARKS=('fastbench','omnipro','streamarena','vsas')
+EXECUTABLE_BENCHMARKS=('fastbench','omnipro','streamarena')
+SUPPORTED=set(EXECUTABLE_BENCHMARKS)
 TOKEN=re.compile(r'\{([a-z_]+)\}')
 
 
 def catalog():
     c=read(ROOT/'data/catalog.json')
     recipes=read(ROOT/'mcp/recipes.json')
-    return [{**b,'mcp_support':'registered native runner' if b['id'] in SUPPORTED else 'reference only',
+    return [{**b,'mcp_support':'registered native runner' if b['id'] in SUPPORTED else 'required; blocked pending official runner' if b.get('required') else 'reference only',
              'recipes':[r['id'] for r in recipes if r['benchmark']==b['id']],
              'gpu_validated':False} for b in c['benchmarks']]
 

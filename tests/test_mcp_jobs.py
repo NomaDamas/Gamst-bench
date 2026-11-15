@@ -31,6 +31,9 @@ class JobsTests(unittest.TestCase):
   gcp=self.jobs.environment('gcp',project_id='gamst-project');self.assertFalse(gcp['execution_allowed']);self.assertTrue(any('gcloud'==c[0] for c in gcp['commands']))
  def test_invalid_environment_target_rejected(self):
   with self.assertRaisesRegex(ValueError,'target'):self.jobs.environment('windows-gpu')
+ def test_vsas_is_required_but_not_falsely_executable(self):
+  item=next(b for b in catalog() if b['id']=='vsas')
+  self.assertTrue(item['required']);self.assertEqual(item['mcp_support'],'required; blocked pending official runner');self.assertEqual(item['recipes'],[])
  def test_local_start_denied_before_spawn_or_output(self):
   plan=self.jobs.plan('fastbench')
   with patch('gamst_bench.mcp_jobs.gce_identity',side_effect=ValueError('not GCE')),patch('gamst_bench.mcp_jobs.subprocess.Popen') as popen:

@@ -1,6 +1,6 @@
 # Gamst Bench MCP
 
-The MCP server exposes **three core benchmark families** for the first evaluation campaign: FastBench, OmniPro and StreamArena. The remaining catalog entries stay available as reference or future profiles. The client can inspect plans locally; benchmark downloads and inference require a matching **GCE VM**. The server uses private stdio, normally over SSH. It does not silently provision a VM, accept billing, or modify the MCP host configuration.
+The first campaign has **four required tracks**: FastBench, OmniPro, StreamArena and VSAS-Bench. The first three have registered native recipes. VSAS-Bench is required for Streaming Accuracy / Latency / Consistency, but its official executable/data/scorer release is not currently pinned, so MCP exposes it as `required; blocked pending official runner` and refuses to pretend it is runnable. The client can inspect plans locally; benchmark downloads and inference require a matching GCE VM.
 
 ```mermaid
 flowchart LR
@@ -19,7 +19,7 @@ flowchart LR
 - `detect_environment`: detect OS, architecture, Python, NVIDIA and GCloud availability without side effects.
 - `plan_environment`: generate reviewable local/GCP setup commands; never executes them.
 - `setup_environment`: with `install=true`, installs only the local MCP environment; GCP remains plan-only.
-- `list_benchmarks`: list the three core executable families plus reference-only entries.
+- `list_benchmarks`: list four required tracks; three executable families plus blocked VSAS-Bench.
 - `get_benchmark(benchmark_id)`: source-pinned native command recipes and limitations.
 - `list_profiles`: operator-installed execution profiles and unresolved setup blockers.
 - `plan_evaluation(profile_id)`: frozen profile hash and exact stages; no inference.
@@ -30,17 +30,14 @@ flowchart LR
 
 The API accepts registered profile IDs, never arbitrary caller-supplied shell commands. A profile is trusted operator configuration and can execute code: review it before enabling. Remote model/tool/judge calls inside native code require explicit endpoint and data-transfer review. Offline HF flags prevent implicit Hugging Face model downloads during evaluation; they are **not a network firewall**.
 
-## Native coverage
+## Required coverage
 
-1. **FastBench**: baseline and ProactiveFrame full native presets, combined inference and judging. Same VLM/judge servers required; no oracle focus timing.
-2. **SPOT Detection**: ABD + PNR inference, then native detection scorer. Full event/response traces retained. Other tasks need separate profiles for partial splits and LLM judging.
-3. **OVO**: all 12 native tasks with an offline Qwen2-VL baseline, followed by the official scorer. Online Gamst integration requires the upstream `OVOBenchOnline` model interface. The stale underscore in the upstream score wrapper is corrected to the result directory actually written by `utils/OVOBench.py`.
-4. **OmniPro**: separate Probe and Online profiles with their corresponding native scorers. Online preserves native multiple emits. For AV/V-only/A-only comparisons, duplicate the profile with the upstream modality-specific model choice and keep the checkpoint/settings matched; never pool the modes.
-5. **StreamArena**: offline RTP/HR/Tool profile and a separate continuous StreamMind driver profile for proactive sessions. Each uses the shared judge. A Gamst agent must implement the upstream `StreamingAgent` interface; StreamMind is not Gamst. Configure agent dependencies, tool access, ASR, and judge before enabling.
-6. **StreamingBench**: four task groups, official evaluation and count scripts, explicit 60-second context. Pin/configure the native model loader to downloaded weights. An AV-capable loader is required before an omni score is valid; a vision-only fallback is insufficient.
-7. **Inf-Streams-Eval**: direct generation, answer merge, paired scoring and score merge. This avoids the example scripts' hardcoded NFS paths/eight GPUs. Pin original caption prompt, metadata line counts, baseline output and judge. Record any deviation as a separate protocol track.
+- **FastBench:** transient high-dynamic events and timed QA.
+- **OmniPro:** audio-visual proactive understanding; Probe and Online remain separate modes.
+- **StreamArena:** continuous long-horizon memory, tool use and proactive response.
+- **VSAS-Bench:** required visual streaming assistant track for asynchronous **accuracy, latency and consistency**. Official publication is available, but execution remains blocked until its runner, dataset manifest and scorer are officially released and pinned. No unofficial substitute is accepted.
 
-All recipes were checked against pinned source CLIs. **GPU/model execution has not been validated.** Templates are disabled until dependencies, licenses, datasets, model loaders, judges, paths and output locations are resolved. Native runners differ; software orchestration does not prove an official reproduction.
+Native coverage is intentionally limited to the first three executable families. The remaining catalog entries are reference/future tracks.
 
 ## Installation and connection
 

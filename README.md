@@ -47,19 +47,20 @@ Current public figures are **synthetic protocol checks**. Published reference nu
 
 <!-- MCP:START -->
 <a id="multi-benchmark-mcp"></a>
-## 🔌 Core benchmark MCP
+## 🔌 Required benchmark MCP
 
-Three core benchmark families (FastBench, OmniPro, StreamArena). 10 registered recipes remain available; only these three are in the first campaign. **Code connected; GCP GPU runs and Gamst-specific adapters are not yet validated.**
+Four required benchmark tracks: FastBench, OmniPro, StreamArena and VSAS-Bench. 10 registered recipes cover the three currently executable families; VSAS-Bench is **required but blocked pending its official runner/data/scorer release**.
 
 [MCP tools and deployment guide](docs/MCP.md) · [Private GCP profile templates](mcp/profiles.example.json) · [SSH client example](mcp/client.ssh.example.json)
 
 - **FastBench**: `fastbench-baseline`, `fastbench-proactive`.
 - **OmniPro**: `omnipro-probe`, `omnipro-online`.
 - **StreamArena**: `streamarena-offline`, `streamarena-continuous`.
+- **VSAS-Bench**: required track; no executable recipe is registered until the official release is pinned.
 
-Tools cover catalog, readiness/plan hashes, GCP-only dataset download, asynchronous evaluation, cancellation, persistent status and native artifacts. Profiles preserve separate metrics/splits/modes. Templates for other families remain reference-only until a later campaign.
+Tools cover catalog, readiness/plan hashes, GCP-only dataset download, asynchronous evaluation, cancellation, persistent status and native artifacts.
 
-No inference or benchmark dataset download was executed locally. MCP protocol tests use non-model fixtures. Full-system costs and event latencies require additional real instrumentation/review; host GPU samples alone do not establish savings.
+No inference or benchmark dataset download was executed locally.
 
 <!-- MCP:END -->
 
@@ -268,15 +269,15 @@ No verified numeric result imported.
 
 ### VSAS-Bench · CVPR 2026 Findings
 
-[Official source](https://arxiv.org/abs/2604.07634)
+[Official source](https://openaccess.thecvf.com/content/CVPR2026F/html/Vasu_VSAS-Bench_Real-Time_Evaluation_of_Visual_Streaming_Assistant_Models_CVPRF_2026_paper.html)
 
 - **Problem:** Latency-sensitive continuous responses
 - **Existing approach:** Synchronous/asynchronous protocols with dense temporal annotations.
 - **Gamst hypothesis (untested):** Use asynchronous evaluation principles to test stale answers under load.
 - **Metrics:** Official continuous-response metrics
-- **Data:** 18,000+ annotations (paper). Track official code/data release before integrating.
-- **Limits:** Announced apple/ml-vsas-bench URL returned 404 at review; research reference only.
-- **Integration:** planned; phase 3.
+- **Data:** 18,000+ annotations (paper). Await and pin the official runner, dataset manifest and scorer release; do not substitute an unofficial implementation.
+- **Limits:** Paper and official publication are available, but an official executable/data/scorer release was not verified at review time.
+- **Integration:** required-blocked; phase 3.
 
 No verified numeric result imported.
 

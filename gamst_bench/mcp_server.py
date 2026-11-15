@@ -21,7 +21,7 @@ def create_server(jobs):
     @server.tool(structured_output=True)
     @errors
     def list_benchmarks() -> dict[str, Any]:
-        """List the three core executable families (FastBench, OmniPro, StreamArena) plus reference-only catalog entries."""
+        """List four required tracks; FastBench, OmniPro and StreamArena are executable, VSAS-Bench is blocked pending official release."""
         return {'benchmarks':catalog()}
     @server.tool(structured_output=True)
     @errors

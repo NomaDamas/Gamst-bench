@@ -16,6 +16,25 @@ def _sha(value, name):
         raise ValueError(f'{name} must be lowercase SHA256')
     return value
 
+def _commit_set(value):
+    if not isinstance(value, dict) or set(value) != {'gamst', 'gamstcrew', 'gamst-bench'}:
+        raise ValueError('repository_commits must contain gamst, gamstcrew and gamst-bench')
+    for name, revision in value.items():
+        _text(revision, 'repository commit '+name, 40)
+        if len(revision) != 40 or any(c not in '0123456789abcdef' for c in revision):
+            raise ValueError('repository commit '+name+' must be a lowercase 40-character SHA')
+    return value
+
+def repository_commits(value):
+    """Validate optional repository provenance.
+
+    Existing synthetic fixtures predate source provenance and may omit this
+    field. Measured collection/evaluation enforce its presence explicitly.
+    """
+    if value is None:
+        return None
+    return _commit_set(value)
+
 def _canonical(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False).encode()
 
@@ -32,6 +51,7 @@ def validate_manifest(manifest):
         raise ValueError('manifest digest mismatch')
     if not isinstance(manifest.get('dependency_lock'), str) or not manifest['dependency_lock']:
         raise ValueError('dependency_lock is required')
+    repository_commits(manifest.get('repository_commits'))
     providers = manifest.get('providers')
     if not isinstance(providers, list) or not providers or len(providers) > 128:
         raise ValueError('providers must contain 1..128 entries')

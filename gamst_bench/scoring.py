@@ -3,7 +3,7 @@ import math
 import random
 from decimal import Decimal, localcontext
 from .contracts import validate_plan, require, number, integer, digest
-from .manifest import manifest_digest, validate_manifest
+from .manifest import manifest_digest, repository_commits, validate_manifest
 
 def percentile(values, fraction):
     return sorted(values)[max(0, math.ceil(len(values)*fraction)-1)] if values else None
@@ -23,6 +23,7 @@ def score_row(plan, task, trace, assessment):
                 'trace runtime manifest differs from plan')
         require(type(trace.get('temporal_metrics')) is dict,
                 'measured trace temporal metrics are required')
+        repository_commits(trace.get('repository_commits'))
     require(assessment['trace_sha256'] == trace['trace_sha256'], 'assessment must bind exact trace')
     require(assessment.get('review_status') in ('synthetic', 'reviewed'), 'unreviewed semantic assessment')
     if plan['evidence'] == 'measured':
@@ -159,6 +160,10 @@ def evaluate(plan, traces, assessments, *, runtime_manifest=None):
         validate_manifest(runtime_manifest)
         require(manifest_digest(runtime_manifest)==plan['runtime_manifest_sha256'],
                 'runtime manifest differs from frozen plan')
+        expected_commits = runtime_manifest.get('repository_commits')
+        require(expected_commits is not None,
+                'measured evaluation requires repository commits')
+        repository_commits(expected_commits)
     expected={(s['id'],t['id']) for s in plan['systems'] for t in plan['tasks']}
     lookup={}; grades={}
     for trace in traces:
@@ -166,6 +171,10 @@ def evaluate(plan, traces, assessments, *, runtime_manifest=None):
     for assessment in assessments:
         key=(assessment['system_id'],assessment['task_id']);require(key in expected and key not in grades,'duplicate or unknown assessment');grades[key]=assessment
     require(set(lookup)==expected and set(grades)==expected,'missing runs or assessments; failures cannot be omitted')
+    if plan['evidence'] == 'measured':
+        for trace in lookup.values():
+            require(trace.get('repository_commits') == expected_commits,
+                    'trace repository commits differ from runtime manifest')
     rows=[score_row(plan,t,lookup[s['id'],t['id']],grades[s['id'],t['id']]) for s in plan['systems'] for t in plan['tasks']]
     return dict(schema_version=2,release=plan['release'],experiment_id=plan['id'],plan_sha256=plan['plan_sha256'],evidence=plan['evidence'],
         runtime_manifest_sha256=plan.get('runtime_manifest_sha256'),

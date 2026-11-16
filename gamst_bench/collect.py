@@ -29,8 +29,9 @@ def rss_tree(pid):
         return sum(rss for p,_,rss in processes if p in selected)/1024
     except (OSError,ValueError,subprocess.SubprocessError):return None
 
-async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None):
-    started=time.monotonic(); outputs=[]; resources=[]; sent=[]; dropped=0; calls=0
+async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None,
+                   repository_commits=None):
+    started=time.monotonic(); outputs=[]; resources=[]; sent=[]; packet_checksums=[]; dropped=0; calls=0
     integrity_counter=PacketIntegrityCounter()
     input_by_id={item['id']:item for item in task['inputs']}
     answer_ready=None; quantities=None; synthetic=False; errors=[]; stderr_bytes=bytearray()
@@ -53,7 +54,12 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None)
             finally:pending.task_done()
     async def schedule():
         nonlocal dropped
-        await pending.put({'type':'start','schema_version':2,'configuration':system,'consumer_model':plan['consumer_model'],'consumer_revision':plan['consumer_revision']})
+        start={'type':'start','schema_version':2,'configuration':system,
+               'consumer_model':plan['consumer_model'],'consumer_revision':plan['consumer_revision']}
+        if runtime_manifest_sha256 is not None:
+            start['provenance']={'runtime_manifest_sha256':runtime_manifest_sha256,
+                                 'repository_commits':repository_commits}
+        await pending.put(start)
         events=[(i['at_ms'],0,{'type':'input','input':i}) for i in task['inputs']]
         events.append((task['query_ms'],1,{'type':'query','query':task['query']}))
         for at,_,message in sorted(events,key=lambda e:(e[0],e[1])):
@@ -82,6 +88,11 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None)
             # dispatch and before adding the collector receive timestamp.
             if 'packet' in item:
                 verify_packet_checksum(item['packet'], counter=integrity_counter)
+                checksum=item['packet']['checksum']
+                if len(packet_checksums) < 128:
+                    packet_checksums.append(dict(algorithm=checksum['algorithm'],
+                                                 version=checksum['version'],
+                                                 sha256=checksum['sha256']))
             item['received_ms']=elapsed() # Never trust provider timestamps for delivery.
             require(item.get('synthetic') is not True or plan['evidence']=='synthetic','synthetic adapter in measured experiment')
             synthetic |= item.get('synthetic') is True
@@ -139,6 +150,7 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None)
         diagnostics=errors,command_sha256=digest(command),stderr_sha256=digest(stderr_bytes.hex()),accounting_status='unverified',
         resource_scope='Owned adapter process tree only. Remote/local model servers and device memory require separate instrumentation.',
         query_cutoff_ms=task['query_ms'], runtime_manifest_sha256=runtime_manifest_sha256,
+        repository_commits=repository_commits, packet_checksums=packet_checksums,
         integrity_rejected=integrity_counter.integrity_rejected,
         temporal_metrics=temporal_metrics(outputs, query_cutoff_ms=task['query_ms'],
             known_evidence=input_by_id))
@@ -147,11 +159,14 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None)
 
 async def collect(plan, commands, output, *, runtime_manifest=None):
     validate_plan(plan)
-    runtime_manifest_sha256=None
+    runtime_manifest_sha256=None; repository_commits=None
     if plan['evidence']=='measured':
         require(runtime_manifest is not None, 'measured collection requires frozen runtime manifest')
         validate_manifest(runtime_manifest)
         runtime_manifest_sha256=manifest_digest(runtime_manifest)
+        require(runtime_manifest.get('repository_commits') is not None,
+                'measured collection requires repository commits')
+        repository_commits=dict(runtime_manifest['repository_commits'])
         require(runtime_manifest_sha256==plan['runtime_manifest_sha256'], 'runtime manifest differs from frozen plan')
     require(set(commands)=={s['id'] for s in plan['systems']},'provide one adapter command per configuration')
     for command in commands.values():
@@ -166,13 +181,14 @@ async def collect(plan, commands, output, *, runtime_manifest=None):
         systems=plan['systems'] if index%2==0 else list(reversed(plan['systems']))
         for system in systems:
             try:
-                trace=await run_task(plan,system,task,commands[system['id']],runtime_manifest_sha256=runtime_manifest_sha256)
+                trace=await run_task(plan,system,task,commands[system['id']],runtime_manifest_sha256=runtime_manifest_sha256,repository_commits=repository_commits)
             except OSError as exc:
                 trace=dict(plan_sha256=plan['plan_sha256'],input_sha256=task['input_sha256'],task_id=task['id'],system_id=system['id'],
                     status='error',clock='wall',synthetic=plan['evidence']=='synthetic',answer_ready_ms=None,elapsed_ms=0,
                     outputs=[],resources=[],sent=[],dropped_inputs=0,cost_quantities=None,calls=0,
                     diagnostics=['spawn_failed',type(exc).__name__],command_sha256=digest(commands[system['id']]),accounting_status='unverified',
                     query_cutoff_ms=task['query_ms'],runtime_manifest_sha256=runtime_manifest_sha256,
+                    repository_commits=repository_commits,packet_checksums=[],
                     integrity_rejected=0,
                     temporal_metrics=temporal_metrics([],query_cutoff_ms=task['query_ms']))
                 trace['trace_sha256']=digest(trace)

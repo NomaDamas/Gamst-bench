@@ -152,6 +152,12 @@ class CollectorTests(unittest.IsolatedAsyncioTestCase):
   self.assertEqual(answer['evidence_provenance'][0]['capture_timestamp_ms'],0)
   self.assertEqual(trace['query_cutoff_ms'],50)
   self.assertIn('query_cutoff_violations',trace['temporal_metrics'])
+ async def test_query_watermark_crosses_jsonl_boundary(self):
+  command=[sys.executable,str(Path('tests/query_watermark_adapter.py').resolve())]
+  trace=await run_task(self.plan,self.plan['systems'][0],self.plan['tasks'][0],command)
+  self.assertEqual(trace['status'],'success')
+  watermark=next(o for o in trace['outputs'] if o['type']=='meta')
+  self.assertEqual(watermark['query_ms'],self.plan['tasks'][0]['query_ms'])
  async def test_documented_direct_media_blob_is_materialized(self):
   import hashlib
   raw=b'jpeg-fixture'

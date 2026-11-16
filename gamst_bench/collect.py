@@ -61,7 +61,11 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None,
                                  'repository_commits':repository_commits}
         await pending.put(start)
         events=[(i['at_ms'],0,{'type':'input','input':i}) for i in task['inputs']]
-        events.append((task['query_ms'],1,{'type':'query','query':task['query']}))
+        # Carry the internal evidence-causality watermark through the adapter
+        # boundary.  Adapters must not truncate or rewrite the user query; the
+        # timestamp only prevents post-query captures from supporting it.
+        events.append((task['query_ms'],1,{'type':'query','query':task['query'],
+                                           'query_ms':task['query_ms']}))
         for at,_,message in sorted(events,key=lambda e:(e[0],e[1])):
             await asyncio.sleep(max(0,(at-elapsed())/1000))
             if message['type']=='input' and ('blob' in message['input']['payload'] or 'path' in message['input']['payload']):

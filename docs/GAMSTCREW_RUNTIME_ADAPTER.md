@@ -1,9 +1,9 @@
 # GamstCrew Core-to-bench runtime adapter
 
-This document freezes the design for the real runtime execution slice of
-GAMST #331 and Gamst-bench #1. It is written before implementation so that
-the adapter remains a narrow execution seam rather than a second perception
-or evaluation framework.
+This document freezes the design and records the implementation evidence for
+the real runtime execution slice of GAMST #331, Gamst-bench #1 and #9. The
+adapter remains a narrow execution seam rather than a second perception or
+evaluation framework.
 
 The adapter is a JSONL process selected by the frozen bench command map. The
 collector still owns the `start → input → query → end` schedule, output
@@ -166,3 +166,34 @@ No synthetic fixture, checksum probe or dependency-free geometry execution may
 close those gates. The adapter's first run is labelled
 `runtime_contract_execution`, with `quality_claims: false` and
 `host_acceptance: false` in its report metadata.
+
+## Implementation evidence
+
+The live JSONL adapter is implemented at
+`gamst_bench.adapters.gamstcrew_runtime`. It starts a real
+`CoreProviderRuntime` through `RuntimeManager`, executes the dependency-free
+`geometry.ground_plane` Core provider in an isolated child, emits checksummed
+packets, and reports distinct `startup_failure`, `provider_timeout`,
+`provider_protocol_failure`, `child_crash` and `protocol_failure` categories
+with bounded parent/child summaries.
+
+Focused and full dependency-complete validation was run with Python 3.10.11:
+
+```text
+PYTHONDONTWRITEBYTECODE=1 \
+PYTHONPATH=/Users/jinminseong/Desktop/catch-your-mind:/Users/jinminseong/Desktop/catch-your-mind/.local-run/GamstCrew:. \
+python3 -m unittest discover -s tests -p 'test_gamstcrew_runtime_adapter.py' -v
+Ran 4 tests ... OK
+
+PYTHONDONTWRITEBYTECODE=1 \
+PYTHONPATH=/Users/jinminseong/Desktop/catch-your-mind:/Users/jinminseong/Desktop/catch-your-mind/.local-run/GamstCrew:. \
+python3 -m unittest discover -s tests -v
+Ran 77 tests in 9.728s
+OK (skipped=1)
+```
+
+The focused suite includes a live `gamst_bench.collect.run_task` invocation,
+packet checksum and query-watermark assertions, evidence provenance, clean
+Crew lifecycle termination, startup-failure classification and parent/child
+failure-category mapping. The exact measured manifest/trace artifact and
+independent review remain required before #9/#331 closure.

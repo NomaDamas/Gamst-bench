@@ -1,0 +1,30 @@
+{
+  "kind": "runtime_contract_execution",
+  "quality_claims": false,
+  "host_acceptance": false,
+  "default_selection": false,
+  "status": "success",
+  "repository_commits": {
+    "gamst": "4ba1b4c2f4d5b4b91b5cf3f5e87b6e3d3e0f4f1a",
+    "gamstcrew": "f357789199579943205d9453c01aa9a80e05c41b",
+    "gamst-bench": "11a22a3f47d4ca20446889717b447d66e5bc04fc"
+  },
+  "manifest_sha256": "1dd75885d8dd96a3ed1b5451d550e63771794fdb068b5107f8c18a5c6035475d",
+  "trace_sha256": "8a98d4cd55a88cec442c298466171fb09c6a63728f593f4520badc03df8586e3",
+  "summary_artifact_sha256": "9f344dde02aadeb40926676d877b205894e779570898df67aea8ab26eed5903b",
+  "packet_checksums": [
+    "e93bb72f5a618416ea2dde86954d05694938bdb9be534e5d29907ca974398973",
+    "f99bcc59dbaae523b1e08085c8234cfa17cd4cdbf6bf513b9fc112a29f493376"
+  ],
+  "query_cutoff_ms": 50,
+  "focused_tests": "4 passed",
+  "full_tests": "78 passed, 1 skipped",
+  "artifact_directory": "runs/runtime-contract-2026-11-16/",
+  "limits": [
+    "dependency-complete local runtime-contract execution only",
+    "no trained-model quality claim",
+    "no real-host acceptance claim",
+    "no CostBench/default-selection claim",
+    "independent review remains required"
+  ]
+}

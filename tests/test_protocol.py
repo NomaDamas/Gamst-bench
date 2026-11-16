@@ -17,6 +17,9 @@ class ProtocolTests(unittest.TestCase):
   t=self.traces[index];task=next(tk for tk in self.plan['tasks'] if tk['id']==t['task_id']);return score_row(self.plan,task,t,self.grades[index])
  def test_synthetic_never_passes_acceptance(self):
   self.assertEqual(self.report['acceptance'],'not_established');self.assertTrue(all(c['status']=='not_passed' for c in self.report['comparisons']))
+ def test_temporal_metrics_are_consumed_in_rows_and_summaries(self):
+  row=self.row();self.assertIn('temporal_metrics',row)
+  self.assertIn('temporal',self.report['summaries']['A'])
  def test_plan_mutation_rejected(self):
   self.plan['consumer_model']='changed'
   with self.assertRaisesRegex(ValueError,'changed after freeze'):validate_plan(self.plan)

@@ -104,6 +104,7 @@ def score_row(plan, task, trace, assessment):
         unsupported_claims=assessment['unsupported_claims'], claim_count=assessment['claim_count'], false_alerts=assessment['false_alerts'],
         abstained=assessment['abstained'], answerable=task['answerable'], stale_error=assessment['stale_error'],
         cost_usd=cost, cost_usd_exact=str(exact_cost) if exact_cost is not None else None, vlm_cost_usd=vlm_cost, calls=trace.get('calls',0), resources=trace.get('resources',[]),
+        temporal_metrics=trace.get('temporal_metrics'),
         timeline=[{'type':'evidence','received_ms':task['available_ms'],'label':'Evidence available'}, {'type':'query','received_ms':task['query_ms'],'label':task['query']}] + [{'type':o['type'],'received_ms':o['received_ms'],'label':str(o.get('text',o['type']))[:300]} for o in outputs if o.get('type') in ('context','answer','alert','error')],
         trace_sha256=trace['trace_sha256'])
 
@@ -113,6 +114,9 @@ def summarize(rows):
     facts = sum(r['critical_facts'] for r in rows)
     claims = sum(r['claim_count'] for r in rows)
     resources = [p for r in rows for p in r['resources']]
+    temporal=[r.get('temporal_metrics') or {} for r in rows]
+    temporal_counts={key:sum((m.get(key,0) or 0) for m in temporal) for key in
+        ('query_cutoff_violations','evidence_id_errors','stale_state_errors','dropped_inputs','recovery_events','escalations')}
     return dict(tasks=len(rows), sessions=len({r['session_id'] for r in rows}), success_rate=mean([int(r['success']) for r in rows]), quality=mean([r['quality'] for r in rows]),
         critical_recall=ratio(sum(r['correct_facts'] for r in rows), facts), unsupported_rate=ratio(sum(r['unsupported_claims'] for r in rows),claims),
         stale_rate=mean([int(r['stale_error']) for r in rows]), false_alerts_per_hour=ratio(sum(r['false_alerts'] for r in rows),hours),
@@ -120,7 +124,8 @@ def summarize(rows):
         p50_ms=percentile([r['latency_ms'] for r in rows],.5), p95_ms=percentile([r['latency_ms'] for r in rows],.95),
         context_p95_ms=percentile([r['context_latency_ms'] for r in rows if r['context_latency_ms'] is not None],.95),
         cost_usd=cost, cost_per_hour=ratio(cost,hours), hours=hours, calls=sum(r['calls'] for r in rows),
-        peak_rss_mb=max((p['rss_mb'] for p in resources if p.get('rss_mb') is not None),default=None), failures=sum(r['status']!='success' for r in rows))
+        peak_rss_mb=max((p['rss_mb'] for p in resources if p.get('rss_mb') is not None),default=None), failures=sum(r['status']!='success' for r in rows),
+        temporal=temporal_counts)
 
 def comparison(plan, rows, baseline, candidate):
     paired = {s: {r['task_id']:r for r in rows if r['system_id']==s} for s in (baseline,candidate)}

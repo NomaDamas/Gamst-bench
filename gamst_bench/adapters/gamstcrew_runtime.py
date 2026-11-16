@@ -213,14 +213,14 @@ class Adapter:
         print(json.dumps(item, ensure_ascii=False, separators=(",", ":")), flush=True)
 
     async def start(self, message: dict[str, Any]):
-        from gamst import ProcessProvider
-        from gamstcrew import CoreProviderRuntime, RuntimeDescriptor, RuntimeManager
-
         self.phase = "startup"
         configuration = message.get("configuration")
         if not isinstance(configuration, dict):
             raise ValueError("start.configuration is required")
         _add_import_roots(configuration)
+        from gamst import ProcessProvider
+        from gamstcrew import CoreProviderRuntime, RuntimeDescriptor, RuntimeManager
+
         provider_config, python, profile, name = _runtime_configuration(configuration)
         self.system = configuration
         self.subject_id = configuration.get("subject_id", "local-user")

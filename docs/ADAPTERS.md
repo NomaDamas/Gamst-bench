@@ -1,5 +1,15 @@
 # JSONL adapter contract
 
+## GAMST Core through GamstCrew
+
+The live runtime-manager-to-benchmark execution seam is frozen in
+[`GAMSTCREW_RUNTIME_ADAPTER.md`](GAMSTCREW_RUNTIME_ADAPTER.md). It defines the
+JSONL lifecycle, the real Crew-owned Core provider boundary, temporal packet and
+checksum preservation, failure categories, provenance, and the explicit limits
+of the first `runtime_contract_execution` profile. The document is design
+evidence only until issue [#9](https://github.com/NomaDamas/Gamst-bench/issues/9)
+has a passing implementation and trace artifact.
+
 The collector runs an explicitly supplied argv command, never a shell string. Use an absolute executable path. stdout is reserved for newline-delimited JSON; stderr is diagnostic. No model weights are downloaded by the benchmark.
 
 An adapter output may include a temporal packet in its `packet` member. The

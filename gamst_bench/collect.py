@@ -51,12 +51,12 @@ async def run_task(plan, system, task, command):
         events.append((task['query_ms'],1,{'type':'query','query':task['query']}))
         for at,_,message in sorted(events,key=lambda e:(e[0],e[1])):
             await asyncio.sleep(max(0,(at-elapsed())/1000))
-            if message['type']=='input' and 'blob' in message['input']['payload']:
-                item=message['input'];blob=item['payload']['blob']
+            if message['type']=='input' and ('blob' in message['input']['payload'] or 'path' in message['input']['payload']):
+                item=message['input'];blob=item['payload'].get('blob',item['payload'])
                 raw=await asyncio.to_thread(Path(blob['path']).read_bytes)
                 require(hashlib.sha256(raw).hexdigest()==blob['sha256'],'media changed after plan freeze')
                 require(len(raw)<=4*1024*1024,'media packet exceeds 4 MiB')
-                message={'type':'input','input':dict(item,payload={k:v for k,v in item['payload'].items() if k!='blob'}|{blob['field']:base64.b64encode(raw).decode()})}
+                message={'type':'input','input':dict(item,payload={k:v for k,v in item['payload'].items() if k not in ('blob','path','sha256','field')}|{blob['field']:base64.b64encode(raw).decode()})}
             if message['type']=='input' and pending.full():
                 dropped+=1;add_output({'type':'drop','received_ms':elapsed(),'input_id':message['input']['id']});continue
             await pending.put(message)

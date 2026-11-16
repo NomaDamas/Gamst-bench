@@ -118,6 +118,15 @@ class CollectorTests(unittest.IsolatedAsyncioTestCase):
   self.assertEqual(trace['status'],'success');self.assertEqual(trace['clock'],'wall');self.assertTrue(trace['synthetic'])
   self.assertGreaterEqual(trace['answer_ready_ms'],50)
   self.assertEqual(trace['trace_sha256'],digest({k:v for k,v in trace.items() if k!='trace_sha256'}))
+ async def test_documented_direct_media_blob_is_materialized(self):
+  import hashlib
+  raw=b'jpeg-fixture'
+  with tempfile.TemporaryDirectory() as d:
+   path=Path(d)/'image.jpg';path.write_bytes(raw)
+   task=self.plan['tasks'][0];task['inputs']=[dict(task['inputs'][0],payload={'path':str(path),'sha256':hashlib.sha256(raw).hexdigest(),'field':'jpeg_base64'})]
+   self.plan=freeze(self.plan)
+   trace=await run_task(self.plan,self.plan['systems'][0],task,self.command+['--require-jpeg'])
+   self.assertEqual(trace['status'],'success')
  async def test_hung_process_records_timeout(self):
   trace=await run_task(self.plan,self.plan['systems'][0],self.plan['tasks'][0],self.command+['--hang'])
   self.assertEqual(trace['status'],'timeout')

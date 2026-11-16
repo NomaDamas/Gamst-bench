@@ -17,6 +17,11 @@ class ProtocolTests(unittest.TestCase):
   t=self.traces[index];task=next(tk for tk in self.plan['tasks'] if tk['id']==t['task_id']);return score_row(self.plan,task,t,self.grades[index])
  def test_synthetic_never_passes_acceptance(self):
   self.assertEqual(self.report['acceptance'],'not_established');self.assertTrue(all(c['status']=='not_passed' for c in self.report['comparisons']))
+ def test_checked_in_fixture_artifacts_match_generator(self):
+  root=Path(__file__).resolve().parents[1]/'fixtures/protocol-v3-generated'
+  for name,expected in (('plan',self.plan),('traces',self.traces),('assessments',self.grades),('report',self.report)):
+   with self.subTest(name=name):
+    self.assertEqual(json.loads((root/(name+'.json')).read_text()),expected)
  def test_temporal_metrics_are_consumed_in_rows_and_summaries(self):
   row=self.row();self.assertIn('temporal_metrics',row)
   self.assertIn('temporal',self.report['summaries']['A'])

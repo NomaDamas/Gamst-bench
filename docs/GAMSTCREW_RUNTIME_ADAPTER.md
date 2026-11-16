@@ -100,7 +100,7 @@ is written to adapter stdout. The mapping is:
 | `event_id` | Stable adapter event ID derived from the accepted input and provider output; unique per revision |
 | `stream_id` / `subject_id` | Frozen source/subject identifiers from the task configuration |
 | `modality` / `event_type` | Core capability metadata (`video`, `geometry.plane_points`) |
-| `source_clock` | `monotonic` (or the explicit Core source clock) |
+| `source_clock` | `bench_elapsed` for the current collector schedule; the live Core worker identity is carried separately in `clock_id`/`clock_epoch` |
 | `capture_timestamp_ms` | Original `InputFrame.timestamp_ms` |
 | `receive_timestamp_ms` | Adapter receive time, measured locally and never copied from provider output |
 | `processing_start_ms` / `processing_end_ms` | Adapter/Crew monotonic processing interval when available; otherwise `null`, never guessed |
@@ -112,7 +112,7 @@ is written to adapter stdout. The mapping is:
 | `freshness_ms` | Frozen profile freshness bound |
 | `evidence_ids` / `source_spans` | Input ID and Core evidence lineage only; no hidden annotation IDs |
 | `query_cutoff_ms` | Internal watermark attached only when the packet is used for query support; a packet captured after it is rejected for that use |
-| `clock_id` / `clock_epoch` | Exact live provider clock identity and worker epoch; a restart creates a new epoch |
+| `clock_id` / `clock_epoch` | Exact live provider clock identity and worker epoch; a restart creates a new epoch. This is not replaced by the collector-relative `bench_elapsed` label |
 | `checksum` | `EventPacket.to_dict()` canonical SHA-256 envelope, verified by the bench collector before dispatch |
 
 The checksum covers the canonical packet body and is not copied into the
@@ -188,7 +188,7 @@ Ran 4 tests ... OK
 PYTHONDONTWRITEBYTECODE=1 \
 PYTHONPATH=/Users/jinminseong/Desktop/catch-your-mind:/Users/jinminseong/Desktop/catch-your-mind/.local-run/GamstCrew:. \
 python3 -m unittest discover -s tests -v
-Ran 77 tests in 9.728s
+Ran 78 tests in 9.800s
 OK (skipped=1)
 ```
 

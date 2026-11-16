@@ -7,7 +7,8 @@ import os
 import signal
 import time
 from pathlib import Path
-from .contracts import canonical, digest, require, validate_plan, write_new
+from .contracts import (PacketIntegrityCounter, canonical, digest, require,
+                        validate_plan, verify_packet_checksum, write_new)
 from .manifest import manifest_digest, validate_manifest
 from .temporal_metrics import temporal_metrics
 
@@ -30,6 +31,7 @@ def rss_tree(pid):
 
 async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None):
     started=time.monotonic(); outputs=[]; resources=[]; sent=[]; dropped=0; calls=0
+    integrity_counter=PacketIntegrityCounter()
     input_by_id={item['id']:item for item in task['inputs']}
     answer_ready=None; quantities=None; synthetic=False; errors=[]; stderr_bytes=bytearray()
     elapsed=lambda: (time.monotonic()-started)*1000
@@ -76,6 +78,10 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None)
             require(len(line)<=MAX_LINE and line.endswith(b'\n'),'bounded complete JSON line required')
             item=json.loads(line);canonical(item)
             require(type(item) is dict and item.get('type') in ('context','answer','alert','usage','resource','error','meta'), 'invalid adapter output')
+            # Optional temporal packets are verified before receiver-side
+            # dispatch and before adding the collector receive timestamp.
+            if 'packet' in item:
+                verify_packet_checksum(item['packet'], counter=integrity_counter)
             item['received_ms']=elapsed() # Never trust provider timestamps for delivery.
             require(item.get('synthetic') is not True or plan['evidence']=='synthetic','synthetic adapter in measured experiment')
             synthetic |= item.get('synthetic') is True
@@ -133,6 +139,7 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None)
         diagnostics=errors,command_sha256=digest(command),stderr_sha256=digest(stderr_bytes.hex()),accounting_status='unverified',
         resource_scope='Owned adapter process tree only. Remote/local model servers and device memory require separate instrumentation.',
         query_cutoff_ms=task['query_ms'], runtime_manifest_sha256=runtime_manifest_sha256,
+        integrity_rejected=integrity_counter.integrity_rejected,
         temporal_metrics=temporal_metrics(outputs, query_cutoff_ms=task['query_ms'],
             known_evidence=input_by_id))
     trace['trace_sha256']=digest(trace)
@@ -166,6 +173,7 @@ async def collect(plan, commands, output, *, runtime_manifest=None):
                     outputs=[],resources=[],sent=[],dropped_inputs=0,cost_quantities=None,calls=0,
                     diagnostics=['spawn_failed',type(exc).__name__],command_sha256=digest(commands[system['id']]),accounting_status='unverified',
                     query_cutoff_ms=task['query_ms'],runtime_manifest_sha256=runtime_manifest_sha256,
+                    integrity_rejected=0,
                     temporal_metrics=temporal_metrics([],query_cutoff_ms=task['query_ms']))
                 trace['trace_sha256']=digest(trace)
             # Ordinal paths avoid interpreting task/config identifiers as file paths.

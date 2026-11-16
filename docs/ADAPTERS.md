@@ -2,6 +2,15 @@
 
 The collector runs an explicitly supplied argv command, never a shell string. Use an absolute executable path. stdout is reserved for newline-delimited JSON; stderr is diagnostic. No model weights are downloaded by the benchmark.
 
+An adapter output may include a temporal packet in its `packet` member. The
+collector verifies its versioned SHA-256 envelope before adding receive-time
+metadata or dispatching the output to scoring. The covered bytes are canonical
+UTF-8 JSON (`ensure_ascii=false`, sorted keys, compact separators,
+`allow_nan=false`) with the `checksum` member excluded. A mismatch rejects the
+output and increments `integrity_rejected` in the trace. Packets without a
+checksum are rejected; legacy acceptance is an explicit compatibility choice
+for direct contract consumers and is not enabled by the collector.
+
 Input messages, in order:
 
 ```json

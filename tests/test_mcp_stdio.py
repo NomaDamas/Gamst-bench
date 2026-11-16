@@ -1,10 +1,17 @@
 """Real MCP client/server handshake; never starts an inference job."""
-import importlib.util
 import sys
 import unittest
 from pathlib import Path
 
-@unittest.skipUnless(importlib.util.find_spec('mcp'),'install requirements-mcp.txt for protocol tests')
+def _mcp_client_available():
+ try:
+  from mcp import Client, StdioServerParameters  # noqa: F401
+ except (ImportError, AttributeError):
+  return False
+ return True
+
+
+@unittest.skipUnless(_mcp_client_available(),'install requirements-mcp.txt for protocol tests')
 class StdioTests(unittest.IsolatedAsyncioTestCase):
  async def test_real_stdio_tools_and_catalog(self):
   from mcp import Client,StdioServerParameters

@@ -4,6 +4,7 @@
   "experiment_id": "gamst-protocol-fixtures-v3",
   "plan_sha256": "9471ca672b996763277a1a19c6d59f4b96ebb7c60cfcbe31baeb2078d93fb37c",
   "evidence": "synthetic",
+  "runtime_manifest_sha256": null,
   "provenance": "Synthetic protocol fixtures; no trained model execution.",
   "protocol": "gamst-context-v0.2",
   "hardware": "Synthetic protocol fixture",
@@ -310,6 +311,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -425,6 +427,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -540,6 +543,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -655,6 +659,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -770,6 +775,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -885,6 +891,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1000,6 +1007,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1115,6 +1123,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1230,6 +1239,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1345,6 +1355,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1460,6 +1471,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1575,6 +1587,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1690,6 +1703,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1805,6 +1819,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -1920,6 +1935,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2035,6 +2051,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2150,6 +2167,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2265,6 +2283,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2380,6 +2399,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2495,6 +2515,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2610,6 +2631,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2725,6 +2747,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2840,6 +2863,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -2955,6 +2979,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3070,6 +3095,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3185,6 +3211,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3300,6 +3327,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3415,6 +3443,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3530,6 +3559,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3645,6 +3675,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3760,6 +3791,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3875,6 +3907,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -3990,6 +4023,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4105,6 +4139,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4220,6 +4255,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4335,6 +4371,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4450,6 +4487,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4565,6 +4603,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4680,6 +4719,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4795,6 +4835,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -4910,6 +4951,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5025,6 +5067,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5140,6 +5183,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5255,6 +5299,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5370,6 +5415,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5485,6 +5531,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5600,6 +5647,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5715,6 +5763,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5830,6 +5879,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -5945,6 +5995,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6060,6 +6111,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6175,6 +6227,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6290,6 +6343,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6405,6 +6459,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6520,6 +6575,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6635,6 +6691,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6750,6 +6807,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6865,6 +6923,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -6980,6 +7039,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7095,6 +7155,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7210,6 +7271,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7325,6 +7387,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7440,6 +7503,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7555,6 +7619,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7670,6 +7735,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7785,6 +7851,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -7900,6 +7967,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8015,6 +8083,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8130,6 +8199,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8245,6 +8315,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8360,6 +8431,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8475,6 +8547,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8590,6 +8663,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8705,6 +8779,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8820,6 +8895,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -8935,6 +9011,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9050,6 +9127,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9165,6 +9243,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9280,6 +9359,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9395,6 +9475,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9510,6 +9591,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9625,6 +9707,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9740,6 +9823,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9855,6 +9939,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -9970,6 +10055,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10085,6 +10171,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10200,6 +10287,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10315,6 +10403,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10430,6 +10519,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10545,6 +10635,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10660,6 +10751,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10775,6 +10867,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -10890,6 +10983,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11005,6 +11099,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11120,6 +11215,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11235,6 +11331,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11350,6 +11447,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11465,6 +11563,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11580,6 +11679,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11695,6 +11795,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11810,6 +11911,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -11925,6 +12027,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12040,6 +12143,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12155,6 +12259,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12270,6 +12375,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12385,6 +12491,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12500,6 +12607,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12615,6 +12723,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12730,6 +12839,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12845,6 +12955,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -12960,6 +13071,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13075,6 +13187,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13190,6 +13303,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13305,6 +13419,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13420,6 +13535,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13535,6 +13651,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13650,6 +13767,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13765,6 +13883,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13880,6 +13999,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -13995,6 +14115,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14110,6 +14231,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14225,6 +14347,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14340,6 +14463,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14455,6 +14579,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14570,6 +14695,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14685,6 +14811,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14800,6 +14927,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -14915,6 +15043,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15030,6 +15159,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15145,6 +15275,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15260,6 +15391,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15375,6 +15507,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15490,6 +15623,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15605,6 +15739,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15720,6 +15855,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15835,6 +15971,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -15950,6 +16087,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16065,6 +16203,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16180,6 +16319,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16295,6 +16435,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16410,6 +16551,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16525,6 +16667,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16640,6 +16783,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16755,6 +16899,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16870,6 +17015,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -16985,6 +17131,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17100,6 +17247,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17215,6 +17363,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17330,6 +17479,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17445,6 +17595,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17560,6 +17711,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17675,6 +17827,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17790,6 +17943,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -17905,6 +18059,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18020,6 +18175,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18135,6 +18291,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18250,6 +18407,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18365,6 +18523,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18480,6 +18639,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18595,6 +18755,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18710,6 +18871,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18825,6 +18987,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -18940,6 +19103,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19055,6 +19219,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19170,6 +19335,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19285,6 +19451,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19400,6 +19567,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19515,6 +19683,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19630,6 +19799,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19745,6 +19915,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19860,6 +20031,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -19975,6 +20147,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20090,6 +20263,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20205,6 +20379,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20320,6 +20495,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20435,6 +20611,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20550,6 +20727,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20665,6 +20843,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20780,6 +20959,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -20895,6 +21075,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21010,6 +21191,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21125,6 +21307,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21240,6 +21423,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21355,6 +21539,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21470,6 +21655,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21585,6 +21771,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21700,6 +21887,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21815,6 +22003,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -21930,6 +22119,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22045,6 +22235,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22160,6 +22351,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22275,6 +22467,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22390,6 +22583,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22505,6 +22699,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22620,6 +22815,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22735,6 +22931,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22850,6 +23047,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -22965,6 +23163,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23080,6 +23279,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23195,6 +23395,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23310,6 +23511,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23425,6 +23627,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23540,6 +23743,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23655,6 +23859,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23770,6 +23975,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -23885,6 +24091,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24000,6 +24207,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24115,6 +24323,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24230,6 +24439,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24345,6 +24555,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24460,6 +24671,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24575,6 +24787,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24690,6 +24903,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24805,6 +25019,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -24920,6 +25135,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25035,6 +25251,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25150,6 +25367,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25265,6 +25483,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25380,6 +25599,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25495,6 +25715,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25610,6 +25831,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25725,6 +25947,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25840,6 +26063,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -25955,6 +26179,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26070,6 +26295,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26185,6 +26411,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26300,6 +26527,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26415,6 +26643,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26530,6 +26759,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26645,6 +26875,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26760,6 +26991,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26875,6 +27107,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -26990,6 +27223,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27105,6 +27339,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27220,6 +27455,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27335,6 +27571,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27450,6 +27687,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27565,6 +27803,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27680,6 +27919,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27795,6 +28035,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -27910,6 +28151,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28025,6 +28267,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28140,6 +28383,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28255,6 +28499,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28370,6 +28615,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28485,6 +28731,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28600,6 +28847,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28715,6 +28963,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28830,6 +29079,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -28945,6 +29195,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29060,6 +29311,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29175,6 +29427,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29290,6 +29543,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29405,6 +29659,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29520,6 +29775,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29635,6 +29891,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29750,6 +30007,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29865,6 +30123,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -29980,6 +30239,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30095,6 +30355,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30210,6 +30471,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30325,6 +30587,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30440,6 +30703,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30555,6 +30819,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30670,6 +30935,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30785,6 +31051,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -30900,6 +31167,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31015,6 +31283,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31130,6 +31399,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31245,6 +31515,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31360,6 +31631,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31475,6 +31747,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31590,6 +31863,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31705,6 +31979,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31820,6 +32095,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -31935,6 +32211,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32050,6 +32327,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32165,6 +32443,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32280,6 +32559,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32395,6 +32675,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32510,6 +32791,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32625,6 +32907,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32740,6 +33023,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32855,6 +33139,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -32970,6 +33255,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33085,6 +33371,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33200,6 +33487,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33315,6 +33603,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33430,6 +33719,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33545,6 +33835,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33660,6 +33951,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33775,6 +34067,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -33890,6 +34183,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34005,6 +34299,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34120,6 +34415,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34235,6 +34531,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34350,6 +34647,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34465,6 +34763,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34580,6 +34879,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34695,6 +34995,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34810,6 +35111,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -34925,6 +35227,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35040,6 +35343,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35155,6 +35459,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35270,6 +35575,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35385,6 +35691,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35500,6 +35807,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35615,6 +35923,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35730,6 +36039,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35845,6 +36155,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -35960,6 +36271,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36075,6 +36387,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36190,6 +36503,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36305,6 +36619,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36420,6 +36735,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36535,6 +36851,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36650,6 +36967,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36765,6 +37083,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36880,6 +37199,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -36995,6 +37315,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37110,6 +37431,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37225,6 +37547,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37340,6 +37663,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37455,6 +37779,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37570,6 +37895,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37685,6 +38011,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37800,6 +38127,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -37915,6 +38243,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38030,6 +38359,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38145,6 +38475,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38260,6 +38591,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38375,6 +38707,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38490,6 +38823,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38605,6 +38939,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38720,6 +39055,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38835,6 +39171,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -38950,6 +39287,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39065,6 +39403,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39180,6 +39519,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39295,6 +39635,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39410,6 +39751,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39525,6 +39867,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39640,6 +39983,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39755,6 +40099,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39870,6 +40215,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -39985,6 +40331,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40100,6 +40447,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40215,6 +40563,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40330,6 +40679,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40445,6 +40795,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40560,6 +40911,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40675,6 +41027,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40790,6 +41143,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -40905,6 +41259,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41020,6 +41375,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41135,6 +41491,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41250,6 +41607,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41365,6 +41723,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41480,6 +41839,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41595,6 +41955,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41710,6 +42071,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41825,6 +42187,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -41940,6 +42303,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42055,6 +42419,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42170,6 +42535,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42285,6 +42651,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42400,6 +42767,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42515,6 +42883,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42630,6 +42999,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42745,6 +43115,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42860,6 +43231,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -42975,6 +43347,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43090,6 +43463,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43205,6 +43579,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43320,6 +43695,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43435,6 +43811,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43550,6 +43927,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43665,6 +44043,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43780,6 +44159,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -43895,6 +44275,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44010,6 +44391,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44125,6 +44507,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44240,6 +44623,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44355,6 +44739,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44470,6 +44855,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44585,6 +44971,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44700,6 +45087,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44815,6 +45203,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -44930,6 +45319,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45045,6 +45435,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45160,6 +45551,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45275,6 +45667,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45390,6 +45783,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45505,6 +45899,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45620,6 +46015,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45735,6 +46131,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45850,6 +46247,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -45965,6 +46363,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46080,6 +46479,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46195,6 +46595,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46310,6 +46711,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46425,6 +46827,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46540,6 +46943,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46655,6 +47059,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46770,6 +47175,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -46885,6 +47291,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47000,6 +47407,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47115,6 +47523,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47230,6 +47639,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47345,6 +47755,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47460,6 +47871,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47575,6 +47987,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47690,6 +48103,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47805,6 +48219,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -47920,6 +48335,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48035,6 +48451,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48150,6 +48567,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48265,6 +48683,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48380,6 +48799,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48495,6 +48915,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48610,6 +49031,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48725,6 +49147,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48840,6 +49263,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -48955,6 +49379,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49070,6 +49495,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49185,6 +49611,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49300,6 +49727,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49415,6 +49843,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49530,6 +49959,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49645,6 +50075,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49760,6 +50191,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49875,6 +50307,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -49990,6 +50423,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50105,6 +50539,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50220,6 +50655,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50335,6 +50771,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50450,6 +50887,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50565,6 +51003,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50680,6 +51119,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50795,6 +51235,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -50910,6 +51351,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51025,6 +51467,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51140,6 +51583,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51255,6 +51699,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51370,6 +51815,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51485,6 +51931,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51600,6 +52047,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51715,6 +52163,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51830,6 +52279,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -51945,6 +52395,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52060,6 +52511,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52175,6 +52627,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52290,6 +52743,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52405,6 +52859,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52520,6 +52975,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52635,6 +53091,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52750,6 +53207,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52865,6 +53323,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -52980,6 +53439,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53095,6 +53555,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53210,6 +53671,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53325,6 +53787,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53440,6 +53903,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53555,6 +54019,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53670,6 +54135,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53785,6 +54251,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -53900,6 +54367,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -54015,6 +54483,7 @@
           "scope": "synthetic"
         }
       ],
+      "temporal_metrics": null,
       "timeline": [
         {
           "type": "evidence",
@@ -54060,7 +54529,15 @@
       "hours": 0.3,
       "calls": 1080,
       "peak_rss_mb": 1612,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "B": {
       "tasks": 36,
@@ -54081,7 +54558,15 @@
       "hours": 0.3,
       "calls": 0,
       "peak_rss_mb": 362,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "C": {
       "tasks": 36,
@@ -54102,7 +54587,15 @@
       "hours": 0.3,
       "calls": 216,
       "peak_rss_mb": 902,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "D": {
       "tasks": 36,
@@ -54123,7 +54616,15 @@
       "hours": 0.3,
       "calls": 216,
       "peak_rss_mb": 902,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "E": {
       "tasks": 36,
@@ -54144,7 +54645,15 @@
       "hours": 0.3,
       "calls": 4320,
       "peak_rss_mb": 1262,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "C1": {
       "tasks": 36,
@@ -54165,7 +54674,15 @@
       "hours": 0.3,
       "calls": 36,
       "peak_rss_mb": 702,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "D1": {
       "tasks": 36,
@@ -54186,7 +54703,15 @@
       "hours": 0.3,
       "calls": 36,
       "peak_rss_mb": 702,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "C2": {
       "tasks": 36,
@@ -54207,7 +54732,15 @@
       "hours": 0.3,
       "calls": 72,
       "peak_rss_mb": 742,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "D2": {
       "tasks": 36,
@@ -54228,7 +54761,15 @@
       "hours": 0.3,
       "calls": 72,
       "peak_rss_mb": 742,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "C3": {
       "tasks": 36,
@@ -54249,7 +54790,15 @@
       "hours": 0.3,
       "calls": 108,
       "peak_rss_mb": 782,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "D3": {
       "tasks": 36,
@@ -54270,7 +54819,15 @@
       "hours": 0.3,
       "calls": 108,
       "peak_rss_mb": 782,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "C12": {
       "tasks": 36,
@@ -54291,7 +54848,15 @@
       "hours": 0.3,
       "calls": 432,
       "peak_rss_mb": 1142,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     },
     "D12": {
       "tasks": 36,
@@ -54312,7 +54877,15 @@
       "hours": 0.3,
       "calls": 432,
       "peak_rss_mb": 1142,
-      "failures": 0
+      "failures": 0,
+      "temporal": {
+        "query_cutoff_violations": 0,
+        "evidence_id_errors": 0,
+        "stale_state_errors": 0,
+        "dropped_inputs": 0,
+        "recovery_events": 0,
+        "escalations": 0
+      }
     }
   },
   "comparisons": [

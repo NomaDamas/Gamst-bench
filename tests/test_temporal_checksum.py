@@ -3,6 +3,7 @@ import hashlib
 import asyncio
 import json
 import sys
+import textwrap
 import unittest
 
 from gamst_bench.contracts import (
@@ -87,6 +88,59 @@ class TemporalChecksumTests(unittest.TestCase):
         self.assertEqual(trace["status"], "error")
         self.assertEqual(trace["integrity_rejected"], 1)
         self.assertEqual(trace["outputs"], [])
+
+    def test_trace_retains_measured_provenance_and_packet_checksum(self):
+        from gamst_bench.collect import run_task
+        from gamst_bench.fixtures import make_fixture
+        from gamst_bench.contracts import freeze
+
+        plan, _, _, _ = make_fixture()
+        task = copy.deepcopy(plan["tasks"][0])
+        task.update(duration_ms=100, query_ms=50, available_ms=0, deadline_ms=100)
+        task["inputs"] = task["inputs"][:1]
+        plan["tasks"] = [task]
+        plan["timeout_ms"] = 1000
+        plan = freeze(plan)
+        commits = {
+            "gamst": "a" * 40,
+            "gamstcrew": "b" * 40,
+            "gamst-bench": "c" * 40,
+        }
+        packet = {"schema_version": "gamst.temporal.v1", "events": [], "query_cutoff_ms": 0}
+        packet["checksum"] = packet_checksum(packet)
+        script = textwrap.dedent(
+            """
+            import json, sys
+            p = json.loads(sys.argv[1])
+            for line in sys.stdin:
+                x = json.loads(line)
+                if x['type'] == 'start':
+                    print(json.dumps({'type': 'meta', 'text': json.dumps(x.get('provenance', {}), sort_keys=True)}), flush=True)
+                elif x['type'] == 'input':
+                    print(json.dumps({'type': 'context', 'text': 'x', 'evidence_ids': [x['input']['id']], 'packet': p}), flush=True)
+                elif x['type'] == 'query':
+                    print(json.dumps({'type': 'answer', 'text': 'ok', 'evidence_ids': []}), flush=True)
+                elif x['type'] == 'end':
+                    break
+            """
+        )
+
+        async def exercise():
+            return await run_task(
+                plan, plan["systems"][0], task,
+                [sys.executable, "-u", "-c", script, json.dumps(packet)],
+                runtime_manifest_sha256="d" * 64,
+                repository_commits=commits,
+            )
+
+        trace = asyncio.run(exercise())
+        self.assertEqual(trace["status"], "success")
+        self.assertEqual(trace["repository_commits"], commits)
+        self.assertEqual(trace["packet_checksums"], [packet["checksum"]])
+        self.assertEqual(trace["integrity_rejected"], 0)
+        provenance = json.loads(trace["outputs"][0]["text"])
+        self.assertEqual(provenance["runtime_manifest_sha256"], "d" * 64)
+        self.assertEqual(provenance["repository_commits"], commits)
 
 
 if __name__ == "__main__":

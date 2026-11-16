@@ -19,7 +19,7 @@ Create `commands.json`, mapping every configuration ID to its argv list:
 
 Replace the executable path and supply actual local endpoints/plugins as described in [ADAPTERS](ADAPTERS.md). Configuration policy comes from the plan, not from the configuration ID. Commands alone do not pin mutable server weights or environment variables; record their resolved versions and hashes in the frozen plan's additional experiment metadata.
 
-Set `execution_sha256` in the draft to the canonical digest of commands. Create and freeze a runtime manifest with `gamst_bench.manifest.freeze_manifest`; set its `manifest_sha256` into the measured plan as `runtime_manifest_sha256`, or pass the manifest to the freeze command:
+Set `execution_sha256` in the draft to the canonical digest of commands. Create and freeze a runtime manifest with `gamst_bench.manifest.freeze_manifest`; include the exact 40-character commits for `gamst`, `gamstcrew`, and `gamst-bench`, set its `manifest_sha256` into the measured plan as `runtime_manifest_sha256`, or pass the manifest to the freeze command:
 
 ```python
 from gamst_bench.contracts import read, digest, write_new

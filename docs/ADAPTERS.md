@@ -9,7 +9,9 @@ UTF-8 JSON (`ensure_ascii=false`, sorted keys, compact separators,
 `allow_nan=false`) with the `checksum` member excluded. A mismatch rejects the
 output and increments `integrity_rejected` in the trace. Packets without a
 checksum are rejected; legacy acceptance is an explicit compatibility choice
-for direct contract consumers and is not enabled by the collector.
+for direct contract consumers and is not enabled by the collector. Accepted
+checksum envelopes are retained in the trace's bounded `packet_checksums`
+field so an audit can bind the received packet set to the trace digest.
 
 Input messages, in order:
 

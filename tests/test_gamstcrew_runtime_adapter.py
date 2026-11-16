@@ -13,8 +13,23 @@ from gamst_bench.adapters.gamstcrew_runtime import Adapter
 
 
 ROOT = Path(__file__).resolve().parents[1]
-GAMST_ROOT = ROOT.parent.parent
-CREW_ROOT = GAMST_ROOT / ".local-run" / "GamstCrew"
+
+
+def _runtime_root(env_name: str, candidates: tuple[Path, ...]) -> Path:
+    """Resolve an integration checkout without assuming a monorepo layout."""
+    configured = os.environ.get(env_name)
+    if configured:
+        return Path(configured).expanduser().resolve()
+    for candidate in candidates:
+        if candidate.is_dir():
+            return candidate.resolve()
+    # Keep the historical path as the diagnostic fallback when dependencies
+    # are absent; the adapter then reports the precise missing-root failure.
+    return candidates[0].resolve()
+
+
+GAMST_ROOT = _runtime_root("GAMST_ROOT", (ROOT.parent / "catch-your-mind", ROOT.parent.parent))
+CREW_ROOT = _runtime_root("GAMST_CREW_ROOT", (GAMST_ROOT / ".local-run" / "GamstCrew", ROOT.parent / "GamstCrew"))
 ADAPTER = ROOT / "gamst_bench" / "adapters" / "gamstcrew_runtime.py"
 
 

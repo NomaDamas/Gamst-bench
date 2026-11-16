@@ -14,12 +14,12 @@ jobs:
         with:
           repository: NomaDamas/Gamst
           ref: feat/temporal-contract
-          path: gamst
+          path: ../Gamst-runtime
       - uses: actions/checkout@v4
         with:
           repository: NomaDamas/GamstCrew
           ref: feat/runtime-pr
-          path: GamstCrew
+          path: ../GamstCrew-runtime
       - uses: actions/setup-node@v4
         with:
           node-version: '22.22.0'
@@ -29,9 +29,9 @@ jobs:
           python-version: '3.12'
       - name: Configure runtime integration roots
         run: |
-          echo "GAMST_ROOT=${GITHUB_WORKSPACE}/gamst" >> "$GITHUB_ENV"
-          echo "GAMST_CREW_ROOT=${GITHUB_WORKSPACE}/GamstCrew" >> "$GITHUB_ENV"
-          echo "PYTHONPATH=${GITHUB_WORKSPACE}/gamst:${GITHUB_WORKSPACE}/GamstCrew:${GITHUB_WORKSPACE}" >> "$GITHUB_ENV"
+          echo "GAMST_ROOT=${GITHUB_WORKSPACE}/../Gamst-runtime" >> "$GITHUB_ENV"
+          echo "GAMST_CREW_ROOT=${GITHUB_WORKSPACE}/../GamstCrew-runtime" >> "$GITHUB_ENV"
+          echo "PYTHONPATH=${GITHUB_WORKSPACE}/../Gamst-runtime:${GITHUB_WORKSPACE}/../GamstCrew-runtime:${GITHUB_WORKSPACE}" >> "$GITHUB_ENV"
       - run: npm ci
       - run: python -m pip install -r requirements-mcp.txt
       - run: npm run test:python

@@ -8,6 +8,8 @@ import signal
 import time
 from pathlib import Path
 from .contracts import canonical, digest, require, validate_plan, write_new
+from .manifest import manifest_digest, validate_manifest
+from .temporal_metrics import temporal_metrics
 
 MAX_LINE = 65536
 MAX_OUTPUTS = 10000
@@ -26,8 +28,9 @@ def rss_tree(pid):
         return sum(rss for p,_,rss in processes if p in selected)/1024
     except (OSError,ValueError,subprocess.SubprocessError):return None
 
-async def run_task(plan, system, task, command):
+async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None):
     started=time.monotonic(); outputs=[]; resources=[]; sent=[]; dropped=0; calls=0
+    input_by_id={item['id']:item for item in task['inputs']}
     answer_ready=None; quantities=None; synthetic=False; errors=[]; stderr_bytes=bytearray()
     elapsed=lambda: (time.monotonic()-started)*1000
     proc=await asyncio.create_subprocess_exec(*command,stdin=asyncio.subprocess.PIPE,stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE,limit=MAX_LINE,start_new_session=True)
@@ -42,7 +45,9 @@ async def run_task(plan, system, task, command):
             try:
                 if message is None:return
                 proc.stdin.write(canonical(message)+b'\n');await proc.stdin.drain()
-                if message['type']=='input':sent.append({'id':message['input']['id'],'sent_ms':elapsed()})
+                if message['type']=='input':
+                    item=message['input']
+                    sent.append({'id':item['id'],'capture_timestamp_ms':item['at_ms'],'sent_ms':elapsed()})
             finally:pending.task_done()
     async def schedule():
         nonlocal dropped
@@ -80,6 +85,9 @@ async def run_task(plan, system, task, command):
                 require(type(refs) is list and len(refs)<=128,'bounded evidence required')
                 known={v['id'] for v in sent}
                 require(set(refs)<=known,'adapter cited evidence not yet delivered')
+                item['evidence_provenance']=[dict(id=ref,
+                    capture_timestamp_ms=input_by_id[ref]['at_ms'],
+                    sent_ms=next(v['sent_ms'] for v in sent if v['id']==ref)) for ref in refs]
             if item['type']=='answer' and answer_ready is None:answer_ready=item['received_ms']
             if item['type']=='usage':
                 # Cumulative totals, externally audited before scoring money.
@@ -123,12 +131,21 @@ async def run_task(plan, system, task, command):
         status=status,clock='wall',synthetic=synthetic or plan['evidence']=='synthetic',answer_ready_ms=answer_ready,
         elapsed_ms=elapsed(),outputs=outputs,resources=resources,sent=sent,dropped_inputs=dropped,cost_quantities=quantities,calls=calls,
         diagnostics=errors,command_sha256=digest(command),stderr_sha256=digest(stderr_bytes.hex()),accounting_status='unverified',
-        resource_scope='Owned adapter process tree only. Remote/local model servers and device memory require separate instrumentation.')
+        resource_scope='Owned adapter process tree only. Remote/local model servers and device memory require separate instrumentation.',
+        query_cutoff_ms=task['query_ms'], runtime_manifest_sha256=runtime_manifest_sha256,
+        temporal_metrics=temporal_metrics(outputs, query_cutoff_ms=task['query_ms'],
+            known_evidence=input_by_id))
     trace['trace_sha256']=digest(trace)
     return trace
 
-async def collect(plan, commands, output):
+async def collect(plan, commands, output, *, runtime_manifest=None):
     validate_plan(plan)
+    runtime_manifest_sha256=None
+    if plan['evidence']=='measured':
+        require(runtime_manifest is not None, 'measured collection requires frozen runtime manifest')
+        validate_manifest(runtime_manifest)
+        runtime_manifest_sha256=manifest_digest(runtime_manifest)
+        require(runtime_manifest_sha256==plan['runtime_manifest_sha256'], 'runtime manifest differs from frozen plan')
     require(set(commands)=={s['id'] for s in plan['systems']},'provide one adapter command per configuration')
     for command in commands.values():
         require(type(command) is list and command and all(type(a) is str and a for a in command),'command must be argv strings')
@@ -142,12 +159,14 @@ async def collect(plan, commands, output):
         systems=plan['systems'] if index%2==0 else list(reversed(plan['systems']))
         for system in systems:
             try:
-                trace=await run_task(plan,system,task,commands[system['id']])
+                trace=await run_task(plan,system,task,commands[system['id']],runtime_manifest_sha256=runtime_manifest_sha256)
             except OSError as exc:
                 trace=dict(plan_sha256=plan['plan_sha256'],input_sha256=task['input_sha256'],task_id=task['id'],system_id=system['id'],
                     status='error',clock='wall',synthetic=plan['evidence']=='synthetic',answer_ready_ms=None,elapsed_ms=0,
                     outputs=[],resources=[],sent=[],dropped_inputs=0,cost_quantities=None,calls=0,
-                    diagnostics=['spawn_failed',type(exc).__name__],command_sha256=digest(commands[system['id']]),accounting_status='unverified')
+                    diagnostics=['spawn_failed',type(exc).__name__],command_sha256=digest(commands[system['id']]),accounting_status='unverified',
+                    query_cutoff_ms=task['query_ms'],runtime_manifest_sha256=runtime_manifest_sha256,
+                    temporal_metrics=temporal_metrics([],query_cutoff_ms=task['query_ms']))
                 trace['trace_sha256']=digest(trace)
             # Ordinal paths avoid interpreting task/config identifiers as file paths.
             write_new(directory/f'trace-{len(traces):05d}.json',trace);traces.append(trace)

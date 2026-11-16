@@ -3,6 +3,7 @@ import math
 import random
 from decimal import Decimal, localcontext
 from .contracts import validate_plan, require, number, integer, digest
+from .manifest import manifest_digest, validate_manifest
 
 def percentile(values, fraction):
     return sorted(values)[max(0, math.ceil(len(values)*fraction)-1)] if values else None
@@ -17,6 +18,11 @@ def score_row(plan, task, trace, assessment):
     require(trace['plan_sha256'] == plan['plan_sha256'] and trace['input_sha256'] == task['input_sha256'], 'trace is not from this frozen input')
     unsigned = {k:v for k,v in trace.items() if k != 'trace_sha256'}
     require(trace['trace_sha256'] == digest(unsigned), 'trace digest mismatch')
+    if plan['evidence']=='measured':
+        require(trace.get('runtime_manifest_sha256') == plan['runtime_manifest_sha256'],
+                'trace runtime manifest differs from plan')
+        require(type(trace.get('temporal_metrics')) is dict,
+                'measured trace temporal metrics are required')
     require(assessment['trace_sha256'] == trace['trace_sha256'], 'assessment must bind exact trace')
     require(assessment.get('review_status') in ('synthetic', 'reviewed'), 'unreviewed semantic assessment')
     if plan['evidence'] == 'measured':
@@ -44,6 +50,8 @@ def score_row(plan, task, trace, assessment):
     # Citation existence does not certify semantic support: reviewer explicitly judges it.
     for ref in assessment['evidence_ids']:
         require(ref in delivered, 'nonexistent evidence')
+        if plan['evidence'] == 'measured':
+            require(delivered[ref]['at_ms'] <= task['query_ms'], 'answer evidence exceeds query cutoff')
     if plan['evidence']=='measured':
         sent={s['id']:s['sent_ms'] for s in trace.get('sent',[])}
         require(all(ref in sent for ref in assessment['evidence_ids']), 'citation to undelivered input')
@@ -52,6 +60,15 @@ def score_row(plan, task, trace, assessment):
         number(ready, 'answer ready time')
         require(all(delivered[i]['at_ms'] <= ready for i in assessment['evidence_ids']), 'future evidence leakage')
         if plan['evidence']=='measured':require(all(sent[i]<=ready for i in assessment['evidence_ids']), 'answer precedes evidence delivery')
+    answer_outputs=[o for o in outputs if o.get('type')=='answer']
+    if plan['evidence'] == 'measured':
+        for answer in answer_outputs:
+            provenance = answer.get('evidence_provenance', [])
+            require({p.get('id') for p in provenance} >= set(assessment['evidence_ids']),
+                    'answer evidence provenance is incomplete')
+            for item in provenance:
+                require(item.get('capture_timestamp_ms',-1) <= task['query_ms'],
+                        'answer evidence exceeds query cutoff')
     success = trace['status'] == 'success' and ready is not None
     anchor = max(task['available_ms'], task['query_ms'])
     early = success and ready < anchor
@@ -130,8 +147,13 @@ def comparison(plan, rows, baseline, candidate):
         quality=point['quality_delta']>=0 and intervals['quality_delta'][0]>=0)
     return dict(baseline=baseline,candidate=candidate,point={k:float(v) if v is not None else None for k,v in point.items()},ci95={k:[float(n) for n in v] if v is not None else None for k,v in intervals.items()},exact_point={k:str(v) if v is not None else None for k,v in point.items()},exact_ci95={k:[str(n) for n in v] if v is not None else None for k,v in intervals.items()},gates=gates,status='numeric_pass_requires_audit' if all(gates.values()) else 'not_passed',clusters=len(groups))
 
-def evaluate(plan, traces, assessments):
+def evaluate(plan, traces, assessments, *, runtime_manifest=None):
     validate_plan(plan)
+    if plan['evidence']=='measured':
+        require(runtime_manifest is not None, 'measured evaluation requires frozen runtime manifest')
+        validate_manifest(runtime_manifest)
+        require(manifest_digest(runtime_manifest)==plan['runtime_manifest_sha256'],
+                'runtime manifest differs from frozen plan')
     expected={(s['id'],t['id']) for s in plan['systems'] for t in plan['tasks']}
     lookup={}; grades={}
     for trace in traces:
@@ -141,6 +163,7 @@ def evaluate(plan, traces, assessments):
     require(set(lookup)==expected and set(grades)==expected,'missing runs or assessments; failures cannot be omitted')
     rows=[score_row(plan,t,lookup[s['id'],t['id']],grades[s['id'],t['id']]) for s in plan['systems'] for t in plan['tasks']]
     return dict(schema_version=2,release=plan['release'],experiment_id=plan['id'],plan_sha256=plan['plan_sha256'],evidence=plan['evidence'],
+        runtime_manifest_sha256=plan.get('runtime_manifest_sha256'),
         provenance='Synthetic protocol fixtures; no trained model execution.' if plan['evidence']=='synthetic' else 'Measured traces with external assessments; independent audit required.',
         protocol=plan['protocol'],hardware=plan['hardware'],consumer=plan['consumer_model'],systems=plan['systems'],rows=rows,
         summaries={s['id']:summarize([r for r in rows if r['system_id']==s['id']]) for s in plan['systems']},

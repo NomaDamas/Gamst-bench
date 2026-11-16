@@ -14,4 +14,15 @@ class TemporalMetricTests(unittest.TestCase):
         self.assertEqual(result['stale_state_errors'], 1)
         self.assertEqual(result['dropped_inputs'], 2)
 
+    def test_answer_provenance_cutoff_and_recovery_escalation(self):
+        result=temporal_metrics([
+            {'type':'context','evidence_provenance':[{'capture_timestamp_ms':200}]},
+            {'type':'answer','evidence_provenance':[{'capture_timestamp_ms':50}],
+             'recovered':True,'escalated':True,'recovery_ms':12},
+        ], query_cutoff_ms=100)
+        self.assertEqual(result['query_cutoff_violations'], 0)
+        self.assertEqual(result['recovery_events'], 1)
+        self.assertEqual(result['escalations'], 1)
+        self.assertEqual(result['recovery_ms']['mean_ms'], 12)
+
 if __name__ == '__main__': unittest.main()

@@ -1,5 +1,6 @@
 import unittest
 from gamst_bench.manifest import freeze_manifest, validate_manifest
+from gamst_bench.contracts import freeze
 
 class ManifestTests(unittest.TestCase):
     def base(self):
@@ -12,5 +13,14 @@ class ManifestTests(unittest.TestCase):
     def test_missing_cutoff_rejected(self):
         value=self.base(); value['timing']['query_cutoffs']=False
         with self.assertRaisesRegex(ValueError, 'schema_version'): validate_manifest(value)
+
+    def test_measured_plan_requires_runtime_manifest_digest(self):
+        from gamst_bench.fixtures import make_fixture
+        plan = make_fixture()[0]
+        plan['evidence'] = 'measured'
+        plan['held_out'] = True
+        plan['execution_sha256'] = 'b' * 64
+        with self.assertRaisesRegex(ValueError, 'runtime manifest'):
+            freeze(plan)
 
 if __name__=='__main__': unittest.main()

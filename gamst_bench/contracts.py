@@ -132,6 +132,13 @@ def validate_plan(plan):
     if plan['evidence'] == 'measured':
         text(plan.get('execution_sha256'), 'frozen adapter commands digest')
         require(len(plan['execution_sha256']) == 64, 'SHA256 required')
+        manifest_sha = plan.get('runtime_manifest_sha256')
+        require(type(manifest_sha) is str and len(manifest_sha) == 64 and
+                all(c in '0123456789abcdef' for c in manifest_sha),
+                'measured plans require frozen runtime manifest digest')
+    else:
+        require('runtime_manifest_sha256' not in plan,
+                'synthetic plans must not claim a runtime manifest')
     require(plan.get('plan_sha256') == digest({k:v for k,v in plan.items() if k != 'plan_sha256'}), 'plan was changed after freeze')
     return plan
 

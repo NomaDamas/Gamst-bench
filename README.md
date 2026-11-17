@@ -21,7 +21,7 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 **Implementation completion and evaluation completion are separate milestones.** Model execution and benchmark dataset downloads take place on GCP only.
 
 - [x] Cross-filtering dashboard and synchronized README results.
-- [x] MCP catalog with ten native recipe records across three executable families (FastBench, OmniPro and StreamArena), plus asynchronous execution, cancellation and log inspection.
+- [x] MCP catalog with ten total recipe records: six executable native recipes across three families (FastBench, OmniPro and StreamArena) plus four reference-only records; asynchronous execution, cancellation and log inspection are implemented.
 - [x] Checks for GCP project identity, pinned code revisions and dataset hashes, plus GPU resource logging.
 - [x] Tests for MCP communication, execution refusal and failure handling, plus [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
 - [x] MCP/GCP setup and private remote handshake were verified through the Aside setup; native benchmark execution remains pending.
@@ -49,7 +49,7 @@ Current public figures are **synthetic protocol checks**. Published reference nu
 <a id="multi-benchmark-mcp"></a>
 ## 🔌 Required benchmark MCP
 
-Four required benchmark tracks: FastBench, OmniPro, StreamArena and VSAS-Bench. 10 registered recipes cover the three currently executable families; VSAS-Bench is **required but blocked pending its official runner/data/scorer release**.
+Four required benchmark tracks: FastBench, OmniPro, StreamArena and VSAS-Bench. The catalog has 10 total recipe records: six executable native recipes across the three executable families and four reference-only records. VSAS-Bench is **required but blocked pending its official runner/data/scorer release**.
 
 [MCP tools and deployment guide](docs/MCP.md) · [Private GCP profile templates](mcp/profiles.example.json) · [SSH client example](mcp/client.ssh.example.json)
 

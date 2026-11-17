@@ -41,6 +41,11 @@ def aggregate_costs(rows: list[dict[str, Any]], rate_card: dict[str, dict[str, A
                     complete = False
                 else:
                     quantities[key] = quantities.get(key, Decimal(0)) + amount
+        elif exact is not None:
+            # Some scored rows expose only a provider-agnostic exact total.
+            # Retain that measured amount under an explicit unattributed
+            # component instead of claiming the aggregate is unknown.
+            quantities["unattributed"] = quantities.get("unattributed", Decimal(0)) + exact
     with localcontext() as ctx:
         ctx.prec = 80
         total = sum(quantities.values(), Decimal(0)) if complete and quantities else None

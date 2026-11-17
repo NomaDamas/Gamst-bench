@@ -23,6 +23,15 @@ class CostBenchTests(unittest.TestCase):
         comparison = {"status": "numeric_pass_requires_audit", "audit_status": "approved"}
         self.assertEqual(select_default(evidence="measured", comparisons=[comparison], candidate="C")["selected"], "C")
 
+    def test_exact_total_without_components_is_attributed(self):
+        result = aggregate_costs([
+            {"cost_usd": 0.5, "cost_usd_exact": "0.50"},
+            {"cost_usd": 0.25, "cost_usd_exact": "0.25"},
+        ], {})
+        self.assertEqual(result["status"], "measured")
+        self.assertEqual(result["components_usd_exact"], {"unattributed": "0.75"})
+        self.assertEqual(result["total_usd_exact"], "0.75")
+
 
 if __name__ == "__main__":
     unittest.main()

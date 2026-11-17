@@ -176,10 +176,17 @@ def evaluate(plan, traces, assessments, *, runtime_manifest=None):
             require(trace.get('repository_commits') == expected_commits,
                     'trace repository commits differ from runtime manifest')
     rows=[score_row(plan,t,lookup[s['id'],t['id']],grades[s['id'],t['id']]) for s in plan['systems'] for t in plan['tasks']]
-    return dict(schema_version=2,release=plan['release'],experiment_id=plan['id'],plan_sha256=plan['plan_sha256'],evidence=plan['evidence'],
+    from .costbench import aggregate_costs, select_default
+    comparisons = [comparison(plan,rows,baseline,plan['candidate']) for baseline in [plan['baseline'],*plan['controls']]]
+    costbench = {s['id']: aggregate_costs([r for r in rows if r['system_id'] == s['id']], plan['rate_card']) for s in plan['systems']} if plan['evidence'] == 'measured' else None
+    default_selection = select_default(evidence=plan['evidence'], comparisons=comparisons, candidate=plan['candidate']) if plan['evidence'] == 'measured' else None
+    report = dict(schema_version=2,release=plan['release'],experiment_id=plan['id'],plan_sha256=plan['plan_sha256'],evidence=plan['evidence'],
         runtime_manifest_sha256=plan.get('runtime_manifest_sha256'),
         provenance='Synthetic protocol fixtures; no trained model execution.' if plan['evidence']=='synthetic' else 'Measured traces with external assessments; independent audit required.',
         protocol=plan['protocol'],hardware=plan['hardware'],consumer=plan['consumer_model'],systems=plan['systems'],rows=rows,
         summaries={s['id']:summarize([r for r in rows if r['system_id']==s['id']]) for s in plan['systems']},
-        comparisons=[comparison(plan,rows,baseline,plan['candidate']) for baseline in [plan['baseline'],*plan['controls']]],
+        comparisons=comparisons,
         official_scores=[],acceptance='not_established' if plan['evidence']=='synthetic' else 'independent_audit_required')
+    if plan['evidence'] == 'measured':
+        report.update(costbench=costbench, default_selection=default_selection)
+    return report

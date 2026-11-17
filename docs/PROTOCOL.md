@@ -37,6 +37,14 @@ Engineering gates: candidate/baseline full cost ≤0.8; p95 answer latency ratio
 
 Synthetic data can never pass acceptance. A numeric measured pass is `numeric_pass_requires_audit`, not a certification of data, model execution, annotation integrity or reproducibility. Quality gate margins are intentionally zero for this protocol; changing margins requires a new protocol revision.
 
+Measured reports also include a `costbench` section with exact decimal totals
+for the components that were instrumented. Missing provider, device or idle
+capacity accounting remains `unknown`; the evaluator never fills it with a
+token-only estimate. `default_selection` is emitted only for measured reports
+and remains `independent_audit_required` until every preregistered comparison
+has an explicit independent approval. Synthetic reports retain their existing
+unmeasured shape and cannot promote a default.
+
 ## Continuous runtime
 
 Run 30-minute, 2-hour and 8-hour soaks independently. Record memory slope, queue growth, reconnects, drops, stale evidence, model-server GPU memory and costs. The supplied soak command repeatedly sends recorded inline packets to one live adapter and records hash-chained outputs/resources. It is an ingestion stress harness, not evidence of correct multi-hour memory or physical sensor synchronization. Add timestamped continuous real recordings and delayed questions through a project-specific adapter/harness for those claims. Soak completion alone never grants quality acceptance.

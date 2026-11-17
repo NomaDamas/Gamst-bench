@@ -19,11 +19,37 @@ SUPPORTED=set(EXECUTABLE_BENCHMARKS)
 TOKEN=re.compile(r'\{([a-z_]+)\}')
 
 
+def recipe_metadata(recipe):
+    """Annotate a catalog recipe with its actual MCP execution boundary.
+
+    Recipe records cover both runnable native commands and references retained
+    for the benchmark atlas.  Keeping this classification in the server
+    response prevents clients from inferring executability from the presence
+    of an argv recipe alone.
+    """
+    executable=recipe.get('benchmark') in SUPPORTED
+    return {**recipe,
+            'executable':executable,
+            'mcp_support':'registered native runner' if executable else 'reference only',
+            'blocker':None if executable else 'benchmark family has no registered executable runner'}
+
+
+def recipe_summary(recipes):
+    """Return bounded counts and IDs for executable/reference recipe records."""
+    annotated=[recipe_metadata(recipe) for recipe in recipes]
+    executable=[recipe['id'] for recipe in annotated if recipe['executable']]
+    reference=[recipe['id'] for recipe in annotated if not recipe['executable']]
+    return {'total':len(annotated),'executable':len(executable),
+            'reference_only':len(reference),'executable_ids':executable,
+            'reference_only_ids':reference}
+
+
 def catalog():
     c=read(ROOT/'data/catalog.json')
     recipes=read(ROOT/'mcp/recipes.json')
     return [{**b,'mcp_support':'registered native runner' if b['id'] in SUPPORTED else 'required; blocked pending official runner' if b.get('required') else 'reference only',
              'recipes':[r['id'] for r in recipes if r['benchmark']==b['id']],
+             'recipe_summary':recipe_summary([r for r in recipes if r['benchmark']==b['id']]),
              'gpu_validated':False} for b in c['benchmarks']]
 
 

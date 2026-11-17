@@ -5,7 +5,7 @@ from functools import wraps
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.server import MCPServer
 from .contracts import read,require
-from .mcp_jobs import Jobs,catalog,ROOT
+from .mcp_jobs import Jobs,catalog,recipe_metadata,recipe_summary,ROOT
 
 
 def errors(fn):
@@ -22,14 +22,16 @@ def create_server(jobs):
     @errors
     def list_benchmarks() -> dict[str, Any]:
         """List four required tracks; FastBench, OmniPro and StreamArena are executable, VSAS-Bench is blocked pending official release."""
-        return {'benchmarks':catalog()}
+        recipes=read(ROOT/'mcp/recipes.json')
+        return {'benchmarks':catalog(),'recipe_summary':recipe_summary(recipes)}
     @server.tool(structured_output=True)
     @errors
     def get_benchmark(benchmark_id:str) -> dict[str, Any]:
-        """Read capability, data requirements, native recipes, metrics and source revisions."""
+        """Read capability, data requirements, recipe status, metrics and source revisions."""
         item=next((b for b in catalog() if b['id']==benchmark_id),None)
         require(item is not None,'unknown benchmark')
-        return {'benchmark':item,'recipes':[r for r in read(ROOT/'mcp/recipes.json') if r['benchmark']==benchmark_id]}
+        recipes=[recipe_metadata(r) for r in read(ROOT/'mcp/recipes.json') if r['benchmark']==benchmark_id]
+        return {'benchmark':item,'recipe_summary':recipe_summary(recipes),'recipes':recipes}
     @server.tool(structured_output=True)
     @errors
     def detect_environment() -> dict[str, Any]:

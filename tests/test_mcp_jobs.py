@@ -6,7 +6,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from gamst_bench.contracts import digest,write_new
-from gamst_bench.mcp_jobs import Jobs,catalog,validate_profile,expand,ROOT
+from gamst_bench.mcp_jobs import (Jobs,catalog,validate_profile,expand,ROOT,
+                                  recipe_metadata,recipe_summary)
 from gamst_bench.mcp_worker import execute,preflight
 
 
@@ -25,7 +26,24 @@ class JobsTests(unittest.TestCase):
  def test_three_core_families_have_recipes(self):
   items=catalog();supported=[b for b in items if b['mcp_support']=='registered native runner']
   self.assertEqual({b['id'] for b in supported},{'fastbench','omnipro','streamarena'})
-  for b in supported:self.assertTrue(b['recipes']);self.assertFalse(b['gpu_validated'])
+  for b in supported:
+   self.assertTrue(b['recipes']);self.assertFalse(b['gpu_validated'])
+   self.assertEqual(b['recipe_summary']['executable'],len(b['recipes']))
+   self.assertEqual(b['recipe_summary']['reference_only'],0)
+
+ def test_recipe_metadata_exposes_executable_boundary(self):
+  recipes=json.loads((ROOT/'mcp'/'recipes.json').read_text())
+  summary=recipe_summary(recipes)
+  self.assertEqual(summary['total'],10)
+  self.assertEqual(summary['executable'],6)
+  self.assertEqual(summary['reference_only'],4)
+  self.assertEqual(set(summary['executable_ids']),{
+   'fastbench-baseline','fastbench-proactive','omnipro-probe',
+   'omnipro-online','streamarena-offline','streamarena-continuous'})
+  reference=recipe_metadata(next(r for r in recipes if r['id']=='spot-detection'))
+  self.assertFalse(reference['executable'])
+  self.assertEqual(reference['mcp_support'],'reference only')
+  self.assertTrue(reference['blocker'])
  def test_environment_planning_has_no_execution_side_effect(self):
   local=self.jobs.environment('local');self.assertFalse(local['execution_allowed']);self.assertFalse(local['side_effects']);self.assertTrue(local['commands'])
   gcp=self.jobs.environment('gcp',project_id='gamst-project');self.assertFalse(gcp['execution_allowed']);self.assertTrue(any('gcloud'==c[0] for c in gcp['commands']))

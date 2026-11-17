@@ -6,6 +6,8 @@ Gamst supplies existing agents with useful, bounded context. The hypothesis is t
 
 A configuration pins sensors, sampling, perception plugins, VLM checkpoint/revision/precision, call policy, memory window, consumer model/prompt, hardware, warm state and resource budget. A is VLM-centered, B thin perception, C hybrid selective, D periodic hybrid, E a small streaming VLM (policy `streaming`) running continuously on its own lightweight checkpoint. A/C/D must use the same VLM; every configuration uses the same consumer and input track. Every configuration declares `role` (`primary` or `sweep`) and `budget_calls` (semantic VLM calls per session). Sweep configurations are hybrid/periodic variants at other budgets; they trace the cost–quality curve and never serve as baseline, candidate or control. Audio-capable and visual-only experiments must be separate. Comparing unequal hardware or sensor availability is not an acceptance comparison. No-context and oracle configurations are optional diagnostic controls.
 
+Measured plans also bind a separately frozen runtime manifest digest. The manifest records the OS/architecture/hardware, Python and dependency lock, provider and model revisions/licenses/artifacts, consumer and prompt revisions, context contract, capture/query-cutoff timing policy, and the exact `gamst`, `gamstcrew`, and `gamst-bench` source commits. Collection and scoring require the exact manifest and retain that commit map in every measured trace; synthetic plans may omit it.
+
 ## Tasks
 
 - `transient`: short visible events, crossings and brief objects; report duration buckets and misses.
@@ -23,7 +25,7 @@ Each task declares the first evidence availability, query disclosure, answerabil
 
 Answer latency = first final answer arrival − max(evidence availability, query disclosure). Error, timeout and premature answers receive the frozen timeout penalty. Context latency = first supported context delivery − evidence availability, including context delivered before a later question. Semantic support is externally reviewed; an existing citation alone is not proof.
 
-Also report critical fact recall, unsupported claims / total claims, stale-error task rate, correct abstentions, false alerts / stream hour, full-pipeline USD / stream hour, actual calls, RSS, queue depth, dropped input and evidence age. Unknown charges stay unknown, never zero. Include capture, thin perception, VLM, consumer, storage/network and host/device allocation in the accounting method. Declare whether rates are reserved or amortized and whether idle capacity is included. The generic token adapter alone does not provide complete accounting.
+Also report critical fact recall, unsupported claims / total claims, stale-error task rate, correct abstentions, false alerts / stream hour, full-pipeline USD / stream hour, actual calls, RSS, queue depth, dropped input, evidence age, time-to-detect, recovery and escalation. Collector traces preserve each cited input's capture timestamp and delivery timestamp; answer evidence must be at or before the query cutoff, even when delivered later. Unknown charges stay unknown, never zero. Include capture, thin perception, VLM, consumer, storage/network and host/device allocation in the accounting method. Declare whether rates are reserved or amortized and whether idle capacity is included. The generic token adapter alone does not provide complete accounting.
 
 ## Statistical contract and acceptance
 
@@ -34,6 +36,14 @@ Run all task/configuration pairs, alternating configuration order. Keep errors, 
 Engineering gates: candidate/baseline full cost ≤0.8; p95 answer latency ratio ≤0.9; mean grounded quality difference ≥0; all declared critical facts preserved. Point estimates and the relevant 95% interval bounds must satisfy gates. Held-out measured evidence and the minimum session count are also required. The plan declares `baseline`, `candidate` and `controls`; the candidate is compared separately against the baseline and each control (C/A, C/D, C/E). Deadline success remains the primary task metric; the gate's quality term is grounded correctness independent of deadline, with latency assessed separately.
 
 Synthetic data can never pass acceptance. A numeric measured pass is `numeric_pass_requires_audit`, not a certification of data, model execution, annotation integrity or reproducibility. Quality gate margins are intentionally zero for this protocol; changing margins requires a new protocol revision.
+
+Measured reports also include a `costbench` section with exact decimal totals
+for the components that were instrumented. Missing provider, device or idle
+capacity accounting remains `unknown`; the evaluator never fills it with a
+token-only estimate. `default_selection` is emitted only for measured reports
+and remains `independent_audit_required` until every preregistered comparison
+has an explicit independent approval. Synthetic reports retain their existing
+unmeasured shape and cannot promote a default.
 
 ## Continuous runtime
 

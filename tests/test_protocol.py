@@ -17,6 +17,14 @@ class ProtocolTests(unittest.TestCase):
   t=self.traces[index];task=next(tk for tk in self.plan['tasks'] if tk['id']==t['task_id']);return score_row(self.plan,task,t,self.grades[index])
  def test_synthetic_never_passes_acceptance(self):
   self.assertEqual(self.report['acceptance'],'not_established');self.assertTrue(all(c['status']=='not_passed' for c in self.report['comparisons']))
+ def test_checked_in_fixture_artifacts_match_generator(self):
+  root=Path(__file__).resolve().parents[1]/'fixtures/protocol-v3-generated'
+  for name,expected in (('plan',self.plan),('traces',self.traces),('assessments',self.grades),('report',self.report)):
+   with self.subTest(name=name):
+    self.assertEqual(json.loads((root/(name+'.json')).read_text()),expected)
+ def test_temporal_metrics_are_consumed_in_rows_and_summaries(self):
+  row=self.row();self.assertIn('temporal_metrics',row)
+  self.assertIn('temporal',self.report['summaries']['A'])
  def test_plan_mutation_rejected(self):
   self.plan['consumer_model']='changed'
   with self.assertRaisesRegex(ValueError,'changed after freeze'):validate_plan(self.plan)
@@ -106,6 +114,28 @@ class ProtocolTests(unittest.TestCase):
  def test_negative_usage_rejected(self):
   self.traces[1]['cost_quantities']['vlm']=-1;self.update_trace(1)
   with self.assertRaises(ValueError):self.row(1)
+ def test_measured_answer_cannot_use_post_cutoff_evidence(self):
+  from gamst_bench.manifest import freeze_manifest, manifest_digest
+  manifest=freeze_manifest({'id':'runtime','runtime_profile':'mac','os':'darwin','arch':'arm64','hardware':'M',
+   'python':'3.11','consumer_model':'consumer','consumer_revision':'r1','prompt_revision':'p1',
+   'context_contract':'gamst.temporal.v1','dependency_lock':'lock','providers':[
+    {'name':'consumer','revision':'r1','model_revision':'m1','license':'Apache-2.0'}],
+   'timing':{'clock':'wall_ms','capture_timestamps':True,'query_cutoffs':True}})
+  plan=copy.deepcopy(self.plan);plan.update(evidence='measured',held_out=True,execution_sha256='b'*64,
+   runtime_manifest_sha256=manifest_digest(manifest));plan=freeze(plan)
+  task=plan['tasks'][0];trace=copy.deepcopy(self.traces[0]);trace.update(
+   plan_sha256=plan['plan_sha256'],input_sha256=task['input_sha256'],synthetic=False,clock='wall',
+   command_sha256='c'*64,runtime_manifest_sha256=plan['runtime_manifest_sha256'],
+   temporal_metrics={},
+   sent=[{'id':task['inputs'][0]['id'],'capture_timestamp_ms':0,'sent_ms':0}])
+  answer=next(o for o in trace['outputs'] if o['type']=='answer')
+  answer['evidence_ids']=[task['inputs'][0]['id']]
+  answer['evidence_provenance']=[{'id':task['inputs'][0]['id'],'capture_timestamp_ms':task['query_ms']+1,'sent_ms':0}]
+  grade=copy.deepcopy(self.grades[0]);grade.update(trace_sha256='',review_status='reviewed',reviewer='r',rubric_revision='v1',
+   evidence_ids=[task['inputs'][0]['id']],correct_facts=[],accounting_complete=False)
+  trace['trace_sha256']=digest({k:v for k,v in trace.items() if k!='trace_sha256'});grade['trace_sha256']=trace['trace_sha256']
+  with self.assertRaisesRegex(ValueError,'query cutoff'):
+   score_row(plan,task,trace,grade)
 
 class CollectorTests(unittest.IsolatedAsyncioTestCase):
  def setUp(self):
@@ -118,6 +148,25 @@ class CollectorTests(unittest.IsolatedAsyncioTestCase):
   self.assertEqual(trace['status'],'success');self.assertEqual(trace['clock'],'wall');self.assertTrue(trace['synthetic'])
   self.assertGreaterEqual(trace['answer_ready_ms'],50)
   self.assertEqual(trace['trace_sha256'],digest({k:v for k,v in trace.items() if k!='trace_sha256'}))
+  answer=next(o for o in trace['outputs'] if o['type']=='answer')
+  self.assertEqual(answer['evidence_provenance'][0]['capture_timestamp_ms'],0)
+  self.assertEqual(trace['query_cutoff_ms'],50)
+  self.assertIn('query_cutoff_violations',trace['temporal_metrics'])
+ async def test_query_watermark_crosses_jsonl_boundary(self):
+  command=[sys.executable,str(Path('tests/query_watermark_adapter.py').resolve())]
+  trace=await run_task(self.plan,self.plan['systems'][0],self.plan['tasks'][0],command)
+  self.assertEqual(trace['status'],'success')
+  watermark=next(o for o in trace['outputs'] if o['type']=='meta')
+  self.assertEqual(watermark['query_ms'],self.plan['tasks'][0]['query_ms'])
+ async def test_documented_direct_media_blob_is_materialized(self):
+  import hashlib
+  raw=b'jpeg-fixture'
+  with tempfile.TemporaryDirectory() as d:
+   path=Path(d)/'image.jpg';path.write_bytes(raw)
+   task=self.plan['tasks'][0];task['inputs']=[dict(task['inputs'][0],payload={'path':str(path),'sha256':hashlib.sha256(raw).hexdigest(),'field':'jpeg_base64'})]
+   self.plan=freeze(self.plan)
+   trace=await run_task(self.plan,self.plan['systems'][0],task,self.command+['--require-jpeg'])
+   self.assertEqual(trace['status'],'success')
  async def test_hung_process_records_timeout(self):
   trace=await run_task(self.plan,self.plan['systems'][0],self.plan['tasks'][0],self.command+['--hang'])
   self.assertEqual(trace['status'],'timeout')

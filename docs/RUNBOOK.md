@@ -19,7 +19,7 @@ Create `commands.json`, mapping every configuration ID to its argv list:
 
 Replace the executable path and supply actual local endpoints/plugins as described in [ADAPTERS](ADAPTERS.md). Configuration policy comes from the plan, not from the configuration ID. Commands alone do not pin mutable server weights or environment variables; record their resolved versions and hashes in the frozen plan's additional experiment metadata.
 
-Set `execution_sha256` in the draft to the canonical digest of commands, then freeze:
+Set `execution_sha256` in the draft to the canonical digest of commands. Create and freeze a runtime manifest with `gamst_bench.manifest.freeze_manifest`; include the exact 40-character commits for `gamst`, `gamstcrew`, and `gamst-bench`, set its `manifest_sha256` into the measured plan as `runtime_manifest_sha256`, or pass the manifest to the freeze command:
 
 ```python
 from gamst_bench.contracts import read, digest, write_new
@@ -29,7 +29,7 @@ write_new('runs/experiment-001/ready.json', plan)
 ```
 
 ```bash
-python3 -m gamst_bench freeze --plan runs/experiment-001/ready.json --out runs/experiment-001/frozen.json
+python3 -m gamst_bench freeze --plan runs/experiment-001/ready.json --manifest runs/experiment-001/runtime-manifest.json --out runs/experiment-001/frozen.json
 python3 -m gamst_bench validate --plan runs/experiment-001/frozen.json
 ```
 
@@ -38,14 +38,14 @@ python3 -m gamst_bench validate --plan runs/experiment-001/frozen.json
 Start your pinned model servers and configure the installed plugins. Use a new output directory; tools refuse to overwrite previous artifacts.
 
 ```bash
-python3 -m gamst_bench collect --plan runs/experiment-001/frozen.json --commands runs/experiment-001/commands.json --out runs/experiment-001/collection
+python3 -m gamst_bench collect --plan runs/experiment-001/frozen.json --commands runs/experiment-001/commands.json --manifest runs/experiment-001/runtime-manifest.json --out runs/experiment-001/collection
 python3 -m gamst_bench assess-template --traces runs/experiment-001/collection/traces.json --out runs/experiment-001/assessment-draft.json
 ```
 
 Fill the generated review form according to [ANNOTATION](ANNOTATION.md), save it as `assessments.json`, and attach accounting artifacts. No model-generated self-grade is accepted automatically. The collector saves each pair immediately, then writes `complete.json` and combined `traces.json`. An interrupted directory without completion is not a complete experiment. Preserve it and rerun into a new directory; do not silently exclude partial failures.
 
 ```bash
-python3 -m gamst_bench evaluate --plan runs/experiment-001/frozen.json --traces runs/experiment-001/collection/traces.json --assessments runs/experiment-001/assessments.json --out runs/experiment-001/report.json
+python3 -m gamst_bench evaluate --plan runs/experiment-001/frozen.json --traces runs/experiment-001/collection/traces.json --assessments runs/experiment-001/assessments.json --manifest runs/experiment-001/runtime-manifest.json --out runs/experiment-001/report.json
 ```
 
 ## 3. Continuous diagnostics

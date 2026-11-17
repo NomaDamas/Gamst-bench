@@ -1,13 +1,58 @@
 """Strict, dependency-free validation and content-addressed experiment plans."""
 import hashlib
+import hmac
 import json
 import math
 from pathlib import Path
+from collections.abc import Mapping
 
 SUITES = {'transient', 'semantic', 'memory', 'revision', 'retention', 'resilience'}
 POLICIES = {'vlm', 'thin', 'hybrid', 'periodic', 'streaming', 'no-context', 'oracle'}
 # 'sweep' configurations only trace a cost/quality curve; they never enter acceptance comparisons.
 ROLES = {'primary', 'sweep'}
+CHECKSUM_ALGORITHM = 'sha256'
+CHECKSUM_VERSION = 1
+INTEGRITY_COUNTER_LIMIT = 2**31 - 1
+MAX_PACKET_BYTES = 131072
+
+
+class PacketIntegrityCounter:
+    """Bounded receiver-side count of rejected temporal packets."""
+
+    __slots__ = ('limit', 'rejected')
+
+    def __init__(self, *, limit=INTEGRITY_COUNTER_LIMIT):
+        if type(limit) is not int or not 1 <= limit <= INTEGRITY_COUNTER_LIMIT:
+            raise ValueError('integrity counter limit must be a positive bounded integer')
+        self.limit = limit
+        self.rejected = 0
+
+    def record_rejection(self):
+        self.rejected = min(self.limit, self.rejected + 1)
+        return self.rejected
+
+    @property
+    def integrity_rejected(self):
+        return self.rejected
+
+    def snapshot(self):
+        return {'integrity_rejected': self.rejected}
+
+
+def _record_integrity_rejection(counter):
+    if counter is None:
+        return
+    record = getattr(counter, 'record_rejection', None)
+    if callable(record):
+        record()
+        return
+    if isinstance(counter, dict):
+        current = counter.get('integrity_rejected', 0)
+        if type(current) is not int or current < 0:
+            raise ValueError('integrity counter must contain a nonnegative integer')
+        counter['integrity_rejected'] = min(INTEGRITY_COUNTER_LIMIT, current + 1)
+        return
+    raise TypeError('counter must be PacketIntegrityCounter or a mutable counter mapping')
 
 def require(condition, message):
     if not condition:
@@ -27,6 +72,59 @@ def integer(value, name, minimum=0, maximum=1000000):
 
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False).encode()
+
+
+def canonical_packet_bytes(packet):
+    """Return canonical UTF-8 bytes covered by a temporal packet checksum."""
+    if not isinstance(packet, Mapping):
+        raise ValueError('temporal packet must be an object')
+    body = dict(packet)
+    body.pop('checksum', None)
+    try:
+        raw = canonical(body)
+    except (TypeError, ValueError, UnicodeError) as exc:
+        raise ValueError('temporal packet is not canonical JSON') from exc
+    if len(raw) > MAX_PACKET_BYTES:
+        raise ValueError('temporal packet exceeds byte budget')
+    return raw
+
+
+def packet_sha256(packet):
+    return hashlib.sha256(canonical_packet_bytes(packet)).hexdigest()
+
+
+def packet_checksum(packet):
+    return {'algorithm': CHECKSUM_ALGORITHM, 'version': CHECKSUM_VERSION,
+            'sha256': packet_sha256(packet)}
+
+
+def verify_packet_checksum(packet, *, counter=None, allow_legacy=False):
+    """Verify a temporal packet before it is dispatched to an adapter."""
+    try:
+        if not isinstance(packet, Mapping):
+            raise ValueError('temporal packet must be an object')
+        checksum = packet.get('checksum')
+        if checksum is None:
+            if allow_legacy:
+                return False
+            raise ValueError('temporal packet checksum is required')
+        if (not isinstance(checksum, dict)
+                or set(checksum) != {'algorithm', 'version', 'sha256'}
+                or checksum.get('algorithm') != CHECKSUM_ALGORITHM
+                or checksum.get('version') != CHECKSUM_VERSION
+                or not isinstance(checksum.get('sha256'), str)
+                or len(checksum['sha256']) != 64
+                or any(c not in '0123456789abcdef' for c in checksum['sha256'])):
+            raise ValueError('unsupported temporal packet checksum')
+        if not hmac.compare_digest(packet_sha256(packet), checksum['sha256']):
+            raise ValueError('temporal packet checksum mismatch')
+        return True
+    except (TypeError, ValueError):
+        _record_integrity_rejection(counter)
+        raise
+
+
+verify_packet_integrity = verify_packet_checksum
 
 def digest(value):
     return hashlib.sha256(canonical(value)).hexdigest()
@@ -132,6 +230,13 @@ def validate_plan(plan):
     if plan['evidence'] == 'measured':
         text(plan.get('execution_sha256'), 'frozen adapter commands digest')
         require(len(plan['execution_sha256']) == 64, 'SHA256 required')
+        manifest_sha = plan.get('runtime_manifest_sha256')
+        require(type(manifest_sha) is str and len(manifest_sha) == 64 and
+                all(c in '0123456789abcdef' for c in manifest_sha),
+                'measured plans require frozen runtime manifest digest')
+    else:
+        require('runtime_manifest_sha256' not in plan,
+                'synthetic plans must not claim a runtime manifest')
     require(plan.get('plan_sha256') == digest({k:v for k,v in plan.items() if k != 'plan_sha256'}), 'plan was changed after freeze')
     return plan
 

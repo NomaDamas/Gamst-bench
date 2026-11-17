@@ -6,6 +6,8 @@ refs=[]
 for line in sys.stdin:
     item=json.loads(line)
     if item['type']=='input':
+        if '--require-jpeg' in sys.argv and not item['input']['payload'].get('jpeg_base64'):
+            print(json.dumps({'type':'error','text':'missing materialized JPEG'}),flush=True)
         refs.append(item['input']['id'])
         print(json.dumps({'type':'context','text':'fixture observation','evidence_ids':refs[-1:],'synthetic':True}),flush=True)
     elif item['type']=='query':

@@ -1,6 +1,27 @@
 # JSONL adapter contract
 
+## GAMST Core through GamstCrew
+
+The live runtime-manager-to-benchmark execution seam is frozen in
+[`GAMSTCREW_RUNTIME_ADAPTER.md`](GAMSTCREW_RUNTIME_ADAPTER.md). It defines the
+JSONL lifecycle, the real Crew-owned Core provider boundary, temporal packet and
+checksum preservation, failure categories, provenance, and the explicit limits
+of the first `runtime_contract_execution` profile. The document is design
+evidence only until issue [#9](https://github.com/NomaDamas/Gamst-bench/issues/9)
+has a passing implementation and trace artifact.
+
 The collector runs an explicitly supplied argv command, never a shell string. Use an absolute executable path. stdout is reserved for newline-delimited JSON; stderr is diagnostic. No model weights are downloaded by the benchmark.
+
+An adapter output may include a temporal packet in its `packet` member. The
+collector verifies its versioned SHA-256 envelope before adding receive-time
+metadata or dispatching the output to scoring. The covered bytes are canonical
+UTF-8 JSON (`ensure_ascii=false`, sorted keys, compact separators,
+`allow_nan=false`) with the `checksum` member excluded. A mismatch rejects the
+output and increments `integrity_rejected` in the trace. Packets without a
+checksum are rejected; legacy acceptance is an explicit compatibility choice
+for direct contract consumers and is not enabled by the collector. Accepted
+checksum envelopes are retained in the trace's bounded `packet_checksums`
+field so an audit can bind the received packet set to the trace digest.
 
 Input messages, in order:
 
@@ -30,9 +51,9 @@ Input ingestion and inference must be independent. The host has an eight-message
 
 `python3 -m gamst_bench.adapters.gamst_http` connects to explicitly selected chat-compatible model endpoints. A uses the VLM; B requires installed Gamst plugins; C adds thumbnail-change, query-triggered semantic calls and periodic auditing; D uses periodic semantic inspection; E (`streaming`) sends frames to a separate small-VLM endpoint (`--streaming-url`, default port 8081) every `--streaming-interval` seconds (default 0.25 s, 4 Hz) without Gamst plugins. C's image-difference trigger is a reference implementation, not a validated semantic sentinel. Audit freshness is anchored to inspected input capture time. Freeze intervals, novelty threshold, plugin configuration, dependencies and adapter source revision.
 
-Non-VLM paths require an existing `humansense` installation and `GAMST_BENCH_PLUGINS`, e.g. a JSON list of `{"factory":"your_module:factory","kwargs":{}}`. Use actual supported factories; the benchmark does not guess or install them. Video plugins require numpy/OpenCV, audio plugins require numpy. Exact checkpoint/plugin compatibility has not been validated by the public synthetic tests.
+Non-VLM paths require an existing `gamst` installation (package `gamst-sdk`, class `gamst.Gamst`) and `GAMST_BENCH_PLUGINS`, e.g. a JSON list of `{"factory":"your_module:factory","kwargs":{}}`. Use actual supported factories; the benchmark does not guess or install them. Video plugins require numpy/OpenCV, audio plugins require numpy. Exact checkpoint/plugin compatibility has not been validated by the public synthetic tests.
 
-Default endpoints are local `/v1` chat servers on ports 8080 (VLM) and 11434 (consumer). Remote endpoints require explicit `--allow-remote` and HTTPS. Credentials use `GAMST_BENCH_API_KEY`; redirects and environment proxies are disabled. Decide whether sending the recorded media to that provider is authorized before opting in. Never put tokens into command files or committed artifacts.
+Default endpoints are local `/v1` chat servers on ports 8080 (VLM) and 11434 (consumer). `--consumer-json-mode` requests OpenAI-compatible `response_format: {"type":"json_object"}` for the structured consumer answer; enable it only when the selected server supports that option. Input `at_ms` values are mapped to a wall-clock capture origin and passed to Core instead of substituting inference time. Remote endpoints require explicit `--allow-remote` and HTTPS. Credentials use `GAMST_BENCH_API_KEY`; redirects and environment proxies are disabled. Decide whether sending the recorded media to that provider is authorized before opting in. Never put tokens into command files or committed artifacts.
 
 The reference VLM-only path rejects raw audio rather than pretending to evaluate it. Supply a matched audio-capable baseline for audio/video experiments. Context source wrappers may include multiple consumed inputs; reviewers still verify which inputs actually support each answer. This adapter does not implement an audio/video alignment model, calibrated probabilities, proactive timing scorer, or complete GPU/host cost instrumentation. Those are experiment-specific components, not inferred measurements.
 

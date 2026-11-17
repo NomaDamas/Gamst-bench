@@ -36,4 +36,4 @@ First run a small GCP smoke set, then freeze the final manifest. Pair every syst
 
 Preserve raw traces, scorer outputs, config hashes, hardware/region, prices/date, model and dataset revisions. Import actual official results only with matching measured configuration provenance. Current literature catalog entries remain separate from `official_scores`. Update the website and README together. Submit results upstream only with required artifacts and the benchmark's requested format; do not imply organizer verification before acceptance.
 
-See [GCP preparation](../infra/gcp/README.md). No VM has been provisioned by these changes.
+See [GCP preparation](../infra/gcp/README.md). The private Aside setup has a verified GCP MCP host; this repository does not provision or publish that host's private identifiers.

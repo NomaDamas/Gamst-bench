@@ -11,7 +11,7 @@ Status: **MCP host verified**. The private Aside session verified the GCP VM, GP
 5. Pin this repo, Gamst, plugins and benchmark runners. Acquire only the smoke-set data first. Record the VM/image/configuration and prices in private run metadata. Validate accounting and official scoring before a full run.
 6. Export traces, full configuration and scored artifacts. Confirm the VM is stopped when the run ends. Do not publish account credentials or private dataset content in this repository.
 
-The account, actual project ID, zone, image, quota, cost estimate and VM ID remain **unverified**. This plan intentionally contains no fabricated cloud identifiers.
+The account, project ID, zone, image, quota, cost estimate and VM ID are verified in the private Aside session but intentionally omitted here. This repository contains no credentials or private cloud identifiers.
 
 Official references: [GPU VM documentation](https://cloud.google.com/compute/docs/gpus/about-gpus), [VM creation flags](https://cloud.google.com/sdk/gcloud/reference/compute/instances/create).
 

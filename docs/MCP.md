@@ -1,6 +1,6 @@
 # Gamst Bench MCP
 
-The first campaign has **four required tracks**: FastBench, OmniPro, StreamArena and VSAS-Bench. The first three have registered native recipes. VSAS-Bench is required for Streaming Accuracy / Latency / Consistency, but its official executable/data/scorer release is not currently pinned, so MCP exposes it as `required; blocked pending official runner` and refuses to pretend it is runnable. The client can inspect plans locally; benchmark downloads and inference require a matching GCE VM.
+The first campaign has **four required tracks**: FastBench, OmniPro, StreamArena and VSAS-Bench. FastBench, OmniPro and StreamArena have registered native recipes. Inf-Streams-Eval is also runnable as a separately labelled VSAS-compatible fallback because its dataset and segment scorer are available. VSAS-Bench itself is required for Streaming Accuracy / Latency / Consistency, but its official executable/data/scorer release is not currently pinned, so MCP exposes it as `required; blocked pending official runner` and refuses to pretend the fallback is an official VSAS score. The client can inspect plans locally; benchmark downloads and inference require a matching GCE VM.
 
 ```mermaid
 flowchart LR
@@ -19,7 +19,7 @@ flowchart LR
 - `detect_environment`: detect OS, architecture, Python, NVIDIA and GCloud availability without side effects.
 - `plan_environment`: generate reviewable local/GCP setup commands; never executes them.
 - `setup_environment`: with `install=true`, installs only the local MCP environment; GCP remains plan-only.
-- `list_benchmarks`: list four required tracks; three executable families plus blocked VSAS-Bench. The response includes a machine-readable `recipe_summary` (10 total, 6 executable, 4 reference-only).
+- `list_benchmarks`: list four required tracks; four runnable families including the Inf-Streams-Eval fallback plus blocked VSAS-Bench. The response includes a machine-readable `recipe_summary` (10 total, 7 executable, 3 reference-only).
 - `get_benchmark(benchmark_id)`: source-pinned native command recipes and limitations. Each recipe carries `executable`, `mcp_support` and `blocker` fields; a recipe record retained for reference is never presented as runnable.
 - `list_profiles`: operator-installed execution profiles and unresolved setup blockers.
 - `plan_evaluation(profile_id)`: frozen profile hash and exact stages; no inference.
@@ -35,9 +35,9 @@ The API accepts registered profile IDs, never arbitrary caller-supplied shell co
 - **FastBench:** transient high-dynamic events and timed QA.
 - **OmniPro:** audio-visual proactive understanding; Probe and Online remain separate modes.
 - **StreamArena:** continuous long-horizon memory, tool use and proactive response.
-- **VSAS-Bench:** required visual streaming assistant track for asynchronous **accuracy, latency and consistency**. Official publication is available, but execution remains blocked until its runner, dataset manifest and scorer are officially released and pinned. No unofficial substitute is accepted.
+- **VSAS-Bench:** required visual streaming assistant track for asynchronous **accuracy, latency and consistency**. Official publication is available, but execution remains blocked until its runner, dataset manifest and scorer are officially released and pinned. `infstreams-long` is a separately labelled fallback and is never imported as an official VSAS score.
 
-Native coverage is intentionally limited to the first three executable families. The catalog currently contains ten recipe records: six executable records (`fastbench`, `omnipro` and `streamarena`) and four reference-only records (`spot`, `ovo`, `streamingbench` and `infstreams`). The remaining catalog entries are reference/future tracks. Clients should use the returned `recipe_summary` and per-recipe `executable` field instead of inferring execution support from a recipe ID.
+Native coverage includes FastBench, OmniPro, StreamArena and the separately labelled Inf-Streams-Eval fallback. The catalog currently contains ten recipe records: seven executable records and three reference-only records (`spot`, `ovo`, `streamingbench`). The remaining catalog entries are reference/future tracks. Clients should use the returned `recipe_summary` and per-recipe `executable` field instead of inferring execution support from a recipe ID.
 
 ## Installation and connection
 

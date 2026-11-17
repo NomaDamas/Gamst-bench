@@ -25,12 +25,15 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 - [x] Checks for GCP project identity, pinned code revisions and dataset hashes, plus GPU resource logging.
 - [x] Tests for MCP communication, execution refusal and failure handling, plus [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
 - [x] MCP/GCP setup and private remote handshake were verified through the Aside setup; native benchmark execution remains pending.
+- [x] GCP dataset preparation: FastBench and OmniPro are complete on the persistent disk; StreamArena metadata is complete and 145/243 video archives are in GCS.
 - [ ] Dataset access approval, pinned models/data and small-scale execution checks.
 - [ ] Gamst-specific model/agent adapters and real compatibility validation for each benchmark.
 - [ ] Full measured runs, independent scoring, event-response latency and full-pipeline cost verification.
 - [ ] Publication of reviewed results and compliance with each official leaderboard’s submission requirements.
 
 Current public figures are **synthetic protocol checks**. Published reference numbers, directly reproduced official scores and Gamst extension results remain separate. Gamst superiority has not been established.
+
+**Live preparation snapshot (2026-11-18):** `gamst-bench-gpu` is `TERMINATED`; no GPU runtime is running. StreamArena transfer is active on the workstation at 196/243 video archives; its full manifest will be frozen after completion. The 200GB persistent disk and GCS objects continue to incur storage charges.
 
 
 <a id="evaluation"></a>
@@ -45,22 +48,35 @@ Current public figures are **synthetic protocol checks**. Published reference nu
 - Report full-pipeline cost, p95 answer latency, critical-fact recall, unsupported claims, stale-state errors, abstentions, false alerts per hour, memory and dropped inputs.
 - Official-protocol scores from FastBench and other external benchmarks remain separate from Gamst’s aggregate evaluation.
 
+### 🧩 Model and runtime settings
+
+| Arm | Pipeline | Model setting | Status |
+| --- | --- | --- | --- |
+| A | Sensors → VLM → memory → consumer LLM | Same pinned VLM as C; checkpoint, precision, prompt and consumer revision are **TBD at GCP freeze** | to be continued |
+| B | Sensors → thin perception → consumer LLM | No semantic VLM calls; thin perception/ASR revisions must be pinned | to be continued |
+| C | Sensors → Gamst triggers → selective VLM → memory → consumer LLM | Candidate arm; matched VLM, memory, consumer, hardware and input track with A/D | to be continued |
+| D | Sensors → periodic VLM → memory → consumer LLM | Same VLM as A/C; fixed schedule control | to be continued |
+| E | Sensors → small always-on streaming VLM → memory → consumer LLM | Separate lightweight checkpoint; continuous 4Hz-style control | to be continued |
+
+Synthetic fixture values such as `fixture-vlm` are protocol-validation placeholders and are not model settings or benchmark results.
+
 <!-- MCP:START -->
 <a id="multi-benchmark-mcp"></a>
 ## 🔌 Required benchmark MCP
 
-Four required benchmark tracks: FastBench, OmniPro, StreamArena and VSAS-Bench. The catalog has 10 total recipe records: 6 executable native recipes across the three executable families and 4 reference-only records. VSAS-Bench is **required but blocked pending its official runner/data/scorer release**.
+Four required benchmark tracks: FastBench, OmniPro, StreamArena and VSAS-Bench. The catalog has 10 total recipe records: 7 executable recipes across four runnable families (including Inf-Streams-Eval as a VSAS-compatible fallback) and 3 reference-only records. VSAS-Bench itself remains **required but blocked pending its official runner/data/scorer release**.
 
 [MCP tools and deployment guide](docs/MCP.md) · [Private GCP profile templates](mcp/profiles.example.json) · [SSH client example](mcp/client.ssh.example.json)
 
 - **FastBench**: `fastbench-baseline`, `fastbench-proactive`.
 - **OmniPro**: `omnipro-probe`, `omnipro-online`.
 - **StreamArena**: `streamarena-offline`, `streamarena-continuous`.
-- **VSAS-Bench**: required track; no executable recipe is registered until the official release is pinned.
+- **Inf-Streams-Eval**: `infstreams-long`.
+- **VSAS-Bench**: official track blocked; use `infstreams-long` only as a separately labelled fallback.
 
 Tools cover catalog, readiness/plan hashes, GCP-only dataset download, asynchronous evaluation, cancellation, persistent status and native artifacts.
 
-No inference or benchmark dataset download was executed locally.
+Dataset acquisition and inference remain GCP-only; no model or benchmark data is downloaded to the local workstation.
 
 <!-- MCP:END -->
 
@@ -100,44 +116,70 @@ Official scores retain their native scorers and metrics. GPU resource logs alone
 <a id="benchmark-atlas"></a>
 ## 🧭 Benchmark atlas
 
-Reviewed 2026-11-14. Published snapshots are **not reproduced**, not a live SOTA ranking and not comparable across protocols. All Gamst hybrid runs remain **not run**. No inference or dataset downloads run locally.
+Reviewed 2026-11-14. Published snapshots are **not reproduced**, not a live SOTA ranking and not comparable across protocols. Real Gamst runs remain **to be continued** until the frozen GCP model manifest and held-out split are executed.
 
-[Interactive comparison tabs](https://gamst-bench.jinminseong.com/#benchmarks) · [Matched evaluation plan](docs/COMPARISONS.md) · [GCP preparation](infra/gcp/README.md)
+[🖥️ Interactive benchmark site](https://gamst-bench.jinminseong.com/#benchmarks) · [Matched evaluation plan](docs/COMPARISONS.md) · [GCP preparation](infra/gcp/README.md)
 
-<details>
-<summary><strong>FastBench</strong> · Public research · 2026</summary>
+![Benchmark readiness graph](docs/assets/benchmark-readiness.svg)
 
-### FastBench · Public research · 2026
+### 🗂️ Benchmark index
+
+| | Benchmark | What it asks | Data shape | Status |
+| --- | --- | --- | --- | --- |
+| ⚡ | [FastBench](#fastbench) | “지금 보이는 짧은 사건 뒤 3초 동안 무엇이 일어나는가?” | 300 videos · 306 QA · ~8.3 GiB | 데이터 준비 완료 · 공식 runner/실제 모델 평가 대기 |
+| 🔔 | [SPOT-Bench](#spot) | “이 스트림에서 지금 알림해야 하는가, 침묵해야 하는가?” | 662 released videos · ~40 GB | 보조 대표 벤치 · access/runner 준비 대기 |
+| 🔄 | [OVO-Bench](#ovo) | “현재 상태와 과거 근거를 연결해 다음 행동을 예측하는가?” | 644 videos · 3,100 queries | 보조 대표 벤치 · 데이터/runner 준비 대기 |
+| 📺 | [StreamingBench](#streamingbench) | “긴 영상의 여러 시점 질문에 답하면서 context budget을 줄여도 이해가 유지되는가?” | 900 videos · 4,500 QA on project page | 보조 회귀 벤치 · 실제 revision freeze 대기 |
+| 🎧 | [OmniPro](#omnipro) | “어떤 조건이 발생하면 언제 무엇을 말해야 하는가?” | 2,700 samples · 9 tasks | 데이터 준비 완료 · Probe/Online 실제 실행 대기 |
+| 🧠 | [StreamArena](#streamarena) | “현재 장면, 과거 근거, 외부 도구, 미래 발화 시점을 어떻게 처리하는가?” | 3,646 questions in published v2 runs | GCS 전송 진행 중 196/243 tar · 메타데이터 완료 · 실제 실행 대기 |
+| 🌊 | [Inf-Streams-Eval](#infstreams) | “긴 스트림에서 생성 품질과 자원 사용이 시간에 따라 유지되는가?” | Videos average over 2 hours | runner/scorer 확인 완료 · GCP 데이터 다운로드 및 manifest 대기 · VSAS 공식 점수와 분리 |
+| 🎬 | [OmniVideoBench](#omnivideo) | “시청각 단서를 함께 사용해 질문과 reasoning을 해결하는가?” | 628 videos · 1,000 QA | 보조 AV 벤치 · access 승인 대기 |
+| ⏱️ | [VSAS-Bench](#vsas) | “비동기 입력과 부하 속에서도 언제, 얼마나 정확하고 일관되게 응답하는가?” | 18,000+ annotations (paper) | 공식 트랙 blocked · 아래 Inf-Streams-Eval fallback과 Gamst self-eval로 준비 |
+| 🧪 | [GAMST Bench 자체 평가](#gamst-bench-self-evaluation) | “같은 입력과 소비자 LLM에서 선택적 context가 정확도·지연·비용·안정성을 함께 개선하는가?” | 6 task suites · 5 matched arms | to be continued · real GCP model runs not started |
+
+> 공식 점수와 Gamst 확장 점수는 같은 표에 합치지 않습니다. VSAS-Bench의 공식 트랙은 blocked 상태로 유지하고, 대체 트랙은 별도 이름으로 기록합니다.
+
+### 🧭 Benchmark detail
+<details id="fastbench">
+<summary>⚡ <strong>FastBench</strong> · Public research · 2026</summary>
+
+### ⚡ FastBench · Public research · 2026
 
 [Official source](https://github.com/Ashone3/FastBench) · [Dataset](https://huggingface.co/datasets/Ashenone3/FastBench)
 
-- **Problem:** Brief events / sparse sampling
+- **What it asks:** “지금 보이는 짧은 사건 뒤 3초 동안 무엇이 일어나는가?”
+- **Abilities:** 순간 사건 감지 · temporal/state dynamics · deadline 준수
+- **Data shape:** 300 MP4 clips + 306 timed QA; annotation은 video_path, 질문/초점/응답 시각, 기준 응답, capability/domain을 가진 JSON
 - **Existing approach:** Incremental video, timed answers and ProactiveFrame adaptive FPS.
-- **Gamst hypothesis (untested):** Compare lightweight triggers and periodic audits at matched context budgets.
+- **Gamst hypothesis:** Compare lightweight triggers and periodic audits at matched context budgets.
 - **Metrics:** Official timed QA score
-- **Data:** 300 videos · 306 QA · ~8.3 GiB. Preserve MP4 FPS and clip timestamps; pin annotation, judge and official preset.
+- **Model setup:** A/C/D는 동일한 고정 VLM; B는 thin perception; E는 small streaming VLM. FPS·prompt·judge를 공식 preset에 고정
+- **Preparation:** Preserve MP4 FPS and clip timestamps; pin annotation, judge and official preset.
+- **Status:** 데이터 준비 완료 · 공식 runner/실제 모델 평가 대기
 - **Limits:** Video time is not wall-clock inference latency. Annotated focus times are oracle-only. Code MIT does not license the videos.
-- **Integration:** planned; phase 1.
 
 - Published: **Qwen3-VL-8B · 2 FPS — 32.9% Official timed QA score**. Manuscript baseline; not reproduced here. [Source](https://github.com/Ashone3/FastBench).
 - Published: **Qwen3-VL-8B + ProactiveFrame — 38.3% Official timed QA score**. Manuscript adaptive-frame preset; not reproduced here. [Source](https://github.com/Ashone3/FastBench).
 
 </details>
 
-<details>
-<summary><strong>SPOT-Bench</strong> · NeurIPS 2026 · E&D</summary>
+<details id="spot">
+<summary>🔔 <strong>SPOT-Bench</strong> · NeurIPS 2026 · E&D</summary>
 
-### SPOT-Bench · NeurIPS 2026 · E&D
+### 🔔 SPOT-Bench · NeurIPS 2026 · E&D
 
 [Official source](https://dibschat.github.io/SPOT-Bench/) · [Dataset](https://huggingface.co/datasets/cvml-nus/spot-bench)
 
-- **Problem:** When to respond / when to stay silent
+- **What it asks:** “이 스트림에서 지금 알림해야 하는가, 침묵해야 하는가?”
+- **Abilities:** timeliness · false alerts · duplicate suppression
+- **Data shape:** 662 visual videos + 1Hz stream annotations; audio 제거 Detection release
 - **Existing approach:** Timeliness-F1 scores every prediction across the stream.
-- **Gamst hypothesis (untested):** Measure missed events, duplicate alerts and unnecessary consumer calls.
+- **Gamst hypothesis:** Measure missed events, duplicate alerts and unnecessary consumer calls.
 - **Metrics:** Detection T-F1@5 · 1Hz
-- **Data:** 662 released videos · ~40 GB. Request source Ego4D/Ego-Exo4D access and accept HF conditions; start with full Detection release.
+- **Model setup:** Ctrl-SPOT/native runner와 Gamst trigger를 separate protocol로 보고
+- **Preparation:** Request source Ego4D/Ego-Exo4D access and accept HF conditions; start with full Detection release.
+- **Status:** 보조 대표 벤치 · access/runner 준비 대기
 - **Limits:** Visual-only, audio removed. Interaction/Intervention release is validation-only. CC BY-NC-SA and source conditions apply.
-- **Integration:** planned; phase 1.
 
 - Published: **Ctrl-SPOT — 20.9% Detection T-F1@5 · 1Hz**. Published Detection leaderboard snapshot. [Source](https://dibschat.github.io/SPOT-Bench/).
 - Published: **JoyAI-VL-Interaction — 16.3% Detection T-F1@5 · 1Hz**. Published Detection leaderboard snapshot. [Source](https://dibschat.github.io/SPOT-Bench/).
@@ -145,79 +187,91 @@ Reviewed 2026-11-14. Published snapshots are **not reproduced**, not a live SOTA
 
 </details>
 
-<details>
-<summary><strong>OVO-Bench</strong> · CVPR 2025</summary>
+<details id="ovo">
+<summary>🔄 <strong>OVO-Bench</strong> · CVPR 2025</summary>
 
-### OVO-Bench · CVPR 2025
+### 🔄 OVO-Bench · CVPR 2025
 
 [Official source](https://github.com/JoeLeelyf/OVO-Bench) · [Dataset](https://huggingface.co/datasets/JoeLeelyf/OVO-Bench)
 
-- **Problem:** Current state / past evidence / future response
+- **What it asks:** “현재 상태와 과거 근거를 연결해 다음 행동을 예측하는가?”
+- **Abilities:** current state · backward tracing · forward response · memory
+- **Data shape:** 644 videos + 3,100 queries; source archive 또는 official chunked videos
 - **Existing approach:** Real-time perception, backward tracing and forward active responding.
-- **Gamst hypothesis (untested):** Test context retention, current versus last-seen state and causal delivery.
+- **Gamst hypothesis:** Test context retention, current versus last-seen state and causal delivery.
 - **Metrics:** Official per-task / per-mode scores
-- **Data:** 644 videos · 3,100 queries. Use ~44 GB source archive plus official chunker, or ~144 GB pre-chunked archives; pin release.
+- **Model setup:** 공식 offline/online mode를 분리하고 Qwen2VL revision을 고정
+- **Preparation:** Use ~44 GB source archive plus official chunker, or ~144 GB pre-chunked archives; pin release.
+- **Status:** 보조 대표 벤치 · 데이터/runner 준비 대기
 - **Limits:** Published and revised code protocols differ. CC BY-NC-SA and source licenses apply. No verified score imported in this catalog.
-- **Integration:** planned; phase 1.
 
 No verified numeric result imported.
 
 </details>
 
-<details>
-<summary><strong>StreamingBench</strong> · Public benchmark</summary>
+<details id="streamingbench">
+<summary>📺 <strong>StreamingBench</strong> · Public benchmark</summary>
 
-### StreamingBench · Public benchmark
+### 📺 StreamingBench · Public benchmark
 
 [Official source](https://streamingbench.github.io/) · [Dataset](https://huggingface.co/datasets/mjuicem/StreamingBench)
 
-- **Problem:** General perception / audio / contextual QA
+- **What it asks:** “긴 영상의 여러 시점 질문에 답하면서 context budget을 줄여도 이해가 유지되는가?”
+- **Abilities:** general video QA · audio/context understanding
+- **Data shape:** project page 기준 900 videos + 4,500 QA; task별 question JSON과 영상
 - **Existing approach:** 18 tasks with questions at multiple video timestamps.
-- **Gamst hypothesis (untested):** Check that cheaper context does not degrade general understanding.
+- **Gamst hypothesis:** Check that cheaper context does not degrade general understanding.
 - **Metrics:** Overall accuracy
-- **Data:** 900 videos · 4,500 QA on project page. Download official videos and QA on GCP; reconcile actual revision counts before freezing.
+- **Model setup:** native MiniCPM-V baseline과 Gamst matched arm을 별도 실행; 60s context와 all-context를 구분
+- **Preparation:** Download official videos and QA on GCP; reconcile actual revision counts before freezing.
+- **Status:** 보조 회귀 벤치 · 실제 revision freeze 대기
 - **Limits:** Posted results mostly use older model versions and different frame budgets; not a current universal SOTA.
-- **Integration:** planned; phase 2.
 
 - Published: **Gemini 1.5 Pro — 70.26% Overall accuracy**. Official site historical overall table; video input. [Source](https://streamingbench.github.io/).
 - Published: **MiniCPM-o 2.6 — 66.01% Overall accuracy**. Official site historical overall table; 60 frames. [Source](https://streamingbench.github.io/).
 
 </details>
 
-<details>
-<summary><strong>OmniPro</strong> · Preprint · 2026</summary>
+<details id="omnipro">
+<summary>🎧 <strong>OmniPro</strong> · Preprint · 2026</summary>
 
-### OmniPro · Preprint · 2026
+### 🎧 OmniPro · Preprint · 2026
 
 [Official source](https://github.com/RuixiangZhao/OmniPro) · [Dataset](https://huggingface.co/datasets/RuixiangZhao/OmniPro)
 
-- **Problem:** Audio-visual events / proactive interaction
+- **What it asks:** “어떤 조건이 발생하면 언제 무엇을 말해야 하는가?”
+- **Abilities:** audio-visual fusion · alerting · grounding · counting · monitoring · narration · prediction
+- **Data shape:** 1,262 MP4 + benchmark.json 2,700 rows/9 tasks; 각 row에 question_time, audio_dependency, trigger_time, response, trigger_type이 있음
 - **Existing approach:** Probe tests pre/post event understanding; Online tests timing and content jointly.
-- **Gamst hypothesis (untested):** Compare audio-only, vision-only and fused context; retain non-speech evidence.
+- **Gamst hypothesis:** Compare audio-only, vision-only and fused context; retain non-speech evidence.
 - **Metrics:** Probe paired accuracy / Online F1
-- **Data:** 2,700 samples · 9 tasks. Keep raw video/audio and trigger labels; implement a persistent begin/observe/end adapter.
+- **Model setup:** Probe와 Online을 분리. vision-only/audio-only/fused ablation을 별도 실행하며 native model, tolerance ±3s, judge revision을 고정
+- **Preparation:** Keep raw video/audio and trigger labels; implement a persistent begin/observe/end adapter.
+- **Status:** 데이터 준비 완료 · Probe/Online 실제 실행 대기
 - **Limits:** 84% audio dependency. Probe and Online are distinct leaderboards. Preserve official matching tolerance and judge.
-- **Integration:** planned; phase 2.
 
 - Published: **Gemini-3-Flash — 40.4% Probe paired accuracy**. Paper Table 2; prompted pre/post evaluation, not Online. [Source](https://arxiv.org/html/2605.18577v1#S4.T2).
 - Published: **MiniCPM-o 4.5 — 20.9% Online F1**. Paper Table 2; 1 FPS and ±3s matching. [Source](https://arxiv.org/html/2605.18577v1#S4.T2).
 
 </details>
 
-<details>
-<summary><strong>StreamArena</strong> · Preprint · 2026</summary>
+<details id="streamarena">
+<summary>🧠 <strong>StreamArena</strong> · Preprint · 2026</summary>
 
-### StreamArena · Preprint · 2026
+### 🧠 StreamArena · Preprint · 2026
 
 [Official source](https://github.com/JIA-Lab-research/StreamArena) · [Dataset](https://huggingface.co/datasets/hkuzxc/StreamArena)
 
-- **Problem:** Long-term memory / agent use of evidence
+- **What it asks:** “현재 장면, 과거 근거, 외부 도구, 미래 발화 시점을 어떻게 처리하는가?”
+- **Abilities:** RTP 현재 이해 · HR 장기 회상 · Tool 사용 · Pro 선제적 대기/발화
+- **Data shape:** 243 long-form videos (~52–134 min) + 3,646 JSONL questions; 각 tar는 MP4/info.json/VTT 자막을 포함
 - **Existing approach:** Continuous QA, historical recall, tool use and proactive responses.
-- **Gamst hypothesis (untested):** Evaluate whether an unchanged consumer benefits from bounded Gamst memory.
+- **Gamst hypothesis:** Evaluate whether an unchanged consumer benefits from bounded Gamst memory.
 - **Metrics:** Per-capability accuracy
-- **Data:** 3,646 questions in published v2 runs. Keep question.en.jsonl, video archives and timestamps; separate published trajectories from test inputs.
+- **Model setup:** offline RTP/HR/Tool과 continuous Pro를 분리. Gamst agent와 native StreamMind를 같은 입력·질문·judge 조건에서 별도 보고
+- **Preparation:** Keep question.en.jsonl, video archives and timestamps; separate published trajectories from test inputs.
+- **Status:** GCS 전송 진행 중 196/243 tar · 메타데이터 완료 · 실제 실행 대기
 - **Limits:** Mixed is a multi-model system, not a matched-cost single backbone. Annotation CC BY-NC; video source rights apply.
-- **Integration:** planned; phase 2.
 
 - Published: **StreamMind v2 · Mixed — 55.9% Real-time perception accuracy**. Online multi-model system; not matched to our hardware. [Source](https://github.com/JIA-Lab-research/StreamArena).
 - Published: **StreamMind v2 · Mixed — 49.1% Historical recall accuracy**. Same published v2 run; separate capability. [Source](https://github.com/JIA-Lab-research/StreamArena).
@@ -226,71 +280,102 @@ No verified numeric result imported.
 
 </details>
 
-<details>
-<summary><strong>Inf-Streams-Eval</strong> · ICLR 2026 · StreamingVLM</summary>
+<details id="infstreams">
+<summary>🌊 <strong>Inf-Streams-Eval</strong> · ICLR 2026 · StreamingVLM</summary>
 
-### Inf-Streams-Eval · ICLR 2026 · StreamingVLM
+### 🌊 Inf-Streams-Eval · ICLR 2026 · StreamingVLM
 
 [Official source](https://github.com/mit-han-lab/streaming-vlm) · [Dataset](https://huggingface.co/datasets/mit-han-lab/Inf-Stream-Eval)
 
-- **Problem:** Sustained understanding / bounded resources
+- **What it asks:** “긴 스트림에서 생성 품질과 자원 사용이 시간에 따라 유지되는가?”
+- **Abilities:** long-session quality · memory/resource stability · sustained latency
+- **Data shape:** HF Inf-Stream-Eval: 20개 장시간 MP4와 eval_all_metadata.jsonl/score_all_clips.jsonl; 공식 paired segment scorer
 - **Existing approach:** Long videos with dense per-second frame/text alignment.
-- **Gamst hypothesis (untested):** Measure quality over time plus process/server/GPU memory, drops and latency.
+- **Gamst hypothesis:** Measure quality over time plus process/server/GPU memory, drops and latency.
 - **Metrics:** Pairwise win rate
-- **Data:** Videos average over 2 hours. Use the Eval dataset and official scorer; do not substitute training data or repeated short clips.
+- **Model setup:** StreamingVLM 공식 generate→merge→score pipeline, paired baseline과 judge revision 고정
+- **Preparation:** Use the Eval dataset and official scorer; do not substitute training data or repeated short clips.
+- **Status:** runner/scorer 확인 완료 · GCP 데이터 다운로드 및 manifest 대기 · VSAS 공식 점수와 분리
 - **Limits:** Win rate is not accuracy; 8 FPS throughput is not answer latency. Genuine 2h/8h runs still required.
-- **Integration:** planned; phase 3.
 
 - Published: **StreamingVLM vs GPT-4o mini — 66.18% Pairwise win rate**. Paper result; H100 throughput reported separately. [Source](https://research.nvidia.com/labs/eai/publication/streamingvlm/).
 
 </details>
 
-<details>
-<summary><strong>OmniVideoBench</strong> · ICLR 2026</summary>
+<details id="omnivideo">
+<summary>🎬 <strong>OmniVideoBench</strong> · ICLR 2026</summary>
 
-### OmniVideoBench · ICLR 2026
+### 🎬 OmniVideoBench · ICLR 2026
 
 [Official source](https://github.com/NJU-LINK/OmniVideoBench) · [Dataset](https://huggingface.co/datasets/NJU-LINK/OmniVideoBench)
 
-- **Problem:** Complementary audio-visual reasoning
+- **What it asks:** “시청각 단서를 함께 사용해 질문과 reasoning을 해결하는가?”
+- **Abilities:** joint audio-visual reasoning · evidence retention
+- **Data shape:** 628 videos + 1,000 QA with original audio, timestamps, reasoning annotations
 - **Existing approach:** Joint audio/visual questions with reasoning annotations.
-- **Gamst hypothesis (untested):** Check that compact context retains information from both modalities.
+- **Gamst hypothesis:** Check that compact context retains information from both modalities.
 - **Metrics:** Official QA accuracy
-- **Data:** 628 videos · 1,000 QA. Request HF access; preserve original audio, QA and timestamps.
+- **Model setup:** audio/video input을 동일 checkpoint에서 비교하고 official scorer 유지
+- **Preparation:** Request HF access; preserve original audio, QA and timestamps.
+- **Status:** 보조 AV 벤치 · access 승인 대기
 - **Limits:** Research-only access conditions; official offline QA does not establish causal real-time latency. No verified score imported.
-- **Integration:** planned; phase 3.
 
 No verified numeric result imported.
 
 </details>
 
-<details>
-<summary><strong>VSAS-Bench</strong> · CVPR 2026 Findings</summary>
+<details id="vsas">
+<summary>⏱️ <strong>VSAS-Bench</strong> · CVPR 2026 Findings</summary>
 
-### VSAS-Bench · CVPR 2026 Findings
+### ⏱️ VSAS-Bench · CVPR 2026 Findings
 
 [Official source](https://openaccess.thecvf.com/content/CVPR2026F/html/Vasu_VSAS-Bench_Real-Time_Evaluation_of_Visual_Streaming_Assistant_Models_CVPRF_2026_paper.html)
 
-- **Problem:** Latency-sensitive continuous responses
+- **What it asks:** “비동기 입력과 부하 속에서도 언제, 얼마나 정확하고 일관되게 응답하는가?”
+- **Abilities:** continuous accuracy · response latency · async consistency · stale response/recovery
+- **Data shape:** 논문에 18,000+ annotations로 보고되지만 공식 manifest/실행 데이터 구조는 현재 고정 불가
 - **Existing approach:** Synchronous/asynchronous protocols with dense temporal annotations.
-- **Gamst hypothesis (untested):** Use asynchronous evaluation principles to test stale answers under load.
+- **Gamst hypothesis:** Use asynchronous evaluation principles to test stale answers under load.
 - **Metrics:** Official continuous-response metrics
-- **Data:** 18,000+ annotations (paper). Await and pin the official runner, dataset manifest and scorer release; do not substitute an unofficial implementation.
+- **Model setup:** 공식 VSAS 설정은 runner/data/scorer 공개 후 고정. 그 전에는 공식 점수·대체 점수를 같은 표에 섞지 않음
+- **Preparation:** Await and pin the official runner, dataset manifest and scorer release; do not substitute an unofficial implementation.
+- **Status:** 공식 트랙 blocked · 아래 Inf-Streams-Eval fallback과 Gamst self-eval로 준비
 - **Limits:** Paper and official publication are available, but an official executable/data/scorer release was not verified at review time.
-- **Integration:** required-blocked; phase 3.
 
 No verified numeric result imported.
 
+**대체 실행 트랙:** [Inf-Streams-Eval](https://huggingface.co/datasets/mit-han-lab/Inf-Stream-Eval) + Gamst continuous suite. 이는 VSAS-Bench 공식 점수가 아니며 장시간 품질·자원·지연 proxy로만 보고합니다. 공식 VSAS runner/data/scorer가 공개되면 별도 recipe와 scorer를 추가합니다.
+
 </details>
+
+<a id="gamst-bench-self-evaluation"></a>
+### 🧪 GAMST Bench 자체 평가
+
+**상태:** to be continued · real GCP model runs not started
+
+**질문:** “같은 입력과 소비자 LLM에서 선택적 context가 정확도·지연·비용·안정성을 함께 개선하는가?”
+
+**비교 arms:** A full VLM · B thin perception + LLM · C Gamst selective VLM · D periodic VLM · E small always-on streaming VLM
+
+| Suite | 무엇을 묻는가 | 측정값 |
+| --- | --- | --- |
+| ⚡ Brief events | 짧은 사건을 놓치지 않는가? | miss rate, time-to-detect, deadline success |
+| 🔎 Subtle semantics | 작은 OCR/status 변화와 무관한 움직임을 구분하는가? | critical recall, false alerts |
+| 🧠 State memory | 현재·마지막 관측·unknown을 구분하는가? | stale errors, retention, correct abstention |
+| 🎧 AV revision | 오디오/영상 충돌과 정정을 최신 근거로 갱신하는가? | revision accuracy, evidence age |
+| 🗂️ Query-independent retention | 질문 전에 본 근거를 보존하는가? | grounded recall, evidence delivery latency |
+| 🛡️ Runtime resilience | 센서 공백·큐 과부하·재시작 후 복구하는가? | drops, recovery, queue growth, memory slope |
+
+**동결 조건:** real model revision, precision, prompt, consumer, hardware, budgets, held-out split and cost card are TBD until GCP freeze
 
 ### 🧩 Planned comparison arms
 
-- **Matched VLM baseline**: Sensors → VLM → Same memory → Consumer LLM. Full visual baseline using the same VLM checkpoint, memory and consumer as the hybrid. Status: not run.
-- **Gamst + LLM**: Sensors → Thin perception → Gamst memory → Consumer LLM. Test how much useful evidence survives without semantic VLM calls. Status: not run.
-- **Gamst + VLM + LLM**: Sensors → Gamst triggers → Selective VLM → Gamst memory → Consumer LLM. Test quality preservation with selective semantic inspection. Status: not run.
-- **Periodic VLM + LLM**: Sensors → Periodic VLM → Same memory → Consumer LLM. Control for whether selection beats a fixed inference schedule. Status: not run.
-- **Streaming small VLM + LLM**: Sensors → Small VLM at 4 Hz → Same memory → Consumer LLM. Strongest cheap alternative (StreamingVLM-style): a lightweight VLM watching continuously. Gamst must match it on cost and beat it on grounded quality. Status: not run.
-- **Published native method**: Official input protocol → Native model / controller → Official scorer. Reproduce ProactiveFrame, Ctrl-SPOT or other native baselines under their own protocols. Status: not run.
+- **Matched VLM baseline**: Sensors → VLM → Same memory → Consumer LLM. Full visual baseline using the same VLM checkpoint, memory and consumer as the hybrid. Status: to be continued.
+- **Gamst + LLM**: Sensors → Thin perception → Gamst memory → Consumer LLM. Test how much useful evidence survives without semantic VLM calls. Status: to be continued.
+- **Gamst + VLM + LLM**: Sensors → Gamst triggers → Selective VLM → Gamst memory → Consumer LLM. Test quality preservation with selective semantic inspection. Status: to be continued.
+- **Periodic VLM + LLM**: Sensors → Periodic VLM → Same memory → Consumer LLM. Control for whether selection beats a fixed inference schedule. Status: to be continued.
+- **Streaming small VLM + LLM**: Sensors → Small VLM at 4 Hz → Same memory → Consumer LLM. Strongest cheap alternative (StreamingVLM-style): a lightweight VLM watching continuously. Gamst must match it on cost and beat it on grounded quality. Status: to be continued.
+- **Published native method**: Official input protocol → Native model / controller → Official scorer. Reproduce ProactiveFrame, Ctrl-SPOT or other native baselines under their own protocols. Status: to be continued.
 
 ### 🚦 Readiness
 

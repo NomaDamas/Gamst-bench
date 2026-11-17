@@ -22,7 +22,7 @@ Freeze checkpoints, quantization, hardware, input availability, consumer prompt,
 
 ## Staged datasets
 
-Phase 1: FastBench for brief events; SPOT for when to speak; OVO for past/current/future reasoning. Phase 2: StreamingBench, OmniPro and StreamArena for AV and interactive behavior. Phase 3: Inf-Streams-Eval for long sessions, OmniVideoBench for AV reasoning; VSAS is reference-only until released. The source of dataset details and reference scores is `data/catalog.json`; the website reads this file and `npm run results` regenerates the README.
+Phase 1: FastBench for brief events; SPOT for when to speak; OVO for past/current/future reasoning. Phase 2: StreamingBench, OmniPro and StreamArena for AV and interactive behavior. Phase 3: Inf-Streams-Eval for long sessions, OmniVideoBench for AV reasoning. VSAS-Bench remains the required official track but is blocked until its runner/data/scorer is released; Inf-Streams-Eval plus the Gamst continuous suite is a separately labelled compatibility fallback and must never be imported as a VSAS score. The source of dataset details and reference scores is `data/catalog.json`; the website reads this file and `npm run results` regenerates the README.
 
 Acquire data on GCP only, after licenses/access are satisfied. Keep original manifests, source URLs, revisions, checksums and timestamps. Split by source video/session to prevent leakage; reserve unseen sessions for final evaluation. Keep audio/video synchronized and annotate event onset, evidence availability, valid response window, required facts, silence intervals and stale/retracted facts. Do not provide future frames or focus timestamps to the model. Human double-review a held-out subset and adjudicate disagreement.
 

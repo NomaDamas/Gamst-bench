@@ -25,7 +25,7 @@ class JobsTests(unittest.TestCase):
   self.p=profile(self.root);self.jobs=Jobs(dict(profiles={'fastbench':self.p},runs_root=str(self.root/'runs'),project_id='gamst-project'))
  def test_three_core_families_have_recipes(self):
   items=catalog();supported=[b for b in items if b['mcp_support']=='registered native runner']
-  self.assertEqual({b['id'] for b in supported},{'fastbench','omnipro','streamarena'})
+  self.assertEqual({b['id'] for b in supported},{'fastbench','omnipro','streamarena','infstreams'})
   for b in supported:
    self.assertTrue(b['recipes']);self.assertFalse(b['gpu_validated'])
    self.assertEqual(b['recipe_summary']['executable'],len(b['recipes']))
@@ -35,11 +35,11 @@ class JobsTests(unittest.TestCase):
   recipes=json.loads((ROOT/'mcp'/'recipes.json').read_text())
   summary=recipe_summary(recipes)
   self.assertEqual(summary['total'],10)
-  self.assertEqual(summary['executable'],6)
-  self.assertEqual(summary['reference_only'],4)
+  self.assertEqual(summary['executable'],7)
+  self.assertEqual(summary['reference_only'],3)
   self.assertEqual(set(summary['executable_ids']),{
    'fastbench-baseline','fastbench-proactive','omnipro-probe',
-   'omnipro-online','streamarena-offline','streamarena-continuous'})
+   'omnipro-online','streamarena-offline','streamarena-continuous','infstreams-long'})
   reference=recipe_metadata(next(r for r in recipes if r['id']=='spot-detection'))
   self.assertFalse(reference['executable'])
   self.assertEqual(reference['mcp_support'],'reference only')

@@ -23,9 +23,9 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
    result=await client.call_tool('list_benchmarks',{})
    self.assertFalse(result.is_error)
    supported=[b for b in result.structured_content['benchmarks'] if b['mcp_support']=='registered native runner']
-   self.assertEqual({b['id'] for b in supported},{'fastbench','omnipro','streamarena'})
-   self.assertEqual(sum(b['recipe_summary']['executable'] for b in result.structured_content['benchmarks']),6)
-   self.assertEqual(sum(b['recipe_summary']['reference_only'] for b in result.structured_content['benchmarks']),4)
+   self.assertEqual({b['id'] for b in supported},{'fastbench','omnipro','streamarena','infstreams'})
+   self.assertEqual(sum(b['recipe_summary']['executable'] for b in result.structured_content['benchmarks']),7)
+   self.assertEqual(sum(b['recipe_summary']['reference_only'] for b in result.structured_content['benchmarks']),3)
    env=await client.call_tool('detect_environment',{})
    self.assertFalse(env.is_error);self.assertFalse(env.structured_content['execution_allowed'])
    details=await client.call_tool('get_benchmark',{'benchmark_id':'fastbench'})

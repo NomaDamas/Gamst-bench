@@ -625,7 +625,7 @@
         "cwd": "{checkout}"
       }
     ],
-    "notes": "Direct single-shard entry points avoid upstream hardcoded NFS paths and eight-GPU shell defaults. Preserve original caption prompt and paired baseline. Inspect effective duration/context semantics; a run timeout does not establish a completed long session. Judge requires explicit endpoint/data-transfer review.",
+    "notes": "VSAS-compatible fallback only; never report this output as an official VSAS-Bench score. Direct single-shard entry points avoid upstream hardcoded NFS paths and eight-GPU shell defaults. Preserve original caption prompt and paired baseline. Inspect effective duration/context semantics; a run timeout does not establish a completed long session. Judge requires explicit endpoint/data-transfer review.",
     "variables": {
       "total_lines": "REPLACE_WITH_METADATA_LINE_COUNT",
       "score_lines": "REPLACE_WITH_SCORE_METADATA_LINE_COUNT",

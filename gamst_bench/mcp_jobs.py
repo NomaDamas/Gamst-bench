@@ -14,7 +14,7 @@ from .contracts import read, require, digest, write_new
 from .cloud import gce_identity
 
 CORE_BENCHMARKS=('fastbench','omnipro','streamarena','vsas')
-EXECUTABLE_BENCHMARKS=('fastbench','omnipro','streamarena')
+EXECUTABLE_BENCHMARKS=('fastbench','omnipro','streamarena','infstreams')
 SUPPORTED=set(EXECUTABLE_BENCHMARKS)
 TOKEN=re.compile(r'\{([a-z_]+)\}')
 

@@ -58,3 +58,14 @@ Default endpoints are local `/v1` chat servers on ports 8080 (VLM) and 11434 (co
 The reference VLM-only path rejects raw audio rather than pretending to evaluate it. Supply a matched audio-capable baseline for audio/video experiments. Context source wrappers may include multiple consumed inputs; reviewers still verify which inputs actually support each answer. This adapter does not implement an audio/video alignment model, calibrated probabilities, proactive timing scorer, or complete GPU/host cost instrumentation. Those are experiment-specific components, not inferred measurements.
 
 Collector RSS covers only its owned adapter process tree. Separate model servers, device memory and provider resource use need separate instrumentation. Resources reported by an adapter are explicitly unverified. Soak output is hash-chained for integrity, not authenticated proof of measurement.
+
+For an adapter `error` output, the collector keeps the stable
+`diagnostics: ["adapter_error"]` marker and also retains bounded structured
+entries in `failure_diagnostics`. Each entry may include the adapter's
+`failure_category`, bounded error text/traceback, and parent/child lifecycle
+summary. This preserves startup, timeout, protocol, crash, and queue-drop
+causes in the trace without treating any failure as a successful run.
+Collector-side deadline expiry is recorded as `collector_timeout`; an adapter
+that exits nonzero without emitting a structured error is recorded as
+`adapter_exit` with its return code. These diagnostics are bounded and remain
+separate from semantic quality or cost acceptance.

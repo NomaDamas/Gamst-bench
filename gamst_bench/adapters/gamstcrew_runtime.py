@@ -177,6 +177,8 @@ class Adapter:
         self.sensor_id = "structured-points"
         self.subject_id = "local-user"
         self.phase = "startup"
+        self.started = False
+        self.ended = False
 
     def child_summary(self):
         """Return bounded parent/child lifecycle state for failure traces."""
@@ -214,6 +216,8 @@ class Adapter:
 
     async def start(self, message: dict[str, Any]):
         self.phase = "startup"
+        if self.started or self.manager is not None:
+            raise RuntimeError("duplicate start")
         configuration = message.get("configuration")
         if not isinstance(configuration, dict):
             raise ValueError("start.configuration is required")
@@ -252,6 +256,7 @@ class Adapter:
                          "license": spec.license, "ready": health.state == "ready",
                          "health": self.bridge.health(),
                          "provenance": message.get("provenance")})
+        self.started = True
 
     async def input(self, message: dict[str, Any]):
         self.phase = "input"
@@ -261,6 +266,8 @@ class Adapter:
         if not isinstance(item, dict):
             raise ValueError("input message requires an object")
         input_id = item.get("id")
+        if isinstance(input_id, str) and input_id in self.inputs:
+            raise ValueError("duplicate input.id")
         self.sequence += 1
         packet = _input_packet(message, sequence=self.sequence,
                                subject_id=self.subject_id,
@@ -319,6 +326,8 @@ class Adapter:
 
     async def query(self, message: dict[str, Any]):
         self.phase = "query"
+        if not self.started or self.manager is None or self.bridge is None:
+            raise RuntimeError("query received before start")
         query = message.get("query")
         if not isinstance(query, str):
             raise ValueError("query must be a string")
@@ -337,8 +346,11 @@ class Adapter:
 
     async def end(self):
         self.phase = "shutdown"
-        if self.manager is None:
-            return
+        if not self.started or self.manager is None:
+            raise RuntimeError("end received before start")
+        if self.ended:
+            raise RuntimeError("duplicate end")
+        self.ended = True
         runtime_name = next(iter(self.manager.runtimes), None)
         health = None if runtime_name is None else self.manager.health(runtime_name)
         await self.emit({"type": "resource", "queue_depth": 0 if health is None else health.queue_depth,
@@ -356,7 +368,13 @@ class Adapter:
 async def run():
     adapter = Adapter()
     try:
-        for line in sys.stdin:
+        max_line = 6 * 1024 * 1024
+        while True:
+            line = await asyncio.to_thread(sys.stdin.buffer.readline, max_line + 1)
+            if not line:
+                break
+            if len(line) > max_line or not line.endswith(b"\n"):
+                raise ValueError("bounded newline required")
             message = json.loads(line)
             kind = message.get("type") if isinstance(message, dict) else None
             if kind == "start":
@@ -370,6 +388,8 @@ async def run():
                 return
             else:
                 raise ValueError("unsupported adapter message")
+        if adapter.started and not adapter.ended:
+            raise ValueError("adapter input ended before end")
     except Exception as exc:
         category = adapter.failure_category(exc)
         await adapter.emit({"type": "error", "text": str(exc),

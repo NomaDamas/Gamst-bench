@@ -120,7 +120,7 @@ class ProtocolTests(unittest.TestCase):
    'python':'3.11','consumer_model':'consumer','consumer_revision':'r1','prompt_revision':'p1',
    'context_contract':'gamst.temporal.v1','dependency_lock':'lock','providers':[
     {'name':'consumer','revision':'r1','model_revision':'m1','license':'Apache-2.0'}],
-   'timing':{'clock':'wall_ms','capture_timestamps':True,'query_cutoffs':True}})
+   'timing':{'clock':'wall_ms','capture_timestamps':True,'query_cutoffs':True,'temporal_fields':['capture_timestamps','receive_timestamps','process_timestamps','source_clock','clock_drift','av_offset','sequence_gaps','event_intervals','event_revisions','query_cutoffs','freshness','evidence_lineage']}})
   plan=copy.deepcopy(self.plan);plan.update(evidence='measured',held_out=True,execution_sha256='b'*64,
    runtime_manifest_sha256=manifest_digest(manifest));plan=freeze(plan)
   task=plan['tasks'][0];trace=copy.deepcopy(self.traces[0]);trace.update(

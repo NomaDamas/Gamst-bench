@@ -24,7 +24,7 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 - [x] MCP for seven benchmarks, ten native execution recipes, asynchronous execution, cancellation and log inspection.
 - [x] Checks for GCP project identity, pinned code revisions and dataset hashes, plus GPU resource logging.
 - [x] Tests for MCP communication, execution refusal and failure handling, plus [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
-- [ ] GCP VM installation and verification of the account, project and GPU environment.
+- [x] GCP VM, GPU environment and remote MCP handshake verified through the private Aside setup.
 - [ ] Dataset access approval, pinned models/data and small-scale execution checks.
 - [ ] Gamst-specific model/agent adapters and real compatibility validation for each benchmark.
 - [ ] Full measured runs, independent scoring, event-response latency and full-pipeline cost verification.

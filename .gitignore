@@ -10,3 +10,5 @@ __pycache__/
 runs/
 
 .venv-mcp/
+.gcp.local/
+mcp/client.ssh.gcp.json

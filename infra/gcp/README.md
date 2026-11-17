@@ -1,6 +1,6 @@
 # GCP execution preparation
 
-Status: **not provisioned**. Aside access was rejected by the session's computer-use approval layer. This directory is a reviewable plan, not evidence that a VM exists. Local commands may build/test the website; inference and dataset acquisition run exclusively on GCP.
+Status: **MCP host verified**. The private Aside session verified the GCP VM, GPU runtime, SSH stdio launcher and MCP handshake. VM identifiers, credentials and the private server profile stay outside this repository. Native benchmark/model/data execution still requires separate reviewed profiles and datasets on GCP.
 
 ## Provisioning through Aside
 

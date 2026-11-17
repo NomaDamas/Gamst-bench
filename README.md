@@ -21,10 +21,10 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 **Implementation completion and evaluation completion are separate milestones.** Model execution and benchmark dataset downloads take place on GCP only.
 
 - [x] Cross-filtering dashboard and synchronized README results.
-- [x] MCP for seven benchmarks, ten native execution recipes, asynchronous execution, cancellation and log inspection.
+- [x] MCP catalog with ten native recipe records across three executable families (FastBench, OmniPro and StreamArena), plus asynchronous execution, cancellation and log inspection.
 - [x] Checks for GCP project identity, pinned code revisions and dataset hashes, plus GPU resource logging.
 - [x] Tests for MCP communication, execution refusal and failure handling, plus [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
-- [x] GCP VM, GPU environment and remote MCP handshake verified through the private Aside setup.
+- [x] MCP/GCP setup and private remote handshake were verified through the Aside setup; native benchmark execution remains pending.
 - [ ] Dataset access approval, pinned models/data and small-scale execution checks.
 - [ ] Gamst-specific model/agent adapters and real compatibility validation for each benchmark.
 - [ ] Full measured runs, independent scoring, event-response latency and full-pipeline cost verification.

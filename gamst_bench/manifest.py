@@ -5,6 +5,26 @@ from pathlib import Path
 
 SCHEMA_VERSION = 1
 
+# A measured runtime manifest must declare the complete temporal provenance
+# surface.  These are capability declarations, not measured values: the
+# collector still records the concrete timestamps and revisions in each
+# trace.  Keeping the declaration in the frozen manifest prevents a run from
+# silently omitting a timing dimension that the protocol requires.
+REQUIRED_TEMPORAL_FIELDS = frozenset({
+    'capture_timestamps',
+    'receive_timestamps',
+    'process_timestamps',
+    'source_clock',
+    'clock_drift',
+    'av_offset',
+    'sequence_gaps',
+    'event_intervals',
+    'event_revisions',
+    'query_cutoffs',
+    'freshness',
+    'evidence_lineage',
+})
+
 def _text(value, name, max_len=4096):
     if not isinstance(value, str) or not value or len(value) > max_len:
         raise ValueError(f'invalid {name}')
@@ -68,6 +88,12 @@ def validate_manifest(manifest):
         raise ValueError('timing.clock must be declared')
     for key in ('capture_timestamps','query_cutoffs'):
         if type(timing.get(key)) is not bool: raise ValueError('timing fields must be boolean')
+    declared = timing.get('temporal_fields')
+    if not isinstance(declared, list) or any(not isinstance(item, str) or not item for item in declared):
+        raise ValueError('timing.temporal_fields must be a list')
+    if not REQUIRED_TEMPORAL_FIELDS <= set(declared):
+        missing = sorted(REQUIRED_TEMPORAL_FIELDS - set(declared))
+        raise ValueError('timing.temporal_fields missing: ' + ','.join(missing))
     return manifest
 
 def freeze_manifest(manifest):

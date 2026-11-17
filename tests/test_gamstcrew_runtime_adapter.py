@@ -91,6 +91,25 @@ async def execute(configuration=CONFIG):
 
 
 class CrewRuntimeAdapterTests(unittest.IsolatedAsyncioTestCase):
+    async def test_lifecycle_rejects_query_end_before_start_and_duplicate_start(self):
+        adapter = Adapter()
+        with self.assertRaisesRegex(RuntimeError, "before start"):
+            await adapter.query({"query": "x", "query_ms": 0})
+        with self.assertRaisesRegex(RuntimeError, "before start"):
+            await adapter.end()
+        adapter.started = True
+        with self.assertRaisesRegex(RuntimeError, "duplicate start"):
+            await adapter.start({})
+
+    async def test_duplicate_input_id_is_rejected(self):
+        adapter = Adapter()
+        adapter.started = True
+        adapter.manager = object()
+        adapter.bridge = object()
+        adapter.inputs["frame-1"] = {"id": "frame-1"}
+        with self.assertRaisesRegex(ValueError, "duplicate input.id"):
+            await adapter.input({"input": {"id": "frame-1"}})
+
     def test_failure_categories_use_retained_parent_child_state(self):
         adapter = Adapter()
         adapter.phase = "startup"
@@ -176,6 +195,34 @@ class CrewRuntimeAdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotEqual(returncode, 0)
         failure = next(row for row in rows if row["type"] == "error")
         self.assertEqual(failure["failure_category"], "startup_failure")
+
+    async def test_collector_retains_structured_failure_diagnostics(self):
+        bad = json.loads(json.dumps(CONFIG))
+        bad["runtime"]["provider_config"]["image_to_plane"] = [[0, 0, 0]] * 3
+        system = copy.deepcopy(bad)
+        system.update({"id": "crew-runtime-failure", "model": "runtime-contract",
+                       "revision": "test", "policy": "thin", "role": "primary",
+                       "budget_calls": 0, "sampling": "on input", "window": "capture",
+                       "precision": "not-applicable", "hardware": "local CPU",
+                       "warm_state": "cold", "budget": "none", "sensor_track": "video"})
+        task = {"id": "crew-failure-task", "query": "what happened?", "query_ms": 50,
+                "duration_ms": 100, "inputs": [{
+                    "id": "frame-1", "at_ms": 0, "modality": "video",
+                    "payload": {"reference_id": "view-1", "image_size": [640, 480],
+                                "points": [{"id": "contact", "xy": [0.5, 0.5],
+                                            "on_plane": True}]},
+                }]}
+        task["input_sha256"] = digest({"query": task["query"],
+                                        "query_ms": task["query_ms"],
+                                        "inputs": task["inputs"]})
+        plan = {"consumer_model": "runtime-contract", "consumer_revision": "test",
+                "evidence": "synthetic", "timeout_ms": 5000,
+                "plan_sha256": "p" * 64}
+        trace = await run_task(plan, system, task, [sys.executable, str(ADAPTER)])
+        self.assertEqual(trace["status"], "error")
+        self.assertEqual(trace["failure_diagnostics"][0]["failure_category"],
+                         "startup_failure")
+        self.assertIn("child_summary", trace["failure_diagnostics"][0])
 
 
 if __name__ == "__main__":

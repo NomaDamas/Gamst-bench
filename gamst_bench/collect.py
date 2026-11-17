@@ -14,6 +14,27 @@ from .temporal_metrics import temporal_metrics
 
 MAX_LINE = 65536
 MAX_OUTPUTS = 10000
+MAX_FAILURE_DIAGNOSTICS = 32
+MAX_FAILURE_CHILD_BYTES = 8192
+
+def _failure_diagnostic(item):
+    """Copy adapter failure metadata into a bounded trace representation."""
+    value = {
+        'failure_category': item.get('failure_category'),
+        'text': None if item.get('text') is None else str(item['text'])[:4096],
+    }
+    child = item.get('child_summary')
+    if child is not None:
+        raw = canonical(child)
+        value['child_summary'] = (
+            child if len(raw) <= MAX_FAILURE_CHILD_BYTES else {
+                'truncated': True,
+                'sha256': digest(child),
+            }
+        )
+    if item.get('traceback') is not None:
+        value['traceback'] = str(item['traceback'])[:4096]
+    return value
 
 def rss_tree(pid):
     """Resident memory of the owned process tree; external model servers excluded."""
@@ -31,7 +52,7 @@ def rss_tree(pid):
 
 async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None,
                    repository_commits=None):
-    started=time.monotonic(); outputs=[]; resources=[]; sent=[]; packet_checksums=[]; dropped=0; calls=0
+    started=time.monotonic(); outputs=[]; resources=[]; sent=[]; packet_checksums=[]; failure_diagnostics=[]; dropped=0; calls=0
     integrity_counter=PacketIntegrityCounter()
     input_by_id={item['id']:item for item in task['inputs']}
     answer_ready=None; quantities=None; synthetic=False; errors=[]; stderr_bytes=bytearray()
@@ -115,7 +136,14 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None,
                 quantities=item.get('cost_quantities');calls=item.get('calls',calls)
             if item['type']=='resource':
                 resources.append({k:item.get(k) for k in ('rss_mb','queue_depth','dropped','age_ms')}|{'at_ms':elapsed(),'scope':'adapter_reported_unverified'})
-            if item['type']=='error':errors.append('adapter_error')
+            if item['type']=='error':
+                errors.append('adapter_error')
+                # Keep the stable string diagnostic for existing consumers,
+                # but retain the adapter's bounded failure category and
+                # parent/child summary for audit and failure aggregation.
+                failure_diagnostics.append(_failure_diagnostic(item))
+                if len(failure_diagnostics) > MAX_FAILURE_DIAGNOSTICS:
+                    failure_diagnostics[:] = failure_diagnostics[-MAX_FAILURE_DIAGNOSTICS:]
             add_output(item)
     async def stderr_loop():
         while chunk:=await proc.stderr.read(1024):
@@ -134,8 +162,15 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None,
     try:
         await asyncio.wait_for(finish(),timeout=(task['duration_ms']+plan['timeout_ms'])/1000)
         status='success' if proc.returncode==0 and answer_ready is not None and not errors else 'error'
-    except asyncio.TimeoutError:status='timeout'
-    except Exception as exc:errors.append(type(exc).__name__)
+    except asyncio.TimeoutError:
+        status='timeout'
+        errors.append('collector_timeout')
+        failure_diagnostics.append({'failure_category':'collector_timeout',
+                                    'text':'collector task deadline exceeded'})
+    except Exception as exc:
+        errors.append(type(exc).__name__)
+        failure_diagnostics.append({'failure_category':'collector_protocol_failure',
+                                    'text':str(exc)[:4096]})
     finally:
         stop.set()
         # Only the process group created for this invocation is terminated.
@@ -148,6 +183,13 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None,
         for job in (writer,schedule_task,reader,err,profiler):job.cancel()
         await asyncio.gather(writer,schedule_task,reader,err,profiler,return_exceptions=True)
         await proc.wait()
+    if proc.returncode not in (0, None) and not failure_diagnostics:
+        errors.append('adapter_exit')
+        failure_diagnostics.append({
+            'failure_category':'adapter_exit',
+            'text':'adapter exited without a structured error',
+            'returncode':proc.returncode,
+        })
     trace=dict(plan_sha256=plan['plan_sha256'],input_sha256=task['input_sha256'],task_id=task['id'],system_id=system['id'],
         status=status,clock='wall',synthetic=synthetic or plan['evidence']=='synthetic',answer_ready_ms=answer_ready,
         elapsed_ms=elapsed(),outputs=outputs,resources=resources,sent=sent,dropped_inputs=dropped,cost_quantities=quantities,calls=calls,
@@ -155,6 +197,7 @@ async def run_task(plan, system, task, command, *, runtime_manifest_sha256=None,
         resource_scope='Owned adapter process tree only. Remote/local model servers and device memory require separate instrumentation.',
         query_cutoff_ms=task['query_ms'], runtime_manifest_sha256=runtime_manifest_sha256,
         repository_commits=repository_commits, packet_checksums=packet_checksums,
+        failure_diagnostics=failure_diagnostics,
         integrity_rejected=integrity_counter.integrity_rejected,
         temporal_metrics=temporal_metrics(outputs, query_cutoff_ms=task['query_ms'],
             known_evidence=input_by_id))
@@ -193,6 +236,7 @@ async def collect(plan, commands, output, *, runtime_manifest=None):
                     diagnostics=['spawn_failed',type(exc).__name__],command_sha256=digest(commands[system['id']]),accounting_status='unverified',
                     query_cutoff_ms=task['query_ms'],runtime_manifest_sha256=runtime_manifest_sha256,
                     repository_commits=repository_commits,packet_checksums=[],
+                    failure_diagnostics=[{'failure_category':'spawn_failed','text':type(exc).__name__}],
                     integrity_rejected=0,
                     temporal_metrics=temporal_metrics([],query_cutoff_ms=task['query_ms']))
                 trace['trace_sha256']=digest(trace)

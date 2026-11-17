@@ -170,6 +170,7 @@ class CollectorTests(unittest.IsolatedAsyncioTestCase):
  async def test_hung_process_records_timeout(self):
   trace=await run_task(self.plan,self.plan['systems'][0],self.plan['tasks'][0],self.command+['--hang'])
   self.assertEqual(trace['status'],'timeout')
+  self.assertEqual(trace['failure_diagnostics'][0]['failure_category'],'collector_timeout')
  async def test_malformed_output_is_failure(self):
   trace=await run_task(self.plan,self.plan['systems'][0],self.plan['tasks'][0],self.command+['--bad'])
   self.assertEqual(trace['status'],'error')

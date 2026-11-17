@@ -64,6 +64,11 @@ The adapter must perform the following sequence for each collector task:
    restart is reported as an `error`/`meta` diagnostic and never converted to
    a successful answer.
 
+The lifecycle is fail-closed: `query` and `end` before `start`, duplicate
+`start`/`end`, duplicate input IDs, truncated input lines, and EOF before
+`end` are protocol failures. Input JSONL is bounded to 6 MiB per line, and
+the collector's smaller output bound still applies to adapter stdout.
+
 The adapter must use bounded queues and preserve the collector's input-drop
 semantics. A dropped input is recorded with its input ID and is not silently
 replayed by a later restart.

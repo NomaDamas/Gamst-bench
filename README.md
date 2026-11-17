@@ -21,11 +21,11 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 **Implementation completion and evaluation completion are separate milestones.** Model execution and benchmark dataset downloads take place on GCP only.
 
 - [x] Cross-filtering dashboard and synchronized README results.
-- [x] MCP catalog with ten total recipe records: six executable native recipes across three families (FastBench, OmniPro and StreamArena) plus four reference-only records; asynchronous execution, cancellation and log inspection are implemented.
+- [x] MCP catalog with ten total recipe records: seven executable recipes across four runnable families (FastBench, OmniPro, StreamArena and the separately labelled Inf-Streams-Eval fallback) plus three reference-only records; asynchronous execution, cancellation and log inspection are implemented.
 - [x] Checks for GCP project identity, pinned code revisions and dataset hashes, plus GPU resource logging.
 - [x] Tests for MCP communication, execution refusal and failure handling, plus [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
 - [x] MCP/GCP setup and private remote handshake were verified through the Aside setup; native benchmark execution remains pending.
-- [x] GCP dataset preparation: FastBench and OmniPro are complete on the persistent disk; StreamArena metadata is complete and 145/243 video archives are in GCS.
+- [x] GCP dataset preparation: FastBench and OmniPro are complete on the persistent disk; StreamArena metadata is complete and 197/243 video archives are in GCS.
 - [ ] Dataset access approval, pinned models/data and small-scale execution checks.
 - [ ] Gamst-specific model/agent adapters and real compatibility validation for each benchmark.
 - [ ] Full measured runs, independent scoring, event-response latency and full-pipeline cost verification.
@@ -33,7 +33,11 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 
 Current public figures are **synthetic protocol checks**. Published reference numbers, directly reproduced official scores and Gamst extension results remain separate. Gamst superiority has not been established.
 
-**Live preparation snapshot (2026-11-18):** `gamst-bench-gpu` is `TERMINATED`; no GPU runtime is running. StreamArena transfer is active on the workstation at 196/243 video archives; its full manifest will be frozen after completion. The 200GB persistent disk and GCS objects continue to incur storage charges.
+**Live preparation snapshot (2026-11-18):** `gamst-bench-gpu` is `TERMINATED`; no GPU runtime is running. StreamArena transfer is active on the workstation at 197/243 video archives; its full manifest will be frozen after completion. The 200GB persistent disk and GCS objects continue to incur storage charges.
+
+### ✅ Selected evaluation set
+
+The first measured campaign uses **GAMST Bench 자체 평가 + FastBench + OmniPro + StreamArena**. Inf-Streams-Eval is retained as a separate long-session fallback for the blocked VSAS track. SPOT-Bench, OVO-Bench, StreamingBench and OmniVideoBench remain optional supporting checks.
 
 
 <a id="evaluation"></a>
@@ -85,9 +89,9 @@ Dataset acquisition and inference remain GCP-only; no model or benchmark data is
 
 1. **Prepare the environment:** verify the unique project ID, GPU, cost and stop policy for the authorized account’s `gamst` project. [GCP preparation](infra/gcp/README.md).
 2. **Prepare data:** preserve original timestamps and AV synchronization; freeze access permissions, revisions, file hashes and session-level splits. Do not download datasets or models locally.
-3. **Run the initial evaluations:** FastBench → SPOT Detection → OVO. Verify execution and scoring on a small development sample before a full run.
-4. **Expand coverage:** evaluate OmniPro Probe/Online and AV/vision-only/audio-only variants, then StreamArena continuous sessions and proactive responses.
-5. **Run supporting evaluations:** use StreamingBench for understanding regressions and Inf-Streams-Eval for long-session quality and resource behavior.
+3. **Run the selected evaluation set:** Gamst self-evaluation → FastBench → OmniPro Probe/Online → StreamArena RTP/HR/Tool/Pro. Verify execution and scoring on a small development sample before a full run.
+4. **Run the long-session fallback:** use Inf-Streams-Eval for sustained quality and resource behavior; report it separately from VSAS-Bench.
+5. **Run optional supporting checks:** SPOT Detection, OVO, StreamingBench and OmniVideoBench only when their access and revision manifests are frozen.
 6. **Evaluate Gamst-specific cases:** use separate held-out data for subtle OCR changes, audio corrections, sensor gaps, reappearing deleted memories and stale-state errors.
 7. **Publish:** compare quality, cost and latency with matched models, hardware and consumer LLMs, then publish after independent review. [Comparison design](docs/COMPARISONS.md).
 

@@ -34,7 +34,7 @@ def aggregate_costs(rows: list[dict[str, Any]], rate_card: dict[str, dict[str, A
         if exact is None or row.get("cost_usd") is None:
             complete = False
         cost_components = row.get("cost_components")
-        if isinstance(cost_components, dict):
+        if isinstance(cost_components, dict) and cost_components:
             for key, value in cost_components.items():
                 amount = _decimal(value)
                 if amount is None:

@@ -32,6 +32,11 @@ class CostBenchTests(unittest.TestCase):
         self.assertEqual(result["components_usd_exact"], {"unattributed": "0.75"})
         self.assertEqual(result["total_usd_exact"], "0.75")
 
+    def test_empty_components_use_exact_total(self):
+        result = aggregate_costs([{"cost_usd": 0.5, "cost_usd_exact": "0.50", "cost_components": {}}], {})
+        self.assertEqual(result["status"], "measured")
+        self.assertEqual(result["total_usd_exact"], "0.50")
+
 
 if __name__ == "__main__":
     unittest.main()

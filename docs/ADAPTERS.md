@@ -1,5 +1,7 @@
 # JSONL adapter contract
 
+Native FastBench, OmniPro, StreamArena, remote commercial, and Gemini Live integration are documented separately in [EXTENSIONS](EXTENSIONS.md). Those are `gamst-extension` tracks, not official-protocol scores.
+
 ## GAMST Core through GamstCrew
 
 The live runtime-manager-to-benchmark execution seam is frozen in

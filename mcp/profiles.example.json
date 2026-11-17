@@ -555,6 +555,212 @@
         "SERPER_API_KEY"
       ]
     },
+    "fastbench-gamst-extension": {
+      "benchmark": "fastbench",
+      "source_url": "https://github.com/Ashone3/FastBench",
+      "runner_revision": "1951dd11b7423cd76998c9f2fb04e71e95a232b1",
+      "notes": "Separate GAMST front-end track using the unchanged ProactiveFrame native parallel runner and scorer. Evidence is not an official-protocol score.",
+      "enabled": false,
+      "track": "gamst-extension",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "fastbench-gamst-extension",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "Qwen/Qwen3-VL-8B-Instruct",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/fastbench",
+      "dataset_root": "/srv/data/fastbench",
+      "dataset_manifest": "/srv/manifests/fastbench.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/gamst-extensions/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "native-evaluate",
+          "kind": "inference_score",
+          "argv": [
+            "/srv/venvs/gamst-extensions/bin/python",
+            "-m",
+            "gamst_bench.extensions.fastbench_agent",
+            "--fastbench-root",
+            "/srv/benchmarks/fastbench",
+            "--",
+            "--model-name",
+            "qwen3_vl",
+            "--config",
+            "/srv/benchmarks/fastbench/configs/proactive_frame.yaml",
+            "--video-root",
+            "/srv/benchmarks/fastbench",
+            "--output-dir",
+            "{output}",
+            "--run-id",
+            "gamst-extension",
+            "--num-workers",
+            "1",
+            "--num-scorers",
+            "1",
+            "--proactive-focus"
+          ],
+          "cwd": "/srv/benchmarks/fastbench"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PYTHONPATH": "/srv/gamst-bench:/srv/catch-your-mind",
+        "GAMST_EXTENSION_FASTBENCH_MODEL": "qwen3_vl",
+        "GAMST_EXTENSION_VLM_URL": "http://127.0.0.1:8080/v1",
+        "GAMST_EXTENSION_MODEL": "Qwen/Qwen3-VL-8B-Instruct",
+        "GAMST_EXTENSION_SIDECAR": "{output}/gamst-calls.jsonl",
+        "GAMST_EXTENSION_EVIDENCE_CLASS": "measured",
+        "STREAMEVAL_JUDGER_BACKEND": "openai_compatible",
+        "STREAMEVAL_JUDGER_API_BASE": "http://127.0.0.1:8080/v1",
+        "STREAMEVAL_JUDGER_MODEL": "Qwen/Qwen3-VL-8B-Instruct"
+      },
+      "secret_env": ["STREAMEVAL_JUDGER_API_KEY"]
+    },
+    "omnipro-gamst-extension": {
+      "benchmark": "omnipro",
+      "source_url": "https://github.com/RuixiangZhao/OmniPro",
+      "runner_revision": "7c72e8117f180bf9a22320c1dc2c005bbe4c4a0f",
+      "notes": "GAMST selective Qwen3-VL front-end with native causal audio/video delivery and online scorer. PCM energy is not represented as audio semantics.",
+      "enabled": false,
+      "track": "gamst-extension",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "omnipro-gamst-extension",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "Qwen/Qwen3-VL-8B-Instruct",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/omnipro",
+      "dataset_root": "/srv/data/omnipro",
+      "dataset_manifest": "/srv/manifests/omnipro.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/gamst-extensions/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer",
+          "kind": "inference",
+          "argv": [
+            "/srv/venvs/gamst-extensions/bin/python",
+            "-m",
+            "gamst_bench.extensions.omnipro_agent",
+            "--omnipro-root",
+            "/srv/benchmarks/omnipro",
+            "--",
+            "--model",
+            "gamst",
+            "--data_path",
+            "{data}/benchmark.json",
+            "--num_gpus",
+            "1",
+            "--output_dir",
+            "{output}",
+            "--no_resume"
+          ],
+          "cwd": "/srv/benchmarks/omnipro"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/srv/venvs/gamst-extensions/bin/python",
+            "/srv/benchmarks/omnipro/scripts/compute_online_metrics.py",
+            "--pred_dir",
+            "{output}",
+            "--tolerance",
+            "3"
+          ],
+          "cwd": "/srv/benchmarks/omnipro"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PYTHONPATH": "/srv/gamst-bench:/srv/catch-your-mind",
+        "GAMST_EXTENSION_VLM_URL": "http://127.0.0.1:8080/v1",
+        "GAMST_EXTENSION_MODEL": "Qwen/Qwen3-VL-8B-Instruct",
+        "GAMST_EXTENSION_SIDECAR": "{output}/gamst-calls.jsonl",
+        "GAMST_EXTENSION_EVIDENCE_CLASS": "measured"
+      },
+      "secret_env": []
+    },
+    "streamarena-gamst-extension": {
+      "benchmark": "streamarena",
+      "source_url": "https://github.com/JIA-Lab-research/StreamArena",
+      "runner_revision": "ec0325b9552b045c2e53afbf425315ce867313ee",
+      "notes": "Native StreamMind driver with GAMST StreamingAgent and distinct extension output; not StreamMind or an official score.",
+      "enabled": false,
+      "track": "gamst-extension",
+      "metric": "REPLACE_WITH_NATIVE_METRIC",
+      "split": "REPLACE_WITH_RELEASE_SPLIT",
+      "mode": "streamarena-gamst-extension",
+      "hardware": "REPLACE_WITH_GCE_HARDWARE",
+      "model": "Qwen/Qwen3-VL-8B-Instruct",
+      "model_revision": "REPLACE_WITH_40_CHAR_MODEL_COMMIT",
+      "dataset_revision": "REPLACE_WITH_40_CHAR_DATA_COMMIT",
+      "checkout": "/srv/benchmarks/streamarena",
+      "dataset_root": "/srv/data/streamarena",
+      "dataset_manifest": "/srv/manifests/streamarena.json",
+      "dataset_manifest_sha256": null,
+      "model_path": "/srv/models/REPLACE_WITH_MODEL_SNAPSHOT",
+      "hf_executable": "/srv/venvs/gamst-extensions/bin/hf",
+      "output_dirs": [],
+      "timeout_seconds": 14400,
+      "data_access_reviewed": false,
+      "execution_reviewed": false,
+      "stage_outputs_reviewed": false,
+      "stages": [
+        {
+          "id": "infer",
+          "kind": "inference",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/streamarena/method/streammind/scripts/run_streammind.sh"
+          ],
+          "cwd": "/srv/benchmarks/streamarena"
+        },
+        {
+          "id": "score",
+          "kind": "score",
+          "argv": [
+            "/bin/bash",
+            "/srv/benchmarks/streamarena/judge/scripts/run_judge.sh",
+            "{output}/records.jsonl"
+          ],
+          "cwd": "/srv/benchmarks/streamarena"
+        }
+      ],
+      "variables": {},
+      "environment": {
+        "PYTHONPATH": "/srv/gamst-bench:/srv/catch-your-mind",
+        "AGENT": "gamst_bench.extensions.streamarena_agent:GamstStreamArenaAgent",
+        "GAMST_EXTENSION_VLM_URL": "http://127.0.0.1:8080/v1",
+        "GAMST_EXTENSION_MODEL": "Qwen/Qwen3-VL-8B-Instruct",
+        "GAMST_EXTENSION_SIDECAR": "{output}/gamst-calls.jsonl",
+        "GAMST_EXTENSION_EVIDENCE_CLASS": "measured",
+        "DATASET": "{data}/question.en.jsonl",
+        "VIDEO_DIR": "{data}/videos",
+        "OUT": "{output}/records.jsonl",
+        "FPS": "2",
+        "ASR_URL": "REPLACE_WITH_LOCAL_ASR_ENDPOINT",
+        "JUDGE_URL": "http://127.0.0.1:8080/v1",
+        "JUDGE_MODEL": "Qwen/Qwen3-VL-8B-Instruct",
+        "CONCURRENCY": "1"
+      },
+      "secret_env": ["JUDGE_API_KEY"]
+    },
     "streamingbench-regression": {
       "benchmark": "streamingbench",
       "source_url": "https://github.com/THUNLP-MT/StreamingBench",

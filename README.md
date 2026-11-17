@@ -25,7 +25,7 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 - [x] Checks for GCP project identity, pinned code revisions and dataset hashes, plus GPU resource logging.
 - [x] Tests for MCP communication, execution refusal and failure handling, plus [GitHub CI](https://github.com/NomaDamas/Gamst-bench/actions).
 - [x] MCP/GCP setup and private remote handshake were verified through the Aside setup; native benchmark execution remains pending.
-- [x] GCP dataset preparation: FastBench and OmniPro are complete on the persistent disk; StreamArena metadata is complete and 197/243 video archives are in GCS.
+- [x] GCP dataset preparation: FastBench and OmniPro are complete on the persistent disk; StreamArena metadata is complete and 203/243 video archives are in GCS.
 - [ ] Dataset access approval, pinned models/data and small-scale execution checks.
 - [ ] Gamst-specific model/agent adapters and real compatibility validation for each benchmark.
 - [ ] Full measured runs, independent scoring, event-response latency and full-pipeline cost verification.
@@ -33,7 +33,7 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 
 Current public figures are **synthetic protocol checks**. Published reference numbers, directly reproduced official scores and Gamst extension results remain separate. Gamst superiority has not been established.
 
-**Live preparation snapshot (2026-11-18):** `gamst-bench-gpu` is `TERMINATED`; no GPU runtime is running. StreamArena transfer is active on the workstation at 197/243 video archives; its full manifest will be frozen after completion. The 200GB persistent disk and GCS objects continue to incur storage charges.
+**Live preparation snapshot (2026-11-18):** `gamst-bench-gpu` is `TERMINATED`; no GPU runtime is running. StreamArena transfer is active on the workstation at 203/243 video archives; its full manifest will be frozen after completion. The 200GB persistent disk and GCS objects continue to incur storage charges.
 
 ### ✅ Selected evaluation set
 
@@ -135,7 +135,7 @@ Reviewed 2026-11-14. Published snapshots are **not reproduced**, not a live SOTA
 | 🔄 | [OVO-Bench](#ovo) | “현재 상태와 과거 근거를 연결해 다음 행동을 예측하는가?” | 644 videos · 3,100 queries | 보조 대표 벤치 · 데이터/runner 준비 대기 |
 | 📺 | [StreamingBench](#streamingbench) | “긴 영상의 여러 시점 질문에 답하면서 context budget을 줄여도 이해가 유지되는가?” | 900 videos · 4,500 QA on project page | 보조 회귀 벤치 · 실제 revision freeze 대기 |
 | 🎧 | [OmniPro](#omnipro) | “어떤 조건이 발생하면 언제 무엇을 말해야 하는가?” | 2,700 samples · 9 tasks | 데이터 준비 완료 · Probe/Online 실제 실행 대기 |
-| 🧠 | [StreamArena](#streamarena) | “현재 장면, 과거 근거, 외부 도구, 미래 발화 시점을 어떻게 처리하는가?” | 3,646 questions in published v2 runs | GCS 전송 진행 중 196/243 tar · 메타데이터 완료 · 실제 실행 대기 |
+| 🧠 | [StreamArena](#streamarena) | “현재 장면, 과거 근거, 외부 도구, 미래 발화 시점을 어떻게 처리하는가?” | 3,646 questions in published v2 runs | GCS 전송 진행 중 203/243 tar · 메타데이터 완료 · 실제 실행 대기 |
 | 🌊 | [Inf-Streams-Eval](#infstreams) | “긴 스트림에서 생성 품질과 자원 사용이 시간에 따라 유지되는가?” | Videos average over 2 hours | runner/scorer 확인 완료 · GCP 데이터 다운로드 및 manifest 대기 · VSAS 공식 점수와 분리 |
 | 🎬 | [OmniVideoBench](#omnivideo) | “시청각 단서를 함께 사용해 질문과 reasoning을 해결하는가?” | 628 videos · 1,000 QA | 보조 AV 벤치 · access 승인 대기 |
 | ⏱️ | [VSAS-Bench](#vsas) | “비동기 입력과 부하 속에서도 언제, 얼마나 정확하고 일관되게 응답하는가?” | 18,000+ annotations (paper) | 공식 트랙 blocked · 아래 Inf-Streams-Eval fallback과 Gamst self-eval로 준비 |
@@ -274,7 +274,7 @@ No verified numeric result imported.
 - **Metrics:** Per-capability accuracy
 - **Model setup:** offline RTP/HR/Tool과 continuous Pro를 분리. Gamst agent와 native StreamMind를 같은 입력·질문·judge 조건에서 별도 보고
 - **Preparation:** Keep question.en.jsonl, video archives and timestamps; separate published trajectories from test inputs.
-- **Status:** GCS 전송 진행 중 196/243 tar · 메타데이터 완료 · 실제 실행 대기
+- **Status:** GCS 전송 진행 중 203/243 tar · 메타데이터 완료 · 실제 실행 대기
 - **Limits:** Mixed is a multi-model system, not a matched-cost single backbone. Annotation CC BY-NC; video source rights apply.
 
 - Published: **StreamMind v2 · Mixed — 55.9% Real-time perception accuracy**. Online multi-model system; not matched to our hardware. [Source](https://github.com/JIA-Lab-research/StreamArena).

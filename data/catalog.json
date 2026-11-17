@@ -347,7 +347,7 @@
       "abilities": "RTP 현재 이해 · HR 장기 회상 · Tool 사용 · Pro 선제적 대기/발화",
       "data_shape": "243 long-form videos (~52–134 min) + 3,646 JSONL questions; 각 tar는 MP4/info.json/VTT 자막을 포함",
       "model_setup": "offline RTP/HR/Tool과 continuous Pro를 분리. Gamst agent와 native StreamMind를 같은 입력·질문·judge 조건에서 별도 보고",
-      "status_detail": "GCS 전송 진행 중 196/243 tar · 메타데이터 완료 · 실제 실행 대기"
+      "status_detail": "GCS 전송 진행 중 203/243 tar · 메타데이터 완료 · 실제 실행 대기"
     },
     {
       "id": "infstreams",

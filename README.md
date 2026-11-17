@@ -49,7 +49,7 @@ Current public figures are **synthetic protocol checks**. Published reference nu
 <a id="multi-benchmark-mcp"></a>
 ## 🔌 Required benchmark MCP
 
-Four required benchmark tracks: FastBench, OmniPro, StreamArena and VSAS-Bench. The catalog has 10 total recipe records: six executable native recipes across the three executable families and four reference-only records. VSAS-Bench is **required but blocked pending its official runner/data/scorer release**.
+Four required benchmark tracks: FastBench, OmniPro, StreamArena and VSAS-Bench. The catalog has 10 total recipe records: 6 executable native recipes across the three executable families and 4 reference-only records. VSAS-Bench is **required but blocked pending its official runner/data/scorer release**.
 
 [MCP tools and deployment guide](docs/MCP.md) · [Private GCP profile templates](mcp/profiles.example.json) · [SSH client example](mcp/client.ssh.example.json)
 

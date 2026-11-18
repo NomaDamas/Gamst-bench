@@ -41,6 +41,9 @@ class ExtensionConfig:
     change_exit: float
     max_tokens: int
     sidecar_path: str
+    # Bytes of GAMST temporal context serialized into each backbone prompt. Every
+    # selected call pays for it in prompt tokens, so it is a cost knob, not free.
+    context_bytes: int = 16 * 1024
 
     @classmethod
     def from_env(cls, benchmark: str, *, vlm_url: str | None = None,
@@ -60,6 +63,7 @@ class ExtensionConfig:
             max_tokens=int(os.environ.get(prefix + "MAX_TOKENS", "256")),
             sidecar_path=os.environ.get(
                 prefix + "SIDECAR", f"{benchmark}-gamst-extension-{os.getpid()}.jsonl"),
+            context_bytes=int(os.environ.get(prefix + "CONTEXT_BYTES", str(16 * 1024))),
         )
 
 
@@ -301,7 +305,7 @@ class GamstSelector:
 
     async def temporal_context(self, query_cutoff_ms: int) -> dict[str, Any]:
         return await self.human.build_temporal_context(
-            query_cutoff_ms=query_cutoff_ms, max_bytes=96 * 1024)
+            query_cutoff_ms=query_cutoff_ms, max_bytes=self.config.context_bytes)
 
     def mark_dispatched(self, capture_ms: int) -> None:
         self.last_dispatch_ms = capture_ms

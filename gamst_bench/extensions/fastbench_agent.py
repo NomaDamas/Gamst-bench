@@ -78,13 +78,23 @@ class GamstFastBenchBackend:
                 duration = float(video.get("chunk_duration_seconds", 1.0))
                 fps = float(video.get("fps", 2.0))
                 frames = decode_video_chunk(str(video["video"]), start, duration, fps)
-                for index, (at_sec, jpeg) in enumerate(frames):
+                # ProactiveFrame focus re-sends an already-streamed window at a
+                # higher FPS. GAMST memory is causal and already holds that
+                # window, so only frames past the newest observation are new input.
+                horizon = self.latest_frame["at_sec"] if self.latest_frame is not None else -1.0
+                fresh = [(index, at_sec, jpeg) for index, (at_sec, jpeg) in enumerate(frames)
+                         if at_sec > horizon]
+                if len(fresh) < len(frames):
+                    self.session.sidecar.write("replayed_frames_skipped", sample_id=sample_id,
+                                               chunk_start_sec=start,
+                                               skipped=len(frames) - len(fresh))
+                for index, at_sec, jpeg in fresh:
                     evidence = f"fastbench:{sample_id}:{start:.3f}:{index}"
                     selection = self.session.video(evidence, jpeg, at_sec, query=query)
                     observations.append(selection)
                     self.latest_frame = selection
-            elif self.latest_frame is not None:
-                # Question-only native steps still cause an explicit policy query.
+            if not observations and self.latest_frame is not None:
+                # Question-only or replay-only native steps still cause an explicit policy query.
                 previous = self.latest_frame
                 observations.append(self.session.video(
                     previous["evidence_id"] + ":query", previous["jpeg_b64"],

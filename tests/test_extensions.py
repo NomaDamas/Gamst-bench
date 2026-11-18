@@ -178,6 +178,30 @@ class FastBenchExtensionTests(unittest.TestCase):
             self.assertEqual(chat.calls[0]["messages"][0]["content"], "native system")
             backend.close()
 
+    def test_focus_replay_of_past_window_is_not_an_error(self):
+        # ProactiveFrame re-sends an already streamed window at higher FPS after Focus_Start.
+        chunks = [[(0.0, jpeg(10)), (1.0, jpeg(40))],
+                  [(0.5, jpeg(20)), (1.0, jpeg(40)), (1.5, jpeg(90))]]
+        with tempfile.TemporaryDirectory() as directory, \
+                patch("gamst_bench.extensions.fastbench_agent.ExtensionConfig.from_env",
+                      return_value=config(directory, "fastbench")), \
+                patch("gamst_bench.extensions.fastbench_agent.decode_video_chunk",
+                      side_effect=chunks):
+            backend = GamstFastBenchBackend("qwen3_vl", {}, chat=FakeChat(["Silent"] * 10))
+            step = {"role": "user", "content": [
+                {"type": "video", "video": "chunk.mp4", "sample_id": "s", "chunk_start_seconds": 0,
+                 "chunk_duration_seconds": 1, "fps": 2}]}
+            first = backend.generate([step])
+            second = backend.generate([step, step])
+            backend.close()
+            self.assertEqual(first["status_code"], 200)
+            self.assertEqual(second["status_code"], 200)
+            rows = [json.loads(line) for line in Path(directory, "sidecar.jsonl").read_text().splitlines()]
+            observed = [row["capture_ms"] for row in rows if row["event"] == "selection"]
+            self.assertEqual(observed, sorted(observed))
+            self.assertEqual(sum(row["skipped"] for row in rows
+                                 if row["event"] == "replayed_frames_skipped"), 2)
+
 
 class FakeDriver:
     def __init__(self):

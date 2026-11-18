@@ -86,6 +86,39 @@ class ExtensionSessionTests(unittest.TestCase):
             self.assertEqual(rows[-1]["counts"]["vlm_calls"], 2)
             self.assertEqual(len(chat.calls), 2)
 
+    def test_replay_faster_than_wall_clock_keeps_all_observations(self):
+        # Benchmarks replay hours of media in seconds; GAMST rejects records
+        # more than 5 s ahead of wall clock, so media time must stay causal and past.
+        with tempfile.TemporaryDirectory() as directory:
+            session = ExtensionSession(config(directory), chat=FakeChat())
+            late = session.video("frame-late", jpeg(10), 3 * 3600.0)
+            later = session.video("frame-later", jpeg(240), 3 * 3600.0 + 30.0)
+            self.assertTrue(later["selected"])
+            temporal = session.runtime.call(
+                session.selector.temporal_context(later["capture_ms"]))
+            self.assertIn("frame-late", json.dumps(temporal))
+            self.assertLess(late["capture_ms"], later["capture_ms"])
+            session.close()
+
+
+class DecodeVideoChunkTests(unittest.TestCase):
+    def test_sequential_decode_returns_requested_timestamps(self):
+        import cv2
+        from gamst_bench.extensions.common import decode_video_chunk
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = str(Path(directory) / "clip.avi")
+            writer = cv2.VideoWriter(path, cv2.VideoWriter_fourcc(*"MJPG"), 30.0, (32, 32))
+            for index in range(30):
+                writer.write(np.full((32, 32, 3), index * 8, dtype=np.uint8))
+            writer.release()
+            frames = decode_video_chunk(path, 20.0, 1.0, 2.0)
+            self.assertEqual([round(at, 3) for at, _ in frames], [20.0, 20.5])
+            brightness = [np.asarray(Image.open(io.BytesIO(base64.b64decode(data)))).mean()
+                          for _, data in frames]
+            # Second sample is frame 15 (0.5 s at 30 fps), not a repeat of frame 0.
+            self.assertAlmostEqual(brightness[1] - brightness[0], 15 * 8, delta=6)
+
 
 class DummyStreamingBase:
     pass

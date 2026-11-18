@@ -107,7 +107,11 @@ def encode_jpeg(frame: Any) -> str:
 
 def decode_video_chunk(path: str, start_sec: float, duration_sec: float,
                        fps: float) -> list[tuple[float, str]]:
-    """Decode chronological JPEG frames; no center sampling or future frames."""
+    """Decode chronological JPEG frames; no center sampling or future frames.
+
+    Frames are read sequentially (one pass, no per-frame seeks) and the first
+    frame at or after each ``index / fps`` target is kept.
+    """
     import cv2
 
     if fps <= 0 or duration_sec < 0:
@@ -118,17 +122,28 @@ def decode_video_chunk(path: str, start_sec: float, duration_sec: float,
     frames: list[tuple[float, str]] = []
     try:
         count = max(1, int(round(duration_sec * fps))) if duration_sec else 1
-        for index in range(count):
-            offset = min(index / fps, max(0.0, duration_sec - 1e-6))
-            capture.set(cv2.CAP_PROP_POS_MSEC, offset * 1000.0)
-            ok, frame = capture.read()
+        targets = [min(index / fps, max(0.0, duration_sec - 1e-6)) for index in range(count)]
+        native_fps = capture.get(cv2.CAP_PROP_FPS) or 0.0
+        position = 0
+        next_target = 0
+        while next_target < count:
+            if not capture.grab():
+                break
+            at = position / native_fps if native_fps > 0 else capture.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+            position += 1
+            if at + 1e-6 < targets[next_target]:
+                continue
+            ok, frame = capture.retrieve()
             if not ok:
                 break
             ok, encoded = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
             if not ok:
                 raise ValueError("JPEG encoding failed")
-            frames.append((start_sec + offset,
-                           base64.b64encode(encoded.tobytes()).decode("ascii")))
+            jpeg = base64.b64encode(encoded.tobytes()).decode("ascii")
+            # One decoded frame satisfies every target it has reached.
+            while next_target < count and at + 1e-6 >= targets[next_target]:
+                frames.append((start_sec + targets[next_target], jpeg))
+                next_target += 1
     finally:
         capture.release()
     return frames
@@ -148,6 +163,13 @@ def change_score(previous: bytes | None, current: bytes) -> float:
     return sum(abs(a - b) for a, b in zip(previous, current)) / (255.0 * len(current))
 
 
+# Benchmark replays run faster or slower than real time. GAMST rejects records
+# more than 5 s ahead of the wall clock and prunes by wall-clock retention, so
+# media time is anchored this far in the past; retention covers lag + session.
+REPLAY_LAG_MS = 6 * 3600 * 1000
+REPLAY_RETENTION_HOURS = 12.0
+
+
 class GamstSelector:
     """Real Gamst records + CallPolicy decisions on one asyncio event loop."""
 
@@ -156,7 +178,7 @@ class GamstSelector:
         self.sidecar = sidecar
         self.human = None
         self.policy = None
-        self.capture_origin_ms = int(time.time() * 1000)
+        self.capture_origin_ms = int(time.time() * 1000) - REPLAY_LAG_MS
         self.sequence = 0
         self.stream_epoch = uuid.uuid4().hex
         self.previous_thumbnail = None
@@ -172,7 +194,7 @@ class GamstSelector:
         except ImportError as exc:
             raise RuntimeError(
                 "GAMST checkout is required; set PYTHONPATH to catch-your-mind") from exc
-        self.human = Gamst(consent=True, retention_hours=0.01,
+        self.human = Gamst(consent=True, retention_hours=REPLAY_RETENTION_HOURS,
                            window_ms=max(30_000, self.config.semantic_interval_ms * 4),
                            sensor_inference_interval_ms=5000)
         await self.human.__aenter__()
@@ -197,6 +219,10 @@ class GamstSelector:
         if at_sec < 0:
             raise ValueError("causal nonnegative media timestamp required")
         return self.capture_origin_ms + int(round(at_sec * 1000.0))
+
+    def wall_ms(self, capture_ms: int) -> int:
+        """Wall-clock instant at which a capture would occur in real-time replay."""
+        return capture_ms + REPLAY_LAG_MS
 
     def _sensor(self, modality: str):
         from gamst import SensorMetadata
@@ -371,7 +397,8 @@ class ExtensionSession:
             vlm_call_started_at=started, vlm_call_completed_at=ended,
             vlm_call_started_unix_ms=int(started * 1000),
             vlm_call_completed_unix_ms=int(ended * 1000),
-            time_to_detect_ms=max(0, int(ended * 1000) - cutoff), usage=usage)
+            time_to_detect_ms=max(0, int(ended * 1000) - self.selector.wall_ms(cutoff)),
+            usage=usage)
         self.selector.mark_dispatched(cutoff)
         self.runtime.call(self.selector.add_semantic(text, evidence_ids, cutoff))
         return text.strip(), usage

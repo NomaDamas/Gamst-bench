@@ -1,0 +1,37 @@
+{
+  "id": "gcp-2026-11-18",
+  "title": "GCP dev-subset campaign 2026-11-18",
+  "hardware": "GCE g2-standard-8 · 1× NVIDIA L4",
+  "source_url": "https://github.com/NomaDamas/Gamst-bench/blob/main/docs/results/gcp-2026-11-18.md",
+  "benchmarks": {
+    "fastbench": {
+      "split": "seed-2026 dev50 (51 QA)",
+      "metric": "native final_score / 100",
+      "arms": [
+        {"arm":"A-baseline","system":"Qwen3-VL-8B native","track":"native-protocol","score":43.5294117647,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"exit 0; 5528s"},
+        {"arm":"A-gemini","system":"Gemini 3 Flash native","track":"native-protocol","score":40.7843137255,"scale":100,"backbone_calls":142,"prompt_tokens":2529275,"note":"27 HTTP 429 requests; native failures retained"},
+        {"arm":"C-gamst","system":"Qwen3-VL-8B GAMST sentinel","track":"gamst-extension","score":4.7058823529,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"exit 0; extension dev-subset"},
+        {"arm":"D-periodic","system":"Qwen3-VL-8B GAMST periodic","track":"gamst-extension","score":1.9607843137,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"exit 0; ran in parallel dev50p"},
+        {"arm":"C-gemini","system":"Gemini 3 Flash GAMST sentinel","track":"gamst-extension","score":30.5882352941,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"exit 0; extension dev-subset"},
+        {"arm":"A-proactive","system":"Qwen3-VL-8B native proactive","track":"native-protocol","score":null,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"still running when campaign was recorded"}
+      ]
+    },
+    "omnipro": {
+      "split": "9 tasks × first 5 samples (45)",
+      "metric": "macro time F1 / content accuracy / joint F1",
+      "arms": [
+        {"arm":"C-gamst","system":"Qwen3-VL-8B GAMST sentinel","track":"gamst-extension","score":0.0453,"scale":1,"backbone_calls":1508,"prompt_tokens":null,"note":"macro_time_f1 0.1454; content_accuracy 0.4988; joint_task_f1 0.0453"},
+        {"arm":"D-periodic","system":"Qwen3-VL-8B GAMST periodic","track":"gamst-extension","score":0.063,"scale":1,"backbone_calls":1377,"prompt_tokens":null,"note":"macro_time_f1 0.1734; content_accuracy 0.5076; joint_task_f1 0.063"},
+        {"arm":"A-minicpm","system":"MiniCPM-o 4.5 native","track":"native-protocol","score":null,"scale":1,"backbone_calls":null,"prompt_tokens":null,"note":"queued after FastBench A-proactive; not yet measured"}
+      ]
+    },
+    "streamarena": {
+      "split": "jFggESijmV4 · RTP/HR/Pro · 10 questions",
+      "metric": "native judged accuracy",
+      "arms": [
+        {"arm":"C-gamst","system":"Qwen3-VL-8B GAMST sentinel","track":"gamst-extension","score":0.1,"scale":1,"backbone_calls":137,"prompt_tokens":null,"note":"1/10; frame drops 0; Pro timing mean abs error 4.9s"},
+        {"arm":"D-periodic","system":"Qwen3-VL-8B GAMST periodic","track":"gamst-extension","score":0.1,"scale":1,"backbone_calls":134,"prompt_tokens":null,"note":"1/10; frame drops 0; Pro timing mean abs error 18.1s"}
+      ]
+    }
+  }
+}

@@ -31,18 +31,24 @@ def create_streaming_model_class(streaming_base: type):
             if max_new_speak_tokens:
                 config = ExtensionConfig(**{**config.__dict__,
                                             "max_tokens": int(max_new_speak_tokens)})
-            kwargs = {} if chat is None else {"chat": chat}
-            self.session = ExtensionSession(config, **kwargs)
+            # OmniPro builds one model per worker and calls begin/observe/end per
+            # sample; each sample gets a fresh GAMST session so no state leaks.
+            self.config = config
+            self.chat_kwargs = {} if chat is None else {"chat": chat}
+            self.session = None
             self.instruction = ""
             self.task = ""
             self.question = ""
             self.sample_id = "omnipro"
-            self.closed = False
+            self.closed = True
 
         def name(self) -> str:
-            return f"GAMST-Extension-OmniPro-{self.session.config.model}"
+            return f"GAMST-Extension-OmniPro-{self.config.model}"
 
         def begin(self, instruction: str, task_meta: dict[str, Any]) -> None:
+            self.end()
+            self.session = ExtensionSession(self.config, **self.chat_kwargs)
+            self.closed = False
             self.instruction = instruction
             self.task = str(task_meta.get("task", ""))
             self.question = str(task_meta.get("question", ""))

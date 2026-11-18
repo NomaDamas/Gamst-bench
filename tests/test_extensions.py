@@ -145,6 +145,12 @@ class OmniProExtensionTests(unittest.TestCase):
                       Path(model.session.sidecar.path).read_text().splitlines()]
             self.assertIn("audio", events)
             self.assertIn("native_emit", events)
+            # The native evaluator reuses one model instance for every sample.
+            chat.responses = ["7"]
+            model.begin("native instruction", {"id": "second", "task": "snapshot_counting",
+                                               "question": "count"})
+            self.assertEqual(model.observe(np.full((32, 32, 3), 200, dtype=np.uint8), 0.0, []), "7")
+            model.end()
 
 
 class FastBenchExtensionTests(unittest.TestCase):
@@ -188,7 +194,15 @@ class FakeDriver:
 class StreamArenaExtensionTests(unittest.IsolatedAsyncioTestCase):
     async def test_native_callbacks_commit_and_speak_in_causal_order(self):
         with tempfile.TemporaryDirectory() as directory:
-            chat = FakeChat(["memory", "event happened", "final answer"])
+            # Calls run concurrently, so responses follow the prompt, not call order.
+            def chat(endpoint, model, messages, allow_remote=False, json_response=False,
+                     key_env=None):
+                system = messages[0]["content"]
+                if system.startswith("watch for event"):
+                    return "event happened", {}
+                if system.startswith("Answer the StreamArena"):
+                    return "final answer", {}
+                return "memory", {}
 
             def session_factory(_):
                 return ExtensionSession(config(directory, "streamarena", semantic_interval_ms=1), chat=chat)
@@ -206,7 +220,38 @@ class StreamArenaExtensionTests(unittest.IsolatedAsyncioTestCase):
                 await agent.stop()
             self.assertEqual(driver.speaks, [(1, "event happened", 1.0)])
             self.assertEqual(driver.answers, [(2, "final answer")])
-            self.assertTrue(all(call["messages"] for call in chat.calls))
+
+    async def test_frames_keep_flowing_while_backbone_call_is_in_flight(self):
+        import threading
+
+        release = threading.Event()
+        calls = []
+
+        def blocked_chat(endpoint, model, messages, allow_remote=False,
+                         json_response=False, key_env=None):
+            calls.append(messages)
+            release.wait(10)
+            return "", {}
+
+        with tempfile.TemporaryDirectory() as directory:
+            def session_factory(_):
+                return ExtensionSession(config(directory, "streamarena", semantic_interval_ms=1),
+                                        chat=blocked_chat)
+
+            with patch("gamst_bench.extensions.streamarena_agent.ExtensionSession", session_factory):
+                agent = GamstStreamArenaAgent()
+                await agent.start(FakeDriver())
+                for index in range(12):
+                    await agent.on_frame(SimpleNamespace(ts=index * 0.5, jpeg_b64=jpeg(index * 20)))
+                # Perception must drain even though the first VLM call never returns.
+                await asyncio.wait_for(agent.queue.join(), timeout=5)
+                counts = dict(agent.session.sidecar.counts)
+                release.set()
+                await agent.stop()
+            self.assertEqual(counts["dropped"], 0)
+            self.assertEqual(counts["inputs"], 12)
+            # One call in flight; only the newest pending selection runs after it.
+            self.assertLessEqual(len(calls), 2)
 
 
 class ExtensionTemplateTests(unittest.TestCase):

@@ -22,6 +22,11 @@ except ImportError:
 
 
 class GamstStreamArenaAgent(StreamingAgent):
+    """Perception never waits on the backbone: frames keep flowing into GAMST
+    while at most one frame-triggered VLM call is in flight. Selections made
+    during that call are coalesced to the newest one; questions run as their
+    own tasks so an answer is never queued behind continuous observation."""
+
     def __init__(self) -> None:
         self.session = None
         self.queue = None
@@ -29,6 +34,9 @@ class GamstStreamArenaAgent(StreamingAgent):
         self.watchers: dict[int, dict[str, Any]] = {}
         self.latest_frame = None
         self.video_id = 0
+        self.frame_task = None
+        self.pending_selection = None
+        self.tasks: set[asyncio.Task] = set()
 
     async def start(self, driver) -> None:
         await super().start(driver)
@@ -38,9 +46,18 @@ class GamstStreamArenaAgent(StreamingAgent):
         self.video_id += 1
         self.watchers = {}
         self.latest_frame = None
+        self.frame_task = None
+        self.pending_selection = None
+        self.tasks = set()
         self.session = ExtensionSession(ExtensionConfig.from_env("streamarena"))
         self.queue = asyncio.Queue(maxsize=int(os.environ.get("GAMST_EXTENSION_QUEUE", "16")))
         self.worker = asyncio.create_task(self._run(), name="gamst-streamarena-inputs")
+
+    def _spawn(self, coroutine) -> asyncio.Task:
+        task = asyncio.create_task(coroutine)
+        self.tasks.add(task)
+        task.add_done_callback(self.tasks.discard)
+        return task
 
     async def on_frame(self, frame) -> None:
         if self.session is None:
@@ -100,26 +117,50 @@ class GamstStreamArenaAgent(StreamingAgent):
         self.latest_frame = selection
         if not selection["selected"]:
             return
+        if self.frame_task is not None and not self.frame_task.done():
+            if self.pending_selection is not None:
+                self.session.sidecar.write(
+                    "selection_coalesced", evidence_ids=[self.pending_selection["evidence_id"]],
+                    replaced_by=selection["evidence_id"])
+            self.pending_selection = selection
+            return
+        self.frame_task = self._spawn(self._infer_frames(self.session, selection))
+
+    async def _infer_frames(self, session, selection) -> None:
+        while selection is not None:
+            try:
+                await self._infer_frame(session, selection)
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:
+                session.sidecar.counts["errors"] += 1
+                session.sidecar.write("agent_error", input_kind="frame",
+                                      at_sec=selection["at_sec"], error=type(exc).__name__)
+            selection, self.pending_selection = self.pending_selection, None
+
+    async def _infer_frame(self, session, selection) -> None:
+        at_sec = selection["at_sec"]
         active = [watch for watch in self.watchers.values() if at_sec <= watch["deadline"]]
         if not active:
             # Continuous semantic memory uses the same selected backbone call.
-            text, _ = await asyncio.to_thread(
-                self.session.infer, selection,
+            await asyncio.to_thread(
+                session.infer, selection,
                 system_prompt="Describe only newly observable video changes concisely; return an empty response when nothing noteworthy changed.",
                 user_text=json.dumps({"timestamp_sec": at_sec}))
             return
         for watch in active:
             text, usage = await asyncio.to_thread(
-                self.session.infer, selection,
+                session.infer, selection,
                 system_prompt=watch["question"] + "\nReturn only the native proactive alert when the watched event has occurred; otherwise return an empty response.",
                 user_text=json.dumps({"timestamp_sec": at_sec, "deadline_sec": watch["deadline"]}))
             if text.strip().lower() in {"", "silent", "standby"}:
                 continue
             qid = watch["qid"]
-            self.session.emit([selection["evidence_id"]], at_sec, text,
-                              qid=qid, native_kind="emit_speak", usage=usage)
+            if self.watchers.pop(qid, None) is None:
+                continue  # already answered by an earlier call
+            session.emit([selection["evidence_id"]], at_sec, text,
+                         qid=qid, native_kind="emit_speak", usage=usage)
             await self.driver.emit_speak(qid, text, at_sec)
-            self.watchers.pop(qid, None)
 
     async def _ask(self, at_sec: float, request: dict[str, Any]) -> None:
         if self.latest_frame is None:
@@ -131,16 +172,29 @@ class GamstStreamArenaAgent(StreamingAgent):
         if previous["at_sec"] > at_sec:
             await self.driver.commit_answer(request["qid"], "")
             return
+        # Selection stays in input order on the worker; only the call is detached.
         selection = await asyncio.to_thread(
             self.session.video, previous["evidence_id"] + f":ask:{request['qid']}",
             previous["jpeg_b64"], previous["at_sec"], query=True)
-        text, usage = await asyncio.to_thread(
-            self.session.infer, selection,
-            system_prompt="Answer the StreamArena question using only temporal evidence at or before the query cutoff. Be concise and do not speculate.",
-            user_text=json.dumps({"question": request["question"], "qtype": request["qtype"],
-                                  "query_cutoff_sec": at_sec}))
-        self.session.emit([selection["evidence_id"]], at_sec, text,
-                          qid=request["qid"], native_kind="commit_answer", usage=usage)
+        self._spawn(self._answer(self.session, selection, at_sec, request))
+
+    async def _answer(self, session, selection, at_sec: float, request: dict[str, Any]) -> None:
+        try:
+            text, usage = await asyncio.to_thread(
+                session.infer, selection,
+                system_prompt="Answer the StreamArena question using only temporal evidence at or before the query cutoff. Be concise and do not speculate.",
+                user_text=json.dumps({"question": request["question"], "qtype": request["qtype"],
+                                      "query_cutoff_sec": at_sec}))
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            session.sidecar.counts["errors"] += 1
+            session.sidecar.write("agent_error", input_kind="ask", at_sec=at_sec,
+                                  error=type(exc).__name__)
+            await self.driver.commit_answer(request["qid"], "")
+            return
+        session.emit([selection["evidence_id"]], at_sec, text,
+                     qid=request["qid"], native_kind="commit_answer", usage=usage)
         await self.driver.commit_answer(request["qid"], text)
 
     async def stop(self) -> None:
@@ -153,6 +207,9 @@ class GamstStreamArenaAgent(StreamingAgent):
         if self.worker is not None:
             await self.worker
             self.worker = None
+        while self.tasks:
+            await asyncio.gather(*list(self.tasks), return_exceptions=True)
         await asyncio.to_thread(session.close)
         self.watchers = {}
         self.latest_frame = None
+        self.pending_selection = None

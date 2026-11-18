@@ -13,7 +13,7 @@
         {"arm":"C-gamst","system":"Qwen3-VL-8B GAMST sentinel","track":"gamst-extension","score":4.7058823529,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"exit 0; extension dev-subset"},
         {"arm":"D-periodic","system":"Qwen3-VL-8B GAMST periodic","track":"gamst-extension","score":1.9607843137,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"exit 0; ran in parallel dev50p"},
         {"arm":"C-gemini","system":"Gemini 3 Flash GAMST sentinel","track":"gamst-extension","score":30.5882352941,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"exit 0; extension dev-subset"},
-        {"arm":"A-proactive","system":"Qwen3-VL-8B native proactive","track":"native-protocol","score":null,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"still running when campaign was recorded"}
+        {"arm":"A-proactive","system":"Qwen3-VL-8B native proactive","track":"native-protocol","score":null,"scale":100,"backbone_calls":null,"prompt_tokens":null,"note":"interrupted after 6/50 samples; runtime exceeded campaign window; no score"}
       ]
     },
     "omnipro": {

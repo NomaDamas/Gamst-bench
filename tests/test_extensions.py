@@ -76,6 +76,9 @@ class ExtensionSessionTests(unittest.TestCase):
             self.assertIn("frame-1", encoded)
             self.assertNotIn("frame-3", encoded)
             session.infer(queried, system_prompt="system", user_text="answer")
+            # The earlier backbone description is memory for the later call, not per-frame noise.
+            later_prompt = chat.calls[-1]["messages"][1]["content"][0]["text"]
+            self.assertIn('"text": "first"', later_prompt)
             session.close()
             rows = [json.loads(line) for line in Path(session.sidecar.path).read_text().splitlines()]
             calls = [row for row in rows if row["event"] == "vlm_call"]

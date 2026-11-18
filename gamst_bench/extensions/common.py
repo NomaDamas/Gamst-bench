@@ -190,6 +190,8 @@ class GamstSelector:
         self.last_dispatch_ms = None
         self.last_semantic_capture_ms = None
         self.last_capture_ms = -1
+        # (capture_ms, source, text, evidence_ids) mirrored from stream.semantic pushes.
+        self.semantic_log: list[tuple[int, str, str, list[str]]] = []
 
     async def start(self) -> None:
         try:
@@ -294,6 +296,7 @@ class GamstSelector:
             "stream.semantic", {"description": text[:8192], "evidence_ids": [evidence_id]},
             "text", timestamp_ms=capture, model_id="streamarena.asr", model_version="external",
             quality="sufficient")
+        self.semantic_log.append((capture, "asr", text[:8192], [evidence_id]))
         self.sidecar.counts["inputs"] += 1
 
     async def add_semantic(self, description: str, evidence_ids: list[str], capture_ms: int) -> None:
@@ -302,10 +305,49 @@ class GamstSelector:
             "stream.semantic", {"description": description[:8192], "evidence_ids": evidence_ids},
             "text", timestamp_ms=capture_ms, model_id=self.config.model,
             model_version="configured-pinned-revision", quality="sufficient")
+        if description.strip():
+            self.semantic_log.append((capture_ms, "vlm", description[:8192], list(evidence_ids)))
 
     async def temporal_context(self, query_cutoff_ms: int) -> dict[str, Any]:
-        return await self.human.build_temporal_context(
-            query_cutoff_ms=query_cutoff_ms, max_bytes=self.config.context_bytes)
+        """Consumer view of GAMST memory at the query cutoff, within ``context_bytes``.
+
+        GAMST's raw temporal packet holds the 64 newest signal records; at 30 FPS
+        those are all per-frame change measurements (~0.9 KB each), crowding out
+        the semantic observations a backbone actually needs. The view keeps the
+        packet checksum and the newest change measurements for provenance, adds
+        the semantic memory at or before the cutoff, then drops the oldest
+        semantic entries until the budget holds.
+        """
+        packet = await self.human.build_temporal_context(
+            query_cutoff_ms=query_cutoff_ms, max_bytes=1 << 20)
+        changes = [event for event in packet.get("events", [])
+                   if event.get("event_type") == "stream.video_change"]
+        scores = [float((event.get("value") or {}).get("change_score", 0.0)) for event in changes]
+        view = {
+            "query_cutoff_ms": query_cutoff_ms,
+            "packet_checksum": packet.get("checksum"),
+            "change_summary": {
+                "measurements": len(changes),
+                "max_change_score": round(max(scores), 4) if scores else None,
+                "recent": [{"ms_before_cutoff": query_cutoff_ms - event["capture_timestamp_ms"],
+                            "change_score": round(score, 4),
+                            "evidence_ids": (event.get("value") or {}).get("evidence_ids", [])}
+                           for event, score in list(zip(changes, scores))[-8:]],
+            },
+            "semantic_memory": [
+                {"ms_before_cutoff": query_cutoff_ms - capture, "source": source,
+                 "text": text, "evidence_ids": evidence_ids}
+                for capture, source, text, evidence_ids in self.semantic_log
+                if capture <= query_cutoff_ms],
+        }
+        def size() -> int:
+            return len(json.dumps(view, ensure_ascii=False).encode())
+
+        while size() > self.config.context_bytes and view["semantic_memory"]:
+            view["semantic_memory"].pop(0)
+        while size() > self.config.context_bytes and view["change_summary"]["recent"]:
+            view["change_summary"]["recent"].pop(0)
+        return view
 
     def mark_dispatched(self, capture_ms: int) -> None:
         self.last_dispatch_ms = capture_ms

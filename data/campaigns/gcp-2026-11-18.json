@@ -22,7 +22,7 @@
       "arms": [
         {"arm":"C-gamst","system":"Qwen3-VL-8B GAMST sentinel","track":"gamst-extension","score":0.0453,"scale":1,"backbone_calls":1508,"prompt_tokens":null,"note":"macro_time_f1 0.1454; content_accuracy 0.4988; joint_task_f1 0.0453"},
         {"arm":"D-periodic","system":"Qwen3-VL-8B GAMST periodic","track":"gamst-extension","score":0.063,"scale":1,"backbone_calls":1377,"prompt_tokens":null,"note":"macro_time_f1 0.1734; content_accuracy 0.5076; joint_task_f1 0.063"},
-        {"arm":"A-minicpm","system":"MiniCPM-o 4.5 native","track":"native-protocol","score":null,"scale":1,"backbone_calls":null,"prompt_tokens":null,"note":"queued after FastBench A-proactive; not yet measured"}
+        {"arm":"A-minicpm","system":"MiniCPM-o 4.5 native","track":"native-protocol","score":null,"scale":1,"backbone_calls":null,"prompt_tokens":null,"note":"not run; A-proactive exceeded campaign window and VM was terminated for cost protection"}
       ]
     },
     "streamarena": {

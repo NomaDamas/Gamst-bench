@@ -51,9 +51,20 @@ Input ingestion and inference must be independent. The host has an eight-message
 
 ## Reference adapter
 
-`python3 -m gamst_bench.adapters.gamst_http` connects to explicitly selected chat-compatible model endpoints. A uses the VLM; B requires installed Gamst plugins; C adds thumbnail-change, query-triggered semantic calls and periodic auditing; D uses periodic semantic inspection; E (`streaming`) sends frames to a separate small-VLM endpoint (`--streaming-url`, default port 8081) every `--streaming-interval` seconds (default 0.25 s, 4 Hz) without Gamst plugins. C's image-difference trigger is a reference implementation, not a validated semantic sentinel. Audit freshness is anchored to inspected input capture time. Freeze intervals, novelty threshold, plugin configuration, dependencies and adapter source revision.
+`python3 -m gamst_bench.adapters.gamst_http` connects to explicitly selected chat-compatible model endpoints. A uses the VLM; B/C/D require an explicit installed perception recipe; C/D also record the bounded GAMST semantic state/context chain. E (`streaming`) sends frames to a separate small-VLM endpoint (`--streaming-url`, default port 8081) every `--streaming-interval` seconds (default 0.25 s, 4 Hz) without GAMST plugins. The old C image-difference trigger remains only a diagnostic baseline and is not a validated semantic sentinel. Heavy LLM/VLM invocation is application/MCP orchestration, not a GAMST decision-model side effect.
 
-Non-VLM paths require an existing `gamst` installation (package `gamst-sdk`, class `gamst.Gamst`) and `GAMST_BENCH_PLUGINS`, e.g. a JSON list of `{"factory":"your_module:factory","kwargs":{}}`. Use actual supported factories; the benchmark does not guess or install them. Video plugins require numpy/OpenCV, audio plugins require numpy. Exact checkpoint/plugin compatibility has not been validated by the public synthetic tests.
+The frozen configuration carries `perception_plugins`, a JSON list of explicit plugin factories:
+
+```json
+{"perception_plugins":[
+  {"factory":"your_video_plugin:factory","kwargs":{}},
+  {"factory":"your_audio_plugin:factory","kwargs":{}}
+]}
+```
+
+Each plugin emits bounded timestamped signals; the host records evidence IDs and updates the short-term semantic state chain. The adapter exposes that chain through GAMST context/MCP without triggering a heavy model. Freeze plugin revisions, model assets, intervals and dependencies; the benchmark never guesses or installs them.
+
+Non-VLM paths require an existing `gamst` installation and explicit plugin factories. Video plugins require numpy/OpenCV, audio plugins require numpy. Exact checkpoint/plugin compatibility must be validated by the campaign, not inferred from synthetic tests.
 
 Default endpoints are local `/v1` chat servers on ports 8080 (VLM) and 11434 (consumer). `--consumer-json-mode` requests OpenAI-compatible `response_format: {"type":"json_object"}` for the structured consumer answer; enable it only when the selected server supports that option. Input `at_ms` values are mapped to a wall-clock capture origin and passed to Core instead of substituting inference time. Remote endpoints require explicit `--allow-remote` and HTTPS. Credentials use `GAMST_BENCH_API_KEY`; redirects and environment proxies are disabled. Decide whether sending the recorded media to that provider is authorized before opting in. Never put tokens into command files or committed artifacts.
 

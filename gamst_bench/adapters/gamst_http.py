@@ -64,13 +64,18 @@ class Adapter:
             from gamst import Gamst
             self.human=Gamst(consent=True,retention_hours=.01)
             await self.human.__aenter__()
-            factories=json.loads(os.environ.get('GAMST_BENCH_PLUGINS','[]'))
-            require(factories,'thin/hybrid policies require explicit installed plugin factories')
+            factories=self.config.get('perception_plugins')
+            if factories is None:
+                factories=json.loads(os.environ.get('GAMST_BENCH_PLUGINS','[]'))
+            require(isinstance(factories,list) and factories,
+                    'thin/hybrid policies require explicit perception_plugins in the frozen configuration')
             for spec in factories:
-                module,name=spec['factory'].split(':')
+                require(isinstance(spec,dict) and isinstance(spec.get('factory'),str),
+                        'perception_plugins entries require factory')
+                module,name=spec['factory'].split(':',1)
                 self.human.register(getattr(importlib.import_module(module),name)(**spec.get('kwargs',{})))
         self.jobs=[asyncio.create_task(self.perception(self.video_queue)),asyncio.create_task(self.perception(self.audio_queue)),asyncio.create_task(self.semantic()),asyncio.create_task(self.answer())]
-        self.emit('meta',accounting='Token counts exclude local compute; reviewer must complete full-pipeline accounting.',resource_scope='Adapter process only; add model-server/device instrumentation.')
+        self.emit('meta',accounting='Token counts exclude local compute; reviewer must complete full-pipeline accounting.',resource_scope='Adapter process only; add model-server/device instrumentation.',perception_plugins=self.config.get('perception_plugins', []))
     async def input(self,item):
         self.known.append(item['id'])
         if item['modality']=='control':

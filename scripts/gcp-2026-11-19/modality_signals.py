@@ -8,6 +8,7 @@ inference, no labels.
 usage: python modality_signals.py EPISODES.jsonl OUT.jsonl
 EPISODES.jsonl rows: {"id", "video" (clip), "offset_s" (clip start, absolute), "cutoff_s"}
 """
+import json
 import pathlib
 import subprocess
 import sys

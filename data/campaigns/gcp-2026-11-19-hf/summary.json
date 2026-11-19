@@ -1,0 +1,372 @@
+{
+ "dataset": "StreamArena en (real YouTube, human labels), seeded candidates; admission by anti-shortcut gates",
+ "candidates_sha256": "4712a3b36dc15421f0ba0b0d6bdc5d8beea0db6e393c36e9e564f2f955a142c5",
+ "admission_rule": "admit iff reference VLM fails 1FPS and first+last",
+ "admitted": 88,
+ "candidates": 119,
+ "gates_by_family": {
+  "T1_transient_alert": {
+   "candidates": 24,
+   "admitted": 18,
+   "1fps_correct": 6,
+   "first_last_correct": 0,
+   "shuffled_correct": 0
+  },
+  "T2_event_order_count": {
+   "candidates": 24,
+   "admitted": 14,
+   "1fps_correct": 9,
+   "first_last_correct": 1,
+   "shuffled_correct": 7
+  },
+  "T3_av_sync": {
+   "candidates": 24,
+   "admitted": 15,
+   "1fps_correct": 8,
+   "first_last_correct": 9,
+   "shuffled_correct": 8
+  },
+  "T4_last_seen": {
+   "candidates": 23,
+   "admitted": 19,
+   "1fps_correct": 4,
+   "first_last_correct": 3,
+   "shuffled_correct": 3
+  },
+  "T7_anytime_cutoff": {
+   "candidates": 24,
+   "admitted": 22,
+   "1fps_correct": 2,
+   "first_last_correct": 2,
+   "shuffled_correct": 3
+  }
+ },
+ "av_verified_T3_ids": [
+  "2gfuF26SRCA#7",
+  "DgGHpjI7WNk#4",
+  "SWTUzymlNMM#6"
+ ],
+ "arms": {
+  "qwen_small": {
+   "n": 88,
+   "correct": 6,
+   "accuracy": 0.0682,
+   "by_family": {
+    "T1_transient_alert": {
+     "correct": 0,
+     "n": 18
+    },
+    "T2_event_order_count": {
+     "correct": 1,
+     "n": 14
+    },
+    "T3_av_sync": {
+     "correct": 0,
+     "n": 15
+    },
+    "T4_last_seen": {
+     "correct": 2,
+     "n": 19
+    },
+    "T7_anytime_cutoff": {
+     "correct": 3,
+     "n": 22
+    }
+   },
+   "errors": 0,
+   "model_calls": 189,
+   "prompt_tokens": 1093991,
+   "p50_call_latency_s": 0.71,
+   "fail_kinds": {
+    "premature": 14,
+    "empty_or_error": 4,
+    "judged": 64
+   },
+   "alert_strict_0p5s": {
+    "correct": 0,
+    "n": 18
+   },
+   "evidence_time_hit_2s": {
+    "hit": 0,
+    "n": 33
+   },
+   "av_verified_T3": {
+    "correct": 0,
+    "n": 3
+   }
+  },
+  "streamingvlm": {
+   "n": 88,
+   "correct": 0,
+   "accuracy": 0.0,
+   "by_family": {
+    "T1_transient_alert": {
+     "correct": 0,
+     "n": 18
+    },
+    "T2_event_order_count": {
+     "correct": 0,
+     "n": 14
+    },
+    "T3_av_sync": {
+     "correct": 0,
+     "n": 15
+    },
+    "T4_last_seen": {
+     "correct": 0,
+     "n": 19
+    },
+    "T7_anytime_cutoff": {
+     "correct": 0,
+     "n": 22
+    }
+   },
+   "errors": 0,
+   "model_calls": 88,
+   "prompt_tokens": 875088,
+   "p50_call_latency_s": 29.79,
+   "fail_kinds": {
+    "premature": 18,
+    "judged": 70
+   },
+   "alert_strict_0p5s": {
+    "correct": 0,
+    "n": 18
+   },
+   "evidence_time_hit_2s": {
+    "hit": 0,
+    "n": 33
+   },
+   "av_verified_T3": {
+    "correct": 0,
+    "n": 3
+   }
+  },
+  "gemini_live": {
+   "n": 88,
+   "correct": 12,
+   "accuracy": 0.1364,
+   "by_family": {
+    "T1_transient_alert": {
+     "correct": 8,
+     "n": 18
+    },
+    "T2_event_order_count": {
+     "correct": 0,
+     "n": 14
+    },
+    "T3_av_sync": {
+     "correct": 3,
+     "n": 15
+    },
+    "T4_last_seen": {
+     "correct": 0,
+     "n": 19
+    },
+    "T7_anytime_cutoff": {
+     "correct": 1,
+     "n": 22
+    }
+   },
+   "errors": 0,
+   "model_calls": 267,
+   "prompt_tokens": 1999288,
+   "p50_call_latency_s": null,
+   "fail_kinds": {
+    "premature": 9,
+    "empty_or_error": 39,
+    "judged": 28
+   },
+   "alert_strict_0p5s": {
+    "correct": 4,
+    "n": 18
+   },
+   "evidence_time_hit_2s": {
+    "hit": 2,
+    "n": 33
+   },
+   "av_verified_T3": {
+    "correct": 1,
+    "n": 3
+   }
+  },
+  "strong": {
+   "n": 88,
+   "correct": 33,
+   "accuracy": 0.375,
+   "by_family": {
+    "T1_transient_alert": {
+     "correct": 6,
+     "n": 18
+    },
+    "T2_event_order_count": {
+     "correct": 5,
+     "n": 14
+    },
+    "T3_av_sync": {
+     "correct": 6,
+     "n": 15
+    },
+    "T4_last_seen": {
+     "correct": 9,
+     "n": 19
+    },
+    "T7_anytime_cutoff": {
+     "correct": 7,
+     "n": 22
+    }
+   },
+   "errors": 0,
+   "model_calls": 151,
+   "prompt_tokens": 1067693,
+   "p50_call_latency_s": 7.9,
+   "fail_kinds": {
+    "premature": 12,
+    "judged": 43
+   },
+   "alert_strict_0p5s": {
+    "correct": 3,
+    "n": 18
+   },
+   "evidence_time_hit_2s": {
+    "hit": 21,
+    "n": 33
+   },
+   "av_verified_T3": {
+    "correct": 3,
+    "n": 3
+   }
+  },
+  "strong_videoonly": {
+   "n": 15,
+   "correct": 4,
+   "accuracy": 0.2667,
+   "by_family": {
+    "T3_av_sync": {
+     "correct": 4,
+     "n": 15
+    }
+   },
+   "errors": 0,
+   "model_calls": 15,
+   "prompt_tokens": 80089,
+   "p50_call_latency_s": 9.07,
+   "fail_kinds": {
+    "judged": 11
+   },
+   "alert_strict_0p5s": {
+    "correct": 0,
+    "n": 0
+   },
+   "evidence_time_hit_2s": {
+    "hit": 0,
+    "n": 0
+   },
+   "av_verified_T3": {
+    "correct": 0,
+    "n": 3
+   }
+  },
+  "gamst": {
+   "n": 88,
+   "correct": 15,
+   "accuracy": 0.1705,
+   "by_family": {
+    "T1_transient_alert": {
+     "correct": 4,
+     "n": 18
+    },
+    "T2_event_order_count": {
+     "correct": 1,
+     "n": 14
+    },
+    "T3_av_sync": {
+     "correct": 2,
+     "n": 15
+    },
+    "T4_last_seen": {
+     "correct": 4,
+     "n": 19
+    },
+    "T7_anytime_cutoff": {
+     "correct": 4,
+     "n": 22
+    }
+   },
+   "errors": 0,
+   "model_calls": 197,
+   "prompt_tokens": 2006668,
+   "p50_call_latency_s": 4.95,
+   "fail_kinds": {
+    "premature": 8,
+    "empty_or_error": 6,
+    "judged": 59
+   },
+   "alert_strict_0p5s": {
+    "correct": 1,
+    "n": 18
+   },
+   "evidence_time_hit_2s": {
+    "hit": 7,
+    "n": 33
+   },
+   "av_verified_T3": {
+    "correct": 0,
+    "n": 3
+   }
+  },
+  "gamst_nomedia": {
+   "n": 88,
+   "correct": 8,
+   "accuracy": 0.0909,
+   "by_family": {
+    "T1_transient_alert": {
+     "correct": 1,
+     "n": 18
+    },
+    "T2_event_order_count": {
+     "correct": 2,
+     "n": 14
+    },
+    "T3_av_sync": {
+     "correct": 2,
+     "n": 15
+    },
+    "T4_last_seen": {
+     "correct": 1,
+     "n": 19
+    },
+    "T7_anytime_cutoff": {
+     "correct": 2,
+     "n": 22
+    }
+   },
+   "errors": 0,
+   "model_calls": 186,
+   "prompt_tokens": 1471138,
+   "p50_call_latency_s": 3.96,
+   "fail_kinds": {
+    "premature": 8,
+    "empty_or_error": 9,
+    "judged": 63
+   },
+   "alert_strict_0p5s": {
+    "correct": 0,
+    "n": 18
+   },
+   "evidence_time_hit_2s": {
+    "hit": 4,
+    "n": 33
+   },
+   "av_verified_T3": {
+    "correct": 0,
+    "n": 3
+   }
+  }
+ },
+ "streamingvlm_native": {
+  "episodes": 88,
+  "median_realtime_factor": 0.896,
+  "errors": 0
+ }
+}

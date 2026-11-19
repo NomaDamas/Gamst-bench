@@ -32,6 +32,17 @@ A **context-pipeline benchmark**: does an existing LLM, given Gamst's lightweigh
 - [ ] Publication of reviewed results and compliance with each official leaderboard’s submission requirements.
 
 Current public figures are **synthetic protocol checks**. Published reference numbers, directly reproduced official scores and Gamst extension results remain separate. Gamst superiority has not been established.
+The GAMST-specific track is separate from external benchmark scores. Its approved
+architecture is: video-only StreamingVLM produces video semantic state; explicit
+high-frequency modality plugins produce typed GAMST signals; host fusion builds
+the Semantic State Chain; MCP exposes bounded Context; the application supplies
+the Strong VLM and LLM. Heavy-model triggers are application-owned.
+
+The high-frequency benchmark specification and acquisition gates are documented
+in [`docs/GAMST_HF_SEMANTIC_BENCHMARK.md`](docs/GAMST_HF_SEMANTIC_BENCHMARK.md)
+and [`docs/GAMST_HF_DATASET.md`](docs/GAMST_HF_DATASET.md). No GAMST-specific
+score is valid until the 1FPS, first/last-frame, shuffle and modality-ablation
+controls fail as preregistered.
 
 **Live preparation snapshot (2026-11-18):** `gamst-bench-gpu` is `TERMINATED`; no GPU runtime is running. StreamArena transfer is active on the workstation at 203/243 video archives; its full manifest will be frozen after completion. The 200GB persistent disk and GCS objects continue to incur storage charges.
 

@@ -4,16 +4,26 @@
 
 ## Decision
 
-The first GAMST-specific benchmark does **not** depend on downloading an
-unlicensed internet dataset. It starts with a reproducible synthetic track and
-then adds a separately licensed real-video track. This is required because the
-benchmark must prove that 1 FPS, a first/last frame pair, and a shuffled stream
-cannot solve the task.
+The first GAMST-specific benchmark does **not** invent internet footage or
+silently reuse external scores. It reuses the already prepared project data as
+source material, then creates a new high-frequency annotation/control layer:
+
+| Source already prepared | Reuse | What must be added before scoring |
+| --- | --- | --- |
+| FastBench raw `qa_video` clips and annotations | short visual temporal candidates and existing query timestamps | high-FPS event boundaries, evidence intervals, 1FPS/first-last/shuffle controls, human anti-shortcut review |
+| OmniPro `raw_videos` and task metadata | audio-video/proactive/counting candidates | exact audio/video onset labels, high-frequency gates, modality ablations, license/revision manifest |
+| StreamArena 243 video tars + question/meta JSONL | long continuous episodes and RTP/HR/Pro candidates | high-frequency event/state annotations, cutoff/deadline labels, public-license record, private media hash manifest |
+| GamstCapture coin fixture | physical rotation/count baseline | high-frequency controls, occlusion/drop variants, real consented capture for the real track |
+
+Existing benchmark annotations are **candidate labels only**. A source question
+does not automatically satisfy the GAMST high-frequency gate. The new scorer
+will reject any episode that a 1FPS or first/last control solves.
+
+The acquisition process uses GCP only for copying, decoding, control generation,
+manifest hashing and model execution. It never invents labels or treats a
+paper/GitHub URL as media redistribution permission.
 
 ## Track A — deterministic synthetic episodes
-
-This track can be generated locally or on GCP without credentials. Every episode
-is rendered at 30 or 60 FPS with a fixed seed and includes synchronized lanes:
 
 - RGB video with objects, occlusion, short events and state transitions;
 - PCM audio with controlled onset/offset and AV delay;

@@ -41,14 +41,21 @@ QA_SYS = ("You are watching a live video stream. Answer the user's question abou
           "comma separated>")
 
 
+# The native-audio Live model stays silent when asked for the bracketed ANSWER/EVIDENCE_T format
+# (verified 2026-11-19), so it gets the same request in spoken form.
+LIVE_QA_SYS = ("You are watching a live video stream. Answer the user's question about what was "
+               "seen or heard up to now. Reply with the short answer only. Then say the video seconds "
+               "where you saw or heard the evidence, for example: evidence at 12 and 15 seconds.")
+
+
 def split_answer(text):
-    """(answer, [evidence seconds]) from 'ANSWER: ... | EVIDENCE_T: ...'; lenient."""
+    """(answer, [evidence seconds]) from 'ANSWER: ... | EVIDENCE_T: ...' or '... evidence at ...'."""
     import re
     text = text or ""
-    m = re.search(r"EVIDENCE_T\s*:\s*(.*)$", text, re.I | re.S)
+    m = re.search(r"(?:EVIDENCE_T\s*:|evidence at)\s*(.*)$", text, re.I | re.S)
     ev = [float(x) for x in re.findall(r"\d+(?:\.\d+)?", m.group(1))] if m else []
     ans = text[:m.start()] if m else text
-    ans = re.sub(r"^\s*ANSWER\s*:\s*", "", ans.strip(), flags=re.I).strip().rstrip("|").strip()
+    ans = re.sub(r"^\s*ANSWER\s*:\s*", "", ans.strip(), flags=re.I).strip().rstrip("|,.").strip()
     return ans, ev
 
 
@@ -402,9 +409,10 @@ def arm_gamst(media=True):
 async def live_episode(ep):
     """One Gemini Live session per episode: 1 FPS JPEG + 16 kHz PCM paced in real time.
 
-    Manual activity detection: each user turn is [activity_start, AV media, text, activity_end].
-    Proactive: one turn per video second (WAIT or notification). QA: one turn spanning the
-    whole window with the question at the cutoff.
+    Manual activity detection. Proactive: one user turn per video second
+    [activity_start, 1 s of AV, poll text, activity_end]. QA: the window's AV is streamed as
+    realtime context and the question is a client turn at the cutoff (a QA question inside an
+    activity span gets a silent reply from this native-audio model; verified 2026-11-19).
     """
     from google import genai
     from google.genai import types
@@ -414,7 +422,11 @@ async def live_episode(ep):
     cfg = types.LiveConnectConfig(
         response_modalities=[modality],
         output_audio_transcription=types.AudioTranscriptionConfig() if modality == "AUDIO" else None,
-        system_instruction=PRO_SYS if proactive else QA_SYS,
+        system_instruction=PRO_SYS if proactive else LIVE_QA_SYS,
+        # documented long-session mode: without it the ~32k-token Live context fills after ~110 s
+        # of 1 FPS video + audio and the model replies with silence (observed 2026-11-19)
+        context_window_compression=types.ContextWindowCompressionConfig(
+            trigger_tokens=24000, sliding_window=types.SlidingWindow(target_tokens=16000)),
         realtime_input_config=types.RealtimeInputConfig(
             automatic_activity_detection=types.AutomaticActivityDetection(disabled=True)))
     fl = frames(ep, 1, width=640)
@@ -436,6 +448,16 @@ async def live_episode(ep):
                     break
             return "".join(said).strip()
 
+        async def reply(wait_s=10):
+            # one activity span can yield an empty turn before the spoken reply; read until speech
+            txt = await collect()
+            while not txt:
+                try:
+                    txt = await asyncio.wait_for(collect(), timeout=wait_s)
+                except asyncio.TimeoutError:
+                    break
+            return txt
+
         async def media(i):
             await s.send_realtime_input(video=types.Blob(data=base64.b64decode(fl[i][1]), mime_type="image/jpeg"))
             chunk = pcm[i * 32000:(i + 1) * 32000]
@@ -443,21 +465,13 @@ async def live_episode(ep):
                 await s.send_realtime_input(audio=types.Blob(data=chunk, mime_type="audio/pcm;rate=16000"))
 
         t_start = time.time()
-        if not proactive:
-            await s.send_realtime_input(activity_start=types.ActivityStart())
         for i, (t, _) in enumerate(fl):
             if proactive:
                 await s.send_realtime_input(activity_start=types.ActivityStart())
                 await media(i)
                 await s.send_realtime_input(text=question_text(ep) + "\nWAIT or notification?")
                 await s.send_realtime_input(activity_end=types.ActivityEnd())
-                # one activity span can yield an extra empty turn; read until a spoken reply (≤10 s)
-                txt = await collect()
-                while not txt:
-                    try:
-                        txt = await asyncio.wait_for(collect(), timeout=10)
-                    except asyncio.TimeoutError:
-                        break
+                txt = await reply()
                 polls.append({"t": round(t + 1, 2), "text": txt})
                 if txt and not txt.upper().startswith("WAIT"):
                     answer, speak_t = txt, round(t + 1, 2)
@@ -468,9 +482,9 @@ async def live_episode(ep):
                 await media(i)
             await asyncio.sleep(max(0.0, (i + 1) - (time.time() - t_start)))
         if not proactive:
-            await s.send_realtime_input(text=question_text(ep))
-            await s.send_realtime_input(activity_end=types.ActivityEnd())
-            answer = await collect()
+            await s.send_client_content(turns=types.Content(role="user", parts=[types.Part(text=question_text(ep))]),
+                                        turn_complete=True)
+            answer = await reply(wait_s=30)
     return {"answer": answer, "speak_t": speak_t, "polls": polls, "calls": max(1, len(polls)),
             "live_model": LIVE, "modality": modality, "usage_total_tokens": sum(usage)}
 
@@ -567,14 +581,19 @@ def score(ep, r):
 
 
 def extras(ep, r, correct):
-    """Added GAMST-HF metrics: strict +-0.5 s alert timing; evidence-time hit (+-2 s) for HR."""
+    """Added GAMST-HF metrics: strict +-0.5 s alert timing; evidence-time hit (+-2 s) for HR.
+
+    Cited times count as absolute video seconds or clip-relative seconds (clip 0 = start_s);
+    the same rule applies to every arm.
+    """
     out = {}
     if ep["scoring"] == "proactive":
         out["strict_correct"] = bool(correct and abs(r["speak_t"] - ep["ref_sec"]) <= 0.5)
     elif ep.get("evidence_ts_sec"):
         _, ev = split_answer(r.get("answer"))
+        cand = ev + [e + ep["start_s"] for e in ev]
         out["evidence_t"] = ev
-        out["evidence_hit"] = any(abs(a - b) <= 2.0 for a in ev for b in ep["evidence_ts_sec"])
+        out["evidence_hit"] = any(abs(a - b) <= 2.0 for a in cand for b in ep["evidence_ts_sec"])
     return out
 
 

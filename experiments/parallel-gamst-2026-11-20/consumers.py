@@ -81,7 +81,11 @@ def ask_gemini(system, user_text, frames, max_tokens=128):
             if exc.code not in (429, 500, 503) or attempt == 3:
                 raise
             time.sleep(2 ** attempt * 3)
-    text = "".join(p.get("text", "") for p in data["candidates"][0]["content"].get("parts", []) if not p.get("thought"))
+    candidates = data.get("candidates") or []
+    content = candidates[0].get("content", {}) if candidates else {}
+    text = "".join(p.get("text", "") for p in content.get("parts", []) if not p.get("thought"))
+    if not text and data.get("promptFeedback"):
+        text = "[GEMINI_BLOCKED: " + json.dumps(data["promptFeedback"], ensure_ascii=False)[:300] + "]"
     meta = data.get("usageMetadata", {})
     usage = {"prompt_tokens": meta.get("promptTokenCount"), "completion_tokens": meta.get("candidatesTokenCount"),
              "thoughts_tokens": meta.get("thoughtsTokenCount"), "total_tokens": meta.get("totalTokenCount")}

@@ -26,11 +26,11 @@
 | CED-Base (`ced.onnx`, CPU 4스레드) | ✅ | 4.0ms/100ms 블록 | 39.7ms | 0% | 0 | 저자 PyTorch 모델과 비교: 상위 2개 라벨 같음, 최대 차이 0.031 |
 | TEN-VAD (`ten_vad.native`) | ✅ | 0.27ms/32ms 블록 | 0.31ms | 0% | 0 | `libc++1` 설치 후 동작 |
 | Nemotron-3-Diarization (`nemotron3.diarization`) | ✅ | 1.5ms/80ms 블록 | 13.8ms | 0% | 1,100 | |
-| Qwen3.5-9B 상태 생성 (`streamingvlm.local`) | ⚠️ 재측정 중 | 330ms/프레임(호출당 약 2.6초) | 5.4초 | 20% | (서버) | 8프레임/2초로는 실시간을 넘음 → 6프레임/3초로 조정 |
-| SAM 3.1 (`sam3.1.video`) | 🔁 재측정 중 | | | | 8,756 | 체크포인트가 16-object multiplex 구조라 어댑터 수정. 8GB 예산 초과 → 12GB |
-| Video Depth Anything Large (`video_depth_anything.large`, fp16) | 🔁 재측정 중 | 99ms | 129ms | 57% | 6,698 | 약 10fps. xformers FA 커널이 Blackwell에서 실패해 제거 |
-| FactorizePhys (`factorizephys.local`) | 🔁 재측정 중 | | | | | 공식 학습기처럼 strict=False 로드(FSAM 가중치만 미사용) |
-| Qwen3-ASR-1.7B (`qwen3.asr`, vLLM 0.14) | 🔁 재측정 중 | | | | | `max_model_len` 기본 64k로는 KV가 모자라 8192로 설정 |
+| Qwen3.5-9B 상태 생성 (`streamingvlm.local`) | ⚠️ | 412ms/frame 평균 | 4.86s | 2.5% | 서버 | JSON schema로 정상 출력. 6프레임/3초 cadence에서 60초 단독 run 완료; 호출 지연은 실시간보다 큼 |
+| SAM 3.1 (`sam3.1.video`) | ❌ | | | 64% | 12,902 | 공식 16-object multiplex 구조로 로드·propagation은 시작되나 `vision_feat` shape `[5184,0,256]` tracker 오류 반복. Blackwell에서 실제 adapter 검증 실패 |
+| Video Depth Anything Large (`video_depth_anything.large`, fp16) | ⚠️ | 89.7ms | 128.7ms | 53.5% | 7,858 | 60초 run 종료. 공식 upstream wide-frame handling 적용. 약 10fps라 1배 실시간 전체 프레임 처리는 불가 |
+| FactorizePhys (`factorizephys.local`) | ⚠️ | | | 0% | 1,104 | strict=False 공식 inference graph와 checkpoint는 로드. Haar face detection이 실제 클립에서 충분한 얼굴 window를 만들지 못해 pulse output 확정 전 |
+| Qwen3-ASR-1.7B (`qwen3.asr`, vLLM 0.14) | ✅ | 34.4ms/20ms block | 133.9ms | 0% | 7,844 | max_model_len=8192, vLLM share 0.07 단독 run. 전체 stack에서는 KV 여유 부족해 추가 budget 조정 필요 |
 
 ## 공식 결과와 비교
 - 끝난 것: CED (위 표)

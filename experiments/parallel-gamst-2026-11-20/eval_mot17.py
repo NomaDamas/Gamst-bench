@@ -166,9 +166,15 @@ async def gamst_side(seq, zone, fps, n, w, h, place, run_dir):
     caps = await replay.tool("list_capabilities", {"limit": 100})
     request = f"Tell me when someone is at {place}. Do not repeat the same alert within 3 seconds."
     from gamst.watch import validate_rule
+    def validate_watch(args):
+        rule = args["rule"]
+        if rule.get("subject_id", "local-user") != "local-user":
+            raise ValueError("replay subject_id is local-user")
+        validate_rule(rule)
     watch, jev_log = jev_create_watch(request, tools, caps, hint={"capability_id": field.spec.id,
-                                                                    "fields": ["risk", "alarm"]},
-                                      validate=lambda args: validate_rule(args["rule"]))
+                                                                    "fields": ["risk", "alarm"],
+                                                                    "subject_id": "local-user"},
+                                      validate=validate_watch)
     created = await replay.tool("create_watch", watch) if watch else None
     alarms = []
     replay.human.watches.add_sink(alarms.append)

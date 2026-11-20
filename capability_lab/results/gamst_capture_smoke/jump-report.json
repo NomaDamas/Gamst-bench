@@ -1,0 +1,109 @@
+{
+  "mode": "jump",
+  "metres_per_pixel": 0.006316520721313874,
+  "native": {
+    "jumps_detected": 12,
+    "jumps_truth": 0,
+    "jumps": [
+      {
+        "height_flight_m": 0.049,
+        "rise_m": 0.0552,
+        "flight_s": 0.2,
+        "timing_method": "threshold_edges",
+        "fitted_gravity_m_s2": null
+      },
+      {
+        "height_flight_m": 0.1343,
+        "rise_m": 0.0911,
+        "flight_s": 0.331,
+        "timing_method": "ballistic_fit",
+        "fitted_gravity_m_s2": 3.493
+      },
+      {
+        "height_flight_m": 0.0342,
+        "rise_m": 0.0103,
+        "flight_s": 0.167,
+        "timing_method": "threshold_edges",
+        "fitted_gravity_m_s2": null
+      },
+      {
+        "height_flight_m": 0.0994,
+        "rise_m": 0.0448,
+        "flight_s": 0.2847,
+        "timing_method": "ballistic_fit",
+        "fitted_gravity_m_s2": 3.024
+      },
+      {
+        "height_flight_m": 0.0342,
+        "rise_m": -0.0222,
+        "flight_s": 0.167,
+        "timing_method": "threshold_edges",
+        "fitted_gravity_m_s2": null
+      },
+      {
+        "height_flight_m": 0.0715,
+        "rise_m": 0.059,
+        "flight_s": 0.2415,
+        "timing_method": "ballistic_fit",
+        "fitted_gravity_m_s2": 6.011
+      },
+      {
+        "height_flight_m": 0.0342,
+        "rise_m": 0.007,
+        "flight_s": 0.167,
+        "timing_method": "threshold_edges",
+        "fitted_gravity_m_s2": null
+      },
+      {
+        "height_flight_m": 0.0625,
+        "rise_m": 0.0795,
+        "flight_s": 0.2258,
+        "timing_method": "threshold_edges",
+        "fitted_gravity_m_s2": null
+      },
+      {
+        "height_flight_m": 0.2134,
+        "rise_m": 0.087,
+        "flight_s": 0.4173,
+        "timing_method": "ballistic_fit",
+        "fitted_gravity_m_s2": 2.094
+      },
+      {
+        "height_flight_m": 0.0495,
+        "rise_m": -0.0225,
+        "flight_s": 0.201,
+        "timing_method": "threshold_edges",
+        "fitted_gravity_m_s2": null
+      },
+      {
+        "height_flight_m": 0.0766,
+        "rise_m": 0.0542,
+        "flight_s": 0.2499,
+        "timing_method": "threshold_edges",
+        "fitted_gravity_m_s2": null
+      },
+      {
+        "height_flight_m": 0.1235,
+        "rise_m": 0.0288,
+        "flight_s": 0.3174,
+        "timing_method": "ballistic_fit",
+        "fitted_gravity_m_s2": 4.684
+      }
+    ]
+  },
+  "1fps": {
+    "jumps_detected": 0,
+    "jumps_truth": 0,
+    "jumps": []
+  },
+  "memory": {
+    "answered_from": "mcp:get_observation_page(events_only)",
+    "events": 12,
+    "last_event_s": 16.741,
+    "page_truncated": false,
+    "page_bytes": 18376
+  },
+  "video": "/tmp/gcverify/stu10_25.mp4",
+  "video_sha256": "04928447f6f75413096914f9cc2a46beed40128197a3a8084e8c07e0519eed5c",
+  "wall_s": 6.29
+}

@@ -8,7 +8,7 @@ These checks follow `docs/capabilities.md` in the GAMST repo. Each check runs a 
 |---|---|---|---|---|
 | ② Moment capture + physics: jump height, camera | TU Wien JumpMetric, 145 well-executed jumps, Kinect 30 Hz (`height_measured`) | **MAE 31 mm, 79 % within ±50 mm** | MAE 131 mm, 21 % within ±50 mm | Works |
 | ② Jump height, accelerometer only | same, neck/chest/hip IMU 100 Hz | MAE 87 mm, 32 % within ±50 mm | – | Not yet; simple free-fall detection is not enough |
-| Count: repetitions | RepCountA test, 151 videos (human counts) | pose: **MAE 0.429, OBO 0.437** | MAE 0.736, OBO 0.172 | Works roughly. 1 FPS loses more than half the OBO hits. Gemini 3.1 Pro at 8 FPS is more accurate (58-video subset: OBO 0.569 vs 0.345), at about 17k tokens per video. |
+| Count: repetitions | RepCountA test, 151 videos (human counts) | pose: **MAE 0.429, OBO 0.437** | MAE 0.736, OBO 0.172 | Works roughly. 1 FPS loses more than half the OBO hits. Gemini 3.1 Pro at 8 FPS is more accurate (124-video subset: OBO 0.605 vs 0.379), at about 17k tokens per video. |
 | ③ Rhythm: heart rate from a phone camera | MCD-rPPG, 40 phone videos (synchronous contact PPG) | **50 % within ±5 bpm**, MAE 19.8 bpm | 0 % (Nyquist 0.5 Hz < pulse) | Half; fails mostly on high heart rates |
 | ① Probability cloud, daytime | MOT17-09, shop entrance zone (human boxes) | frame recall 0.86, precision 0.73 | recall 0.87, precision 0.75 | Mechanics work. High frequency adds nothing here, because people walk slowly. |
 | ① Probability cloud, night | MOT17-04, road zone | frame recall 0.21, precision 0.89 | recall 0.14 | Fails; the light detector misses small people at night |
@@ -34,6 +34,14 @@ These checks follow `docs/capabilities.md` in the GAMST repo. Each check runs a 
   | 1 Hz pelvis rise | 130.9 mm | 153.0 mm | 12.4 % | 20.7 % |
 
 - **Reference:** the dataset paper reports its best camera result as −15.8 ± 23.3 mm (pelvis). This simple estimator is not at that level yet.
+- **Same data through the GAMST provider** (`jump_provider.py` → `gamst/providers/flight.py`). The provider adds two-sample contact debouncing and a ballistic parabola fit of the airborne foot clearance, used on 98.6 % of jumps. Well-executed jumps, after the leave-one-subject-out offset:
+
+  | Estimator | MAE | Within ±50 mm |
+  |---|---:|---:|
+  | Rise | 34.4 mm | 78.6 % |
+  | Flight | 35.7 mm | 80.7 % |
+
+  The same provider on 1 Hz samples detects **0 of 145** jumps. The median fitted gravity is 8.6 m/s², because Kinect foot joints are not perfectly ballistic.
 
 ### Count (`count_repcount.py`)
 
@@ -52,18 +60,18 @@ These checks follow `docs/capabilities.md` in the GAMST repo. Each check runs a 
   | Raw-pixel PCA, 1 Hz | 0.706 | 0.146 |
 
 - **Reference:** TransRAC (CVPR 2022), a trained model, reports MAE 0.443 and OBO 0.291 on RepCount-A test. Those numbers come from the paper, not from this run, so the comparison is indicative only.
-- **Gemini 3.1 Pro count reference** (`gemini_count.py`, Vertex, low media resolution): 58 of the 151 videos had finished when this was written; the run continues. On those 58 videos only, all rows compare like with like:
+- **Gemini 3.1 Pro count reference** (`gemini_count.py`, Vertex, low media resolution): 124 of the 151 videos had finished at the time of writing; the run continues. On those 124 videos only, all rows compare like with like:
 
-  | Arm | Videos | MAE | OBO | Prompt tokens per video (median) | Latency |
-  |---|---:|---:|---:|---:|---|
-  | Gemini 3.1 Pro, 8 FPS | 58 | **0.272** | **0.569** | 16,918 | 20.0 s median |
-  | Light pose counter, native rate | 58 | 0.336 | 0.345 | 0 (local CPU) | 11.8 s wall, including decoding |
-  | Gemini 3.1 Pro, default 1 FPS | 58 | 0.491 | 0.362 | 2,134 | 11.9 s median |
-  | Light pose counter, 1 Hz | 58 | 0.644 | 0.155 | 0 | – |
+  | Arm | Videos | MAE | OBO | Prompt tokens per video (median) |
+  |---|---:|---:|---:|---:|
+  | Gemini 3.1 Pro, 8 FPS | 124 | **0.242** | **0.605** | 17,182 |
+  | Gemini 3.1 Pro, default 1 FPS | 124 | 0.434 | 0.387 | 2,200 |
+  | Light pose counter, native rate | 124 | 0.416 | 0.379 | 0 (local CPU) |
+  | Light pose counter, 1 Hz | 124 | 0.689 | 0.177 | 0 |
 
 - **Reading:**
   - A strong VLM given dense frames is the most accurate counter here.
-  - The free local light counter has lower MAE than Gemini at its default 1 FPS, but a lower OBO.
+  - The free local light counter is level with Gemini at its default 1 FPS: MAE 0.416 vs 0.434, OBO 0.379 vs 0.387.
   - For count, the GAMST case is cost and always-on operation, not accuracy. The counter needs a stronger repetition model before it can match dense Gemini.
 
 ### ③ Heart rate (`rhythm_rppg.py`)

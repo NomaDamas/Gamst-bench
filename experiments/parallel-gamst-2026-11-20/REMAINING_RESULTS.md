@@ -23,10 +23,15 @@
 
 ## StreamArena
 
-admission 88개에 대해:
-- B Qwen3.5-9B sliding-window arm: 88개 응답 생성 완료. 일부 초기 응답 오류 행이 있어 id별 최신 성공 행으로 정리합니다.
-- C-local: 88개 context 응답 생성 완료.
-- C-Gemini: 생성 중.
-- Gemini 3.8 Flash judge: 생성 중.
+admission 88개에 대해 실제 clip 기반 arm을 생성하고, `gemini-3.8-flash`로 동일 judge protocol을 실행했습니다.
 
-Gemini 3.1 Pro는 재호출하지 않았습니다.
+| arm | 응답/평가 | correct | rate |
+|---|---:|---:|---:|
+| B Qwen3.5-9B sliding-window | 88 | 7 | 0.080 |
+| C-local | 88 | 0 | 0.000 |
+| C-Gemini | 88 | 3 | 0.034 |
+
+- 초기 B 오류 행은 id별 최신 성공 행으로 정리했습니다.
+- C arms는 GAMST Context를 사용했습니다. C-local/C-Gemini 모두 동일한 context generation path입니다.
+- judge는 `gemini-3.8-flash`입니다. Gemini 3.1 Pro는 재호출하지 않았습니다.
+- 이 수치는 기존 A 결과와 judge harness가 다르므로 직접적인 승패 비교가 아닙니다. A 재실행은 하지 않았습니다.

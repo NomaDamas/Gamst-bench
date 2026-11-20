@@ -34,4 +34,17 @@ admission 88개에 대해 실제 clip 기반 arm을 생성하고, `gemini-3.8-fl
 - 초기 B 오류 행은 id별 최신 성공 행으로 정리했습니다.
 - C arms는 GAMST Context를 사용했습니다. C-local/C-Gemini 모두 동일한 context generation path입니다.
 - judge는 `gemini-3.8-flash`입니다. Gemini 3.1 Pro는 재호출하지 않았습니다.
+
+## RepCountA
+
+RepCountA test split 151개 실제 영상의 완료 결과(`capability_lab/results/count_test_all.jsonl`):
+
+| pipeline | n | MAE | OBO (±1) |
+|---|---:|---:|---:|
+| pose native | 151 | 4.404 | 0.437 |
+| pose 1Hz | 151 | 10.868 | 0.172 |
+| pixel native | 151 | 6.556 | 0.397 |
+| pixel 1Hz | 151 | 10.821 | 0.146 |
+
+The VM sharded rerun reached 59 rows before the pre-existing complete 151-row artifact was verified. The final table uses the complete 151-row real-data artifact, not the incomplete shard outputs.
 - 이 수치는 기존 A 결과와 judge harness가 다르므로 직접적인 승패 비교가 아닙니다. A 재실행은 하지 않았습니다.

@@ -27,6 +27,8 @@ def main() -> None:
     parser.add_argument("--max-side", type=int, default=1280)
     parser.add_argument("--keep-servers", action="store_true",
                         help="servers in the stack are already running; do not start them")
+    parser.add_argument("--allow-failed-workers", action="store_true",
+                        help="continue media replay and record failed workers in summary")
     args = parser.parse_args()
 
     stack = json.loads(Path(args.stack).read_text())
@@ -68,7 +70,7 @@ def main() -> None:
         media_epoch_ms = int(time.time() * 1000)
         crew.start_workers(frame_ring.segment.name if frame_ring else None,
                            audio_ring.segment.name if audio_ring else None, media_epoch_ms, f"run-{tag}")
-        crew.wait_ready()
+        crew.wait_ready(allow_failed=args.allow_failed_workers)
         crew.start_monitor(source.clock)
         started = time.time()
         source.run()

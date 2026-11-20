@@ -33,7 +33,7 @@ jobs:
           echo "GAMST_CREW_ROOT=${GITHUB_WORKSPACE}/.runtime/GamstCrew" >> "$GITHUB_ENV"
           echo "PYTHONPATH=${GITHUB_WORKSPACE}/.runtime/gamst:${GITHUB_WORKSPACE}/.runtime/GamstCrew:${GITHUB_WORKSPACE}" >> "$GITHUB_ENV"
       - run: npm ci
-      - run: python -m pip install -r requirements-mcp.txt
+      - run: python -m pip install -r requirements-mcp.txt numpy pillow opencv-python-headless
       - run: npm run test:python
       - run: npm run results:check
       - run: npm test

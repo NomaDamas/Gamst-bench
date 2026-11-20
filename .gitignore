@@ -7,7 +7,9 @@ dist/
 .DS_Store
 __pycache__/
 *.pyc
-runs/
+runs/*
+!runs/experiment-template/
+!runs/experiment-template/**
 
 .venv-mcp/
 .gcp.local/

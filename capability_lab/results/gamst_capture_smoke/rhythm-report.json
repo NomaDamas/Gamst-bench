@@ -1,0 +1,24 @@
+{
+  "mode": "rhythm",
+  "truth_bpm": 62.6,
+  "native": {
+    "heart_bpm": 50.3,
+    "statuses": [
+      "measuring",
+      "no_rhythm",
+      "warmup"
+    ],
+    "error_bpm": -12.3,
+    "within_5": false
+  },
+  "1fps": {
+    "heart_bpm": null,
+    "statuses": [
+      "undersampled",
+      "warmup"
+    ]
+  },
+  "video": "/tmp/gcverify/rppg60.avi",
+  "video_sha256": "e84eda0fa30b668cc3fc51460378ef20259e292b6dd4a9fb438d9436013d0b60",
+  "wall_s": 1.34
+}

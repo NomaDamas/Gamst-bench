@@ -19,6 +19,8 @@ Create `commands.json`, mapping every configuration ID to its argv list:
 
 Replace the executable path and supply actual local endpoints/plugins as described in [ADAPTERS](ADAPTERS.md). Configuration policy comes from the plan, not from the configuration ID. Commands alone do not pin mutable server weights or environment variables; record their resolved versions and hashes in the frozen plan's additional experiment metadata.
 
+`runs/experiment-template/commands.json` is an unmeasured A/B/C/D/E/F template using the VM's matched 8B endpoint on port 8080 and small streaming endpoint on port 8081. `C-jev` is a placeholder configuration for the separately reviewed consumer/judge experiment, not a result or a new official arm. Native FastBench/OmniPro/StreamArena extension commands are in [EXTENSIONS](EXTENSIONS.md).
+
 Set `execution_sha256` in the draft to the canonical digest of commands. Create and freeze a runtime manifest with `gamst_bench.manifest.freeze_manifest`; include the exact 40-character commits for `gamst`, `gamstcrew`, and `gamst-bench`, set its `manifest_sha256` into the measured plan as `runtime_manifest_sha256`, or pass the manifest to the freeze command:
 
 ```python

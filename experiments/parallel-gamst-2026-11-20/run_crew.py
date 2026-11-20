@@ -36,10 +36,15 @@ def main() -> None:
     from gamstcrew.parallel import ParallelCrew, ServerSpec, WorkerSpec
 
     only = {name for name in args.only.split(",") if name}
-    workers = [WorkerSpec(**w) for w in stack["workers"] if not only or w["name"] in only]
-    servers = [ServerSpec(**s) for s in stack.get("servers", []) if not only or s["name"] in only]
-    if args.keep_servers:
-        servers = []
+    def resolve(config):
+        # "@/abs/path.json" values are replaced by that file's JSON (e.g. per-file hash manifests).
+        return {k: json.loads(Path(v[1:]).read_text()) if isinstance(v, str) and v.startswith("@/") else v
+                for k, v in config.items()}
+
+    workers = [WorkerSpec(**{**w, "config": resolve(w["config"])}) for w in stack["workers"]
+               if not only or w["name"] in only]
+    # Servers always hold their VRAM reservation; --keep-servers only skips (re)starting them.
+    servers = [ServerSpec(**s) for s in stack.get("servers", [])]
 
     info = probe(args.media, args.max_side)
     tag = uuid.uuid4().hex[:8]
@@ -57,7 +62,8 @@ def main() -> None:
         "servers": [s.name for s in servers], "budgets": crew.reserve_all()}, indent=1))
     source = MediaSource(args.media, frame_ring, audio_ring, info, speed=args.speed)
     try:
-        crew.start_servers()
+        if not args.keep_servers:
+            crew.start_servers()
         # Workers stamp outputs with epoch + pts; the epoch is fixed before any frame exists.
         media_epoch_ms = int(time.time() * 1000)
         crew.start_workers(frame_ring.segment.name if frame_ring else None,

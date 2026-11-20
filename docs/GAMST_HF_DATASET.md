@@ -23,26 +23,38 @@ The acquisition process uses GCP only for copying, decoding, control generation,
 manifest hashing and model execution. It never invents labels or treats a
 paper/GitHub URL as media redistribution permission.
 
-## Track A — deterministic synthetic episodes
+## Track A — real public episodes (run 2026-11-19)
 
-- RGB video with objects, occlusion, short events and state transitions;
-- PCM audio with controlled onset/offset and AV delay;
-- physical JSONL (position, velocity, acceleration, contact/rotation);
-- immutable truth JSONL (events, relations, states, answer cutoff/deadline).
+No synthetic media is used. The first measured track is built only from
+StreamArena (revision `2960c360deba57b717a17ab66a3ae80f5358a6a3`): real YouTube
+videos with human annotations (CC-BY-NC-4.0 annotations, uploader-owned video).
 
-The generator must produce paired variants from the same seed:
+- `scripts/gcp-2026-11-19/build_candidates.py` maps StreamArena types to GAMST-HF
+  families and draws a seeded sample (`seed=20261119`, 24 per family): 119
+  episodes, 91 videos, 7,910 s of windows, `candidates.jsonl` sha256
+  `4712a3b36dc15421f0ba0b0d6bdc5d8beea0db6e393c36e9e564f2f955a142c5`.
+- Families:
+  - T1 transient alert: Pro L1.
+  - T2 event order/count: HR with ≥2 evidence times, ≤240 s history.
+  - T3 AV sync: RTP whose question references speech or sound. An item is counted as AV-verified only if the strong model is right with audio and wrong on the audio-stripped clip.
+  - T4 last seen: HR with 1 evidence time.
+  - T7 anytime cutoff: the remaining RTP.
+- Every clip ends at the query cutoff (`ask_sec`, or `ref_sec+3` for T1), so no
+  post-cutoff frame can leak.
+- HR annotations whose evidence time is at or after `ask_sec` are rejected.
+- Admission:
+  - The reference VLM (Qwen3-VL-8B-Instruct-FP8) must fail the 1 FPS control and the first+last control.
+  - The shuffled-frame control is reported per family.
+- Private mirror: `huggingface.co/datasets/minsing-jin/gamst-hf-bench` (non-commercial research).
 
-- full stream;
-- 4 FPS;
-- 1 FPS;
-- first/last frames;
-- shuffled frames;
-- video-only/audio-only/physical-only;
-- controlled frame/audio drops and late packets.
+Not covered by this track, and therefore not claimed:
 
-The truth file is never supplied to an adapter. It is used only by the scorer.
-The first fixture is the existing GamstCapture coin-spin generator; it becomes
-one physical-dynamics family, not the whole benchmark.
+- revision/correction
+- sensor-only physical dynamics
+- overload/recovery
+- sub-second event timing
+
+They require consented capture (Track B) or new human labels.
 
 ## Track B — consented real episodes
 

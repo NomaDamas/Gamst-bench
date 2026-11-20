@@ -8,7 +8,7 @@ These checks follow `docs/capabilities.md` in the GAMST repo. Each check runs a 
 |---|---|---|---|---|
 | ② Moment capture + physics: jump height, camera | TU Wien JumpMetric, 145 well-executed jumps, Kinect 30 Hz (`height_measured`) | **MAE 31 mm, 79 % within ±50 mm** | MAE 131 mm, 21 % within ±50 mm | Works |
 | ② Jump height, accelerometer only | same, neck/chest/hip IMU 100 Hz | MAE 87 mm, 32 % within ±50 mm | – | Not yet; simple free-fall detection is not enough |
-| Count: repetitions | RepCountA test, 151 videos (human counts) | pose: **MAE 0.429, OBO 0.437** | MAE 0.736, OBO 0.172 | Works roughly. 1 FPS loses more than half the OBO hits. Gemini 3.1 Pro at 8 FPS is more accurate (124-video subset: OBO 0.605 vs 0.379), at about 17k tokens per video. |
+| Count: repetitions | RepCountA test, 151 videos (human counts) | pose: **MAE 0.429, OBO 0.437** | MAE 0.736, OBO 0.172 | Ties Gemini 3.1 Pro at its default 1 FPS (OBO 0.437) with 0 tokens. Gemini at 8 FPS is better (OBO 0.640) at about 16k tokens per video. |
 | ③ Rhythm: heart rate from a phone camera | MCD-rPPG, 40 phone videos (synchronous contact PPG) | **50 % within ±5 bpm**, MAE 19.8 bpm | 0 % (Nyquist 0.5 Hz < pulse) | Half; fails mostly on high heart rates |
 | ① Probability cloud, daytime | MOT17-09, shop entrance zone (human boxes) | frame recall 0.86, precision 0.73 | recall 0.87, precision 0.75 | Mechanics work. High frequency adds nothing here, because people walk slowly. |
 | ① Probability cloud, night | MOT17-04, road zone | frame recall 0.21, precision 0.89 | recall 0.14 | Fails; the light detector misses small people at night |
@@ -60,18 +60,18 @@ These checks follow `docs/capabilities.md` in the GAMST repo. Each check runs a 
   | Raw-pixel PCA, 1 Hz | 0.706 | 0.146 |
 
 - **Reference:** TransRAC (CVPR 2022), a trained model, reports MAE 0.443 and OBO 0.291 on RepCount-A test. Those numbers come from the paper, not from this run, so the comparison is indicative only.
-- **Gemini 3.1 Pro count reference** (`gemini_count.py`, Vertex, low media resolution): 124 of the 151 videos had finished at the time of writing; the run continues. On those 124 videos only, all rows compare like with like:
+- **Gemini 3.1 Pro count reference** (`gemini_count.py`, Vertex, low media resolution). All 151 test videos were run. One 8 FPS call failed after retries and is recorded as an error, so that row covers 150 videos.
 
   | Arm | Videos | MAE | OBO | Prompt tokens per video (median) |
   |---|---:|---:|---:|---:|
-  | Gemini 3.1 Pro, 8 FPS | 124 | **0.242** | **0.605** | 17,182 |
-  | Gemini 3.1 Pro, default 1 FPS | 124 | 0.434 | 0.387 | 2,200 |
-  | Light pose counter, native rate | 124 | 0.416 | 0.379 | 0 (local CPU) |
-  | Light pose counter, 1 Hz | 124 | 0.689 | 0.177 | 0 |
+  | Gemini 3.1 Pro, 8 FPS | 150 | **0.247** | **0.640** | 15,862 |
+  | Gemini 3.1 Pro, default 1 FPS | 151 | 0.427 | 0.437 | 2,002 |
+  | Light pose counter, native rate | 151 | 0.429 | 0.437 | 0 (local CPU) |
+  | Light pose counter, 1 Hz | 151 | 0.736 | 0.172 | 0 |
 
 - **Reading:**
   - A strong VLM given dense frames is the most accurate counter here.
-  - The free local light counter is level with Gemini at its default 1 FPS: MAE 0.416 vs 0.434, OBO 0.379 vs 0.387.
+  - The free local light counter ties Gemini 3.1 Pro at its default 1 FPS: MAE 0.429 vs 0.427, OBO 0.437 vs 0.437. It does this with zero tokens and runs always-on.
   - For count, the GAMST case is cost and always-on operation, not accuracy. The counter needs a stronger repetition model before it can match dense Gemini.
 
 ### ③ Heart rate (`rhythm_rppg.py`)

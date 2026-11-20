@@ -1,0 +1,309 @@
+{
+ "crew_root": "/srv/GamstCrew",
+ "gamst_root": "/srv/gamst",
+ "strict_budget": true,
+ "servers": [
+  {
+   "name": "vlm_qwen35_9b",
+   "health_url": "http://localhost:8000/v1/models",
+   "gpu_budget_mib": 21600,
+   "argv": [
+    "/srv/venv-vllm34/bin/vllm",
+    "serve",
+    "/srv/models/Qwen3.5-9B@c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "--served-model-name",
+    "qwen3.5-9b",
+    "--port",
+    "8000",
+    "--gpu-memory-utilization",
+    "0.22",
+    "--max-model-len",
+    "24576",
+    "--max-num-seqs",
+    "8",
+    "--reasoning-parser",
+    "qwen3",
+    "--limit-mm-per-prompt",
+    "{\"image\":32,\"video\":0}"
+   ]
+  },
+  {
+   "name": "jev_qwen38_27b_fp8",
+   "health_url": "http://localhost:8001/v1/models",
+   "gpu_budget_mib": 33300,
+   "argv": [
+    "/srv/venv-vllm34/bin/vllm",
+    "serve",
+    "/srv/models/Qwen3.8-27B-FP8@c3a462cc3d38cf351f3b26cbd763469eeb74ef81",
+    "--served-model-name",
+    "jev",
+    "--port",
+    "8001",
+    "--gpu-memory-utilization",
+    "0.34",
+    "--max-model-len",
+    "8192",
+    "--max-num-seqs",
+    "4",
+    "--reasoning-parser",
+    "qwen3",
+    "--enable-auto-tool-choice",
+    "--tool-call-parser",
+    "qwen3_coder",
+    "--limit-mm-per-prompt",
+    "{\"image\":4,\"video\":0}"
+   ]
+  }
+ ],
+ "workers": [
+  {
+   "name": "semantic_qwen35",
+   "python": "/srv/envs/det/bin/python",
+   "profile": "streamingvlm.local",
+   "config": {
+    "endpoint": "http://localhost:8000/v1",
+    "model": "qwen3.5-9b",
+    "revision": "Qwen/Qwen3.5-9B@c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "window_frames": 6,
+    "max_gap_ms": 3000,
+    "max_tokens": 400,
+    "request_options": {
+     "chat_template_kwargs": {"enable_thinking": false},
+     "response_format": {"type": "json_schema", "json_schema": {"name": "semantic_state", "schema": {
+      "type": "object", "additionalProperties": false, "required": ["state", "events", "summary", "evidence_ids"],
+      "properties": {
+       "state": {"type": "object", "additionalProperties": {"type": "string", "maxLength": 80}, "maxProperties": 6},
+       "events": {"type": "array", "maxItems": 4, "items": {"type": "string", "maxLength": 100}},
+       "summary": {"type": "string", "maxLength": 240},
+       "evidence_ids": {"type": "array", "maxItems": 4, "items": {"type": "string", "maxLength": 24}}}}}}
+    }
+   },
+   "input": {
+    "kind": "video",
+    "mode": "every",
+    "stride": 12
+   },
+   "gpu_budget_mib": 0
+  },
+  {
+   "name": "rfdetr_large",
+   "python": "/srv/envs/det/bin/python",
+   "profile": "rfdetr.large",
+   "config": {
+    "path": "/srv/models/rfdetr/rf-detr-large-2026.pth",
+    "sha256": "0f4e20e19a99c0f8a62b5685f57f6c8b5c371c59081feda6752a0561a79ccf38",
+    "device": "cuda"
+   },
+   "input": {
+    "kind": "video",
+    "mode": "latest",
+    "stride": 1,
+    "coordinate_frame": "image_norm"
+   },
+   "gpu_budget_mib": 2048
+  },
+  {
+   "name": "yoloe_26x",
+   "python": "/srv/envs/det/bin/python",
+   "profile": "yoloe.local",
+   "config": {
+    "mode": "text",
+    "labels": [
+     "person",
+     "car",
+     "bicycle",
+     "ball",
+     "dog",
+     "chair",
+     "cup",
+     "phone"
+    ],
+    "checkpoint_path": "/srv/models/yoloe/yoloe-26x-seg.pt",
+    "checkpoint_sha256": "d08d390a08f98195f7c87807839fe4ff93a5491645fef1bc3bf0700efafdd639",
+    "encoder_path": "/srv/models/yoloe/mobileclip2_b.ts",
+    "encoder_sha256": "35d7f213e4d75f38514e4656ad3cb91158bd33e3805d8ac349f23b186f66982f",
+    "encoder_family": "mobileclip2:b",
+    "runtime_root": "/srv/par/yoloe-rt",
+    "device": "cuda"
+   },
+   "input": {
+    "kind": "video",
+    "mode": "latest",
+    "stride": 1,
+    "coordinate_frame": "image_norm"
+   },
+   "gpu_budget_mib": 3072
+  },
+  {
+   "name": "sam31",
+   "python": "/srv/envs/sam31/bin/python",
+   "profile": "sam3.1.video",
+   "config": {
+    "source_dir": "/srv/src/sam3",
+    "path": "/srv/models/sam3.1@daa63191845a41281374e725f4c9e51c7a824460/sam3.1_multiplex.pt",
+    "sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "prompt": "person",
+    "device": "cuda"
+   },
+   "input": {
+    "kind": "video",
+    "mode": "latest",
+    "stride": 1
+   },
+   "gpu_budget_mib": 12288
+  },
+  {
+   "name": "vda_large",
+   "python": "/srv/envs/vda/bin/python",
+   "profile": "video_depth_anything.large",
+   "config": {
+    "source_dir": "/srv/src/Video-Depth-Anything",
+    "path": "/srv/models/Video-Depth-Anything-Large@7aafbcb5c6af0bac741aad2b6471894fb4761afa/video_depth_anything_vitl.pth",
+    "sha256": "43df27c6b396042ba34ff7b798ab279f64d204d2e86d7a373968f8fa36d0e6fa",
+    "device": "cuda",
+    "fp32": false
+   },
+   "input": {
+    "kind": "video",
+    "mode": "latest",
+    "stride": 1
+   },
+   "gpu_budget_mib": 8192
+  },
+  {
+   "name": "pose_heavy",
+   "python": "/srv/envs/mp/bin/python",
+   "profile": "mediapipe.body.video",
+   "config": {
+    "path": "/srv/models/mediapipe/pose_landmarker_heavy.task",
+    "sha256": "64437af838a65d18e5ba7a0d39b465540069bc8aae8308de3e318aad31fcbc7b",
+    "max_entities": 4
+   },
+   "input": {
+    "kind": "video",
+    "mode": "latest",
+    "stride": 1
+   },
+   "gpu_budget_mib": 0
+  },
+  {
+   "name": "hands",
+   "python": "/srv/envs/mp/bin/python",
+   "profile": "mediapipe.hand.video",
+   "config": {
+    "path": "/srv/models/mediapipe/hand_landmarker.task",
+    "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+    "max_entities": 4
+   },
+   "input": {
+    "kind": "video",
+    "mode": "latest",
+    "stride": 1
+   },
+   "gpu_budget_mib": 0
+  },
+  {
+   "name": "face",
+   "python": "/srv/envs/mp/bin/python",
+   "profile": "mediapipe.face.video",
+   "config": {
+    "path": "/srv/models/mediapipe/face_landmarker.task",
+    "sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "max_entities": 4
+   },
+   "input": {
+    "kind": "video",
+    "mode": "latest",
+    "stride": 1
+   },
+   "gpu_budget_mib": 0
+  },
+  {
+   "name": "rppg_factorizephys",
+   "python": "/srv/envs/torch28/bin/python",
+   "profile": "factorizephys.local",
+   "config": {
+    "source_dir": "/srv/src/rPPG-Toolbox",
+    "checkpoint_path": "/srv/src/rPPG-Toolbox/final_model_release/iBVP_FactorizePhys_FSAM_Res.pth",
+    "checkpoint_sha256": "21e20ea54498adcf4b4238cc49d407c807df08e2cf8c0e5cf8c6518ab463bf27",
+    "device": "cuda"
+   },
+   "input": {
+    "kind": "video",
+    "mode": "every",
+    "stride": 1
+   },
+   "gpu_budget_mib": 1024
+  },
+  {
+   "name": "asr_qwen3",
+   "python": "/srv/envs/asr/bin/python",
+   "profile": "qwen3.asr",
+   "config": {
+    "path": "/srv/models/qwen3-asr-bundle",
+    "files": "@/srv/models/qwen3-asr-files.json",
+    "gpu_memory_utilization": 0.12,
+    "max_model_len": 2048
+   },
+   "env": {
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "VLLM_ENABLE_V1_MULTIPROCESSING": "0"
+   },
+   "input": {
+    "kind": "audio",
+    "chunk_ms": 20
+   },
+   "gpu_budget_mib": 9500
+  },
+  {
+   "name": "ced_base",
+   "python": "/srv/envs/audio/bin/python",
+   "profile": "ced.onnx",
+   "config": {
+    "path": "/srv/models/ced-base/model.onnx",
+    "labels_path": "/srv/models/ced-base/config.json",
+    "sha256": "1cb33c4300b6c52ae099a5af72058982e673ec79862855961b8b8c10eeaba74c",
+    "labels_sha256": "ac55e3cecfd75f3cd2e1b1a22ad3f74b4b197655efd7e3a14dd5228293b32dfb",
+    "model": "base",
+    "threads": 4
+   },
+   "input": {
+    "kind": "audio",
+    "chunk_ms": 100,
+    "dtype": "float32"
+   },
+   "gpu_budget_mib": 0
+  },
+  {
+   "name": "ten_vad",
+   "python": "/srv/envs/audio/bin/python",
+   "profile": "ten_vad.native",
+   "config": {
+    "path": "/srv/src/ten-vad/lib/Linux/x64/libten_vad.so",
+    "sha256": "5abfe6bf6e9a4fcea6b440240f0a9a0f431ab5006e48a4e16465ebe681ffd90f"
+   },
+   "input": {
+    "kind": "audio",
+    "chunk_ms": 32,
+    "dtype": "float32"
+   },
+   "gpu_budget_mib": 0
+  },
+  {
+   "name": "diarization",
+   "python": "/srv/envs/torch28/bin/python",
+   "profile": "nemotron3.diarization",
+   "config": {
+    "path": "/srv/models/nemotron3-diar",
+    "mode": "low_latency",
+    "device": "cuda"
+   },
+   "input": {
+    "kind": "audio",
+    "chunk_ms": 80
+   },
+   "gpu_budget_mib": 2048
+  }
+ ]
+}

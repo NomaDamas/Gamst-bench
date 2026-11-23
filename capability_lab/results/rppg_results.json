@@ -1,0 +1,425 @@
+{
+ "summary": {
+  "dataset": "MCD-rPPG kyegorov/mcd_rppg@bf59b3c (CC-BY-4.0), IriunWebcam (phone)",
+  "window_s": 60.0,
+  "videos": 40,
+  "cam": {
+   "n": 40,
+   "mae_bpm": 19.78,
+   "within_5bpm": 0.5,
+   "within_10bpm": 0.525
+  },
+  "cam_1fps": {
+   "n": 40,
+   "mae_bpm": 85.96,
+   "within_5bpm": 0.0,
+   "within_10bpm": 0.0
+  },
+  "before_after_direction_agreement": {
+   "n": 20,
+   "agree": 13
+  }
+ },
+ "rows": [
+  {
+   "patient_id": "1287",
+   "step": "before",
+   "gt_bpm": 117.421875,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 125.0,
+   "cam_bpm": 76.2890625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "1287",
+   "step": "after",
+   "gt_bpm": 115.6640625,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 116.0,
+   "cam_bpm": 55.546875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "1386",
+   "step": "before",
+   "gt_bpm": 90.703125,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 84.0,
+   "cam_bpm": 92.8125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "1386",
+   "step": "after",
+   "gt_bpm": 100.8984375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 102.0,
+   "cam_bpm": 100.8984375,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "1785",
+   "step": "before",
+   "gt_bpm": 62.578125,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 62.0,
+   "cam_bpm": 67.8515625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "1785",
+   "step": "after",
+   "gt_bpm": 67.5,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 73.0,
+   "cam_bpm": 72.0703125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "1932",
+   "step": "before",
+   "gt_bpm": 55.8984375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 84.0,
+   "cam_bpm": 60.46875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "1932",
+   "step": "after",
+   "gt_bpm": 47.8125,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 109.0,
+   "cam_bpm": 60.1171875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "3700",
+   "step": "before",
+   "gt_bpm": 74.8828125,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 95.0,
+   "cam_bpm": 60.1171875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "3700",
+   "step": "after",
+   "gt_bpm": 72.7734375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 123.0,
+   "cam_bpm": 62.2265625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "4307",
+   "step": "before",
+   "gt_bpm": 99.140625,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 100.0,
+   "cam_bpm": 61.171875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "4307",
+   "step": "after",
+   "gt_bpm": 124.388671875,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 97.0,
+   "cam_bpm": 85.40771484375,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "4815",
+   "step": "before",
+   "gt_bpm": 75.234375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 72.0,
+   "cam_bpm": 74.53125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "4815",
+   "step": "after",
+   "gt_bpm": 113.5546875,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 109.0,
+   "cam_bpm": 79.1015625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5130",
+   "step": "before",
+   "gt_bpm": 77.6953125,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 91.0,
+   "cam_bpm": 77.6953125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5130",
+   "step": "after",
+   "gt_bpm": 75.234375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 105.0,
+   "cam_bpm": 75.234375,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5217",
+   "step": "before",
+   "gt_bpm": 77.34375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 71.0,
+   "cam_bpm": 79.453125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5217",
+   "step": "after",
+   "gt_bpm": 85.4296875,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 80.0,
+   "cam_bpm": 85.78125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5441",
+   "step": "before",
+   "gt_bpm": 61.5234375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 59.0,
+   "cam_bpm": 60.46875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5441",
+   "step": "after",
+   "gt_bpm": 89.349609375,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 104.0,
+   "cam_bpm": 59.12841796875001,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5860",
+   "step": "before",
+   "gt_bpm": 130.5205078125,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 102.0,
+   "cam_bpm": 63.50830078125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "5860",
+   "step": "after",
+   "gt_bpm": 131.83447265625003,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 128.0,
+   "cam_bpm": 65.26025390625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "6329",
+   "step": "before",
+   "gt_bpm": 119.57080078125001,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 82.0,
+   "cam_bpm": 50.36865234375001,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "6329",
+   "step": "after",
+   "gt_bpm": 114.9609375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 119.0,
+   "cam_bpm": 114.609375,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "7601",
+   "step": "before",
+   "gt_bpm": 93.29150390625001,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 67.0,
+   "cam_bpm": 54.31054687500001,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "7601",
+   "step": "after",
+   "gt_bpm": 65.7421875,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 82.0,
+   "cam_bpm": 65.390625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8377",
+   "step": "before",
+   "gt_bpm": 81.2109375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 72.0,
+   "cam_bpm": 80.859375,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8377",
+   "step": "after",
+   "gt_bpm": 74.53125,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 81.0,
+   "cam_bpm": 74.8828125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8430",
+   "step": "before",
+   "gt_bpm": 131.83447265625003,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 92.0,
+   "cam_bpm": 63.50830078125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8430",
+   "step": "after",
+   "gt_bpm": 106.869140625,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 100.0,
+   "cam_bpm": 59.56640625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8730",
+   "step": "before",
+   "gt_bpm": 83.3203125,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 84.0,
+   "cam_bpm": 83.3203125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8730",
+   "step": "after",
+   "gt_bpm": 82.265625,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 92.0,
+   "cam_bpm": 82.265625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8844",
+   "step": "before",
+   "gt_bpm": 76.2890625,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 102.0,
+   "cam_bpm": 48.8671875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "8844",
+   "step": "after",
+   "gt_bpm": 75.234375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 119.0,
+   "cam_bpm": 77.6953125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "9401",
+   "step": "before",
+   "gt_bpm": 69.64013671875,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 61.0,
+   "cam_bpm": 66.57421875,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "9401",
+   "step": "after",
+   "gt_bpm": 67.1484375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 91.0,
+   "cam_bpm": 66.4453125,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "9640",
+   "step": "before",
+   "gt_bpm": 98.98535156250001,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 82.0,
+   "cam_bpm": 50.36865234375001,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "9640",
+   "step": "after",
+   "gt_bpm": 86.484375,
+   "fps": 24.0,
+   "frames": 1440,
+   "db_pulse": 91.0,
+   "cam_bpm": 84.0234375,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "9725",
+   "step": "before",
+   "gt_bpm": 70.9541015625,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 88.0,
+   "cam_bpm": 89.78759765625,
+   "cam_1fps_bpm": 3.0029296875
+  },
+  {
+   "patient_id": "9725",
+   "step": "after",
+   "gt_bpm": 113.00097656250001,
+   "fps": 29.9,
+   "frames": 1794,
+   "db_pulse": 120.0,
+   "cam_bpm": 85.40771484375,
+   "cam_1fps_bpm": 3.0029296875
+  }
+ ]
+}

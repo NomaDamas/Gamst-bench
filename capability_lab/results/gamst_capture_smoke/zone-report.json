@@ -1,0 +1,44 @@
+{
+  "mode": "zone",
+  "rule_id": "shop_entrance",
+  "native": {
+    "alarms": [
+      [
+        2.267,
+        10.267
+      ]
+    ],
+    "truth_alarms": 3,
+    "detected_within_1s": 1,
+    "false_alarms": 0
+  },
+  "1fps": {
+    "alarms": [
+      [
+        3.0,
+        10.0
+      ],
+      [
+        13.0,
+        15.0
+      ],
+      [
+        16.0,
+        null
+      ]
+    ],
+    "truth_alarms": 3,
+    "detected_within_1s": 3,
+    "false_alarms": 0
+  },
+  "memory": {
+    "answered_from": "mcp:get_observation_page(events_only)",
+    "events": 1,
+    "last_event_s": 2.267,
+    "page_truncated": false,
+    "page_bytes": 3094
+  },
+  "video": "/tmp/gcverify/mot17-09.mp4",
+  "video_sha256": "e74568155bcd226e188dd9ebd5c9d67b1228516c88e97bf8bebeabce796d9d28",
+  "wall_s": 26.76
+}

@@ -1,0 +1,26 @@
+{
+  "mode": "count",
+  "truth": 7,
+  "native": {
+    "count": 8,
+    "period_s": 2.1354,
+    "error": 1,
+    "within_1": true
+  },
+  "1fps": {
+    "count": 6,
+    "period_s": 2.002,
+    "error": -1,
+    "within_1": true
+  },
+  "memory": {
+    "answered_from": "mcp:get_observation_page(events_only)",
+    "events": 8,
+    "last_event_s": 15.983,
+    "page_truncated": false,
+    "page_bytes": 10147
+  },
+  "video": "/tmp/gcverify/stu10_25.mp4",
+  "video_sha256": "04928447f6f75413096914f9cc2a46beed40128197a3a8084e8c07e0519eed5c",
+  "wall_s": 7.02
+}

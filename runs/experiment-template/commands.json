@@ -1,0 +1,78 @@
+{
+  "A": [
+    "/usr/bin/python3",
+    "-m",
+    "gamst_bench.adapters.gamst_http",
+    "--vlm-url",
+    "http://127.0.0.1:8080/v1",
+    "--consumer-url",
+    "http://127.0.0.1:8080/v1",
+    "--vlm-interval",
+    "1"
+  ],
+  "B": [
+    "/usr/bin/python3",
+    "-m",
+    "gamst_bench.adapters.gamst_http",
+    "--vlm-url",
+    "http://127.0.0.1:8080/v1",
+    "--consumer-url",
+    "http://127.0.0.1:8080/v1"
+  ],
+  "C": [
+    "/usr/bin/python3",
+    "-m",
+    "gamst_bench.adapters.gamst_http",
+    "--vlm-url",
+    "http://127.0.0.1:8080/v1",
+    "--consumer-url",
+    "http://127.0.0.1:8080/v1",
+    "--semantic-interval",
+    "5",
+    "--novelty-threshold",
+    "0.08"
+  ],
+  "D": [
+    "/usr/bin/python3",
+    "-m",
+    "gamst_bench.adapters.gamst_http",
+    "--vlm-url",
+    "http://127.0.0.1:8080/v1",
+    "--consumer-url",
+    "http://127.0.0.1:8080/v1",
+    "--semantic-interval",
+    "5"
+  ],
+  "E": [
+    "/usr/bin/python3",
+    "-m",
+    "gamst_bench.adapters.gamst_http",
+    "--streaming-url",
+    "http://127.0.0.1:8081/v1",
+    "--consumer-url",
+    "http://127.0.0.1:8080/v1",
+    "--streaming-interval",
+    "0.25"
+  ],
+  "F": [
+    "/usr/bin/python3",
+    "-m",
+    "gamst_bench.adapters.gemini_live",
+    "--model",
+    "gemini-3.5-flash-lite"
+  ],
+  "C-jev": [
+    "/usr/bin/python3",
+    "-m",
+    "gamst_bench.adapters.gamst_http",
+    "--vlm-url",
+    "http://127.0.0.1:8080/v1",
+    "--consumer-url",
+    "http://127.0.0.1:8080/v1",
+    "--semantic-interval",
+    "5",
+    "--novelty-threshold",
+    "0.08",
+    "--consumer-json-mode"
+  ]
+}

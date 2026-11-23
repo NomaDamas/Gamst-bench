@@ -1,6 +1,6 @@
 # Gamst hybrid comparison plan
 
-Status: design and reference catalog ready; native benchmark adapters, actual Gamst integration and GCP model runs are pending. This document does not certify Gamst completion or superiority.
+Status: native GAMST extension adapters and software tests are implemented (see [EXTENSIONS](EXTENSIONS.md)); actual GCP model runs and measured benchmark results are pending. This document does not certify Gamst completion or superiority.
 
 ## Two evidence tracks
 
